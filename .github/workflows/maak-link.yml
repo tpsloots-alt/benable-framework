@@ -1,0 +1,55 @@
+name: Maak toegangslink
+
+on:
+  workflow_dispatch:
+    inputs:
+      naam:
+        description: 'Naam van de bezoeker'
+        required: true
+      dagen:
+        description: 'Aantal dagen geldig'
+        required: true
+        default: '14'
+      pad:
+        description: 'Pagina'
+        required: true
+        default: '/inwarmte/'
+        type: choice
+        options:
+          - /inwarmte/
+      domein:
+        description: 'Domein'
+        required: true
+        default: 'https://framework.benable.nl'
+        type: choice
+        options:
+          - https://framework.benable.nl
+          - https://benable-framework.pages.dev
+
+permissions:
+  contents: read
+
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Link maken
+        env:
+          LINK_SECRET: ${{ secrets.LINK_SECRET }}
+          NAAM: ${{ inputs.naam }}
+          DAGEN: ${{ inputs.dagen }}
+          PAD: ${{ inputs.pad }}
+          DOMEIN: ${{ inputs.domein }}
+        run: |
+          OUT=$(node scripts/maak-link.mjs --naam "$NAAM" --dagen "$DAGEN" --pad "$PAD" --domein "$DOMEIN")
+          {
+            echo "## Toegangslink"
+            echo '```'
+            echo "$OUT"
+            echo '```'
+            echo "Kopieer de regel die met https begint en stuur die naar de bezoeker. Het id heb je nodig om de link in te trekken."
+          } >> "$GITHUB_STEP_SUMMARY"

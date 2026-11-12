@@ -42,6 +42,15 @@ tools/
 
 ## Een link maken voor iemand
 
+**Via GitHub (geen installatie nodig):**
+
+1. Eenmalig: zet in GitHub onder *Settings → Secrets and variables → Actions → New repository secret* de sleutel als `LINK_SECRET`. Gebruik dezelfde waarde als in Cloudflare.
+2. Ga naar het tabblad **Actions → Maak toegangslink → Run workflow**.
+3. Vul naam en aantal dagen in en klik op **Run workflow**.
+4. Open na een halve minuut de run. De link staat in de samenvatting.
+
+**Of lokaal, als je Node hebt:**
+
 ```
 node scripts/maak-link.mjs --naam "Jan Jansen" --dagen 14
 ```
