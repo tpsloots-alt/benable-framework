@@ -12,6 +12,8 @@ h=h.replace(a,'<div class="grid g3" id="roadmapCols" style="display:none"></div>
 # oude voortgangsbalk verbergen
 i=h.index('<b id="progTxt"></b>');j=h.rindex('<div class="card"',0,i)
 h=h[:j]+'<div class="card" style="display:none"'+h[j+len('<div class="card"'):]
+h=h.replace('function renderScan(){','window.__scanCrit=scanCrit;function renderScan(){',1)
+assert 'window.__scanCrit' in h
 js='<script>\n/* RM:START */\n'+open(os.path.join(here,'items-core.js')).read()+'\n'+open(cfg).read()+'\n'+open(os.path.join(here,'roadmap-module.js')).read()+'\n/* RM:END */\n</script>\n'
 k=h.rindex('</body>');h=h[:k]+js+h[k:]
 open(dst,'w').write(h);print('ok',dst)
