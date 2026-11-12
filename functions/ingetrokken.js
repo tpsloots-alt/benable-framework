@@ -2,4 +2,5 @@
 // Voeg een id toe, commit en push: na de deploy werkt die link niet meer.
 export default [
   // 'a1b2c3d4',
+  'd3d375d3', // Test Tom, testlink 12-11-2026
 ];
