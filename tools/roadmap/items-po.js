@@ -1,0 +1,25 @@
+/* Projectorganisaties: branchepunten B2 (en B3 voor IT); br = branches waarvoor het punt geldt */
+const RM_PO=[
+ {id:'P-U1',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Alle uren worden wekelijks geschreven en goedgekeurd, op project en activiteit',actie:'Wekelijkse urenregistratie en goedkeuring afdwingen',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-U2',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Registratieregels liggen vast (pauzes, afwezigheid, overwerk, reistijd)',actie:'Registratieregels uren vastleggen en communiceren',eig:'Business control',fase:0},
+ {id:'P-U4',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Herstel- en terugkom-uren hebben een eigen code op het project of een herstelorder',actie:'Herstelcode invoeren in de urenregistratie',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-U3',tab:'uren',laag:3,groep:'Capaciteit',norm:'De urenwaterval per functiegroep wordt gerapporteerd, met vastgelegde keuzes voor de noemer',actie:'Urenwaterval en definitie benutting vastleggen op de KPI-kaart',eig:'Business control',fase:1},
+ {id:'P-B1',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Uitgangspunten voor resultaatneming liggen per projecttype vast',actie:'Uitgangspunten resultaatneming vaststellen met directie',eig:'Financial control',fase:0},
+ {id:'P-B2',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Onderhanden werk per project: verdiend tegenover gefactureerd, maandelijks',actie:'Maandelijkse OHW-staat per project invoeren',eig:'Financial control',fase:1},
+ {id:'P-B3',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Meerwerk wordt vastgelegd met opdrachtbevestiging vóór uitvoering',actie:'Werkwijze meerwerk met opdrachtbevestiging invoeren',eig:'Projectleiding',fase:0},
+ {id:'P-B4',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Per projecttype ligt vast welk deel van herstel doorbelastbaar is',actie:'Doorbelastbaarheid herstel per projecttype vastleggen',eig:'Directie',fase:0},
+ {id:'P-J1',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'De projectleider stelt maandelijks de prognose bij gereedkomen op, met nog te maken kosten en risicopost',actie:'Maandelijkse prognose bij gereedkomen per project invoeren',eig:'Projectleiding',fase:0},
+ {id:'P-J5',tab:'projecten',laag:4,groep:'Projectcontrol',norm:'Er is een maandelijkse projectreview per projectleider, met business control als challenger',actie:'Maandelijkse projectreview invoeren',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-J2',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'De DCM-brug per project (met herstel apart) wordt in de review besproken',actie:'DCM-brug als vast format in de projectreview',eig:'Business control',fase:1},
+ {id:'P-J3',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'Voortgang wordt fysiek bepaald, of herstel-uren worden uit de voortgang op kosten gefilterd',actie:'Onafhankelijke voortgangsmeting invoeren',eig:'Projectleiding',fase:1},
+ {id:'P-J4',tab:'projecten',laag:3,groep:'Projectcontrol',norm:'Prognosestabiliteit (PRO-09) wordt gemeten',actie:'Prognose-historie per project bewaren en PRO-09 meten',eig:'Business control',fase:2},
+ {id:'P-S2',tab:'pl',laag:2,groep:'Margestaffel',norm:'De margestaffel DCM–TCM–EBITDA is ingericht, met een eigenaar per trede',actie:'Margestaffel met eigenaar per trede inrichten',eig:'Business control',fase:1},
+ {id:'P-S1',tab:'segmenten',laag:2,groep:'Segmentatie',norm:'Er is een gesegmenteerde P&L tot TCM, met een vaste verdeelsleutel voor overhead',actie:'Gesegmenteerde P&L met verdeelsleutel opzetten',eig:'Business control',fase:2},
+ {id:'P-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Orderportefeuille en werkvoorraad (COM-12, COM-14) worden maandelijks gerapporteerd',actie:'Rapportage orderportefeuille en werkvoorraad invoeren',eig:'Commercie',fase:1},
+ {id:'P-L1',tab:'licenties',laag:1,groep:'Licenties',norm:'De licentiebalans (ingekocht, toegewezen, gefactureerd) wordt maandelijks afgestemd',actie:'Maandelijkse licentiebalans invoeren',eig:'Financial control',fase:0,br:['it']},
+ {id:'P-L2',tab:'licenties',laag:2,groep:'Licenties',norm:'Prijsverhogingen van leveranciers worden tijdig doorbelast; er is een verlengingskalender',actie:'Verlengingskalender en doorbelastingsregel invoeren',eig:'Commercie',fase:1,br:['it']}
+];
+window.RM_CFG={naam:'projectorganisaties',key:()=>'po_rm_v1_'+(window.__BRK||'inst'),fases:RM_FASES,lagen:RM_LAGEN,
+ items:()=>RM_CORE.concat(RM_PO).filter(i=>!i.br||i.br.includes(window.__BRK||'inst')),
+ demo:()=>({'C-B1':'deels','C-B2':'deels','C-B3':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet','C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'deels','C-D1':'niet','C-D2':'deels',
+  'P-U1':'deels','P-U2':'niet','P-U4':'niet','P-U3':'niet','P-B1':'deels','P-B2':'deels','P-B3':'niet','P-B4':'niet','P-J1':'deels','P-J5':'ok','P-J2':'niet','P-J3':'niet','P-J4':'niet','P-S2':'deels','P-S1':'niet','P-K1':'deels','P-L1':'niet','P-L2':'deels'})};

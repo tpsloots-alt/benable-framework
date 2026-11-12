@@ -1,0 +1,16 @@
+/* Generiek warmtemodel: branchepunten B1 */
+const RM_WARMTE=[
+ {id:'W-B1',tab:'basis',laag:1,groep:'Energiebalans en opbrengsten',norm:'De energiebalans (ingekocht/opgewekt, geleverd, gefactureerd, geboekt) wordt maandelijks afgestemd met signaalgrenzen',actie:'Maandelijkse energiebalans met signaalgrenzen invoeren',eig:'Finance / operations',fase:1},
+ {id:'W-B2',tab:'basis',laag:1,groep:'Energiebalans en opbrengsten',norm:'De schatting van nog niet gefactureerde levering (verbruik, graaddagen) ligt vast',actie:'Methode schatting nog niet gefactureerde levering vastleggen',eig:'Financial control',fase:0},
+ {id:'W-M1',tab:'marge',laag:2,groep:'Warmtemarge',norm:'Commerciële marge en inkoopmarge worden gescheiden gerapporteerd',actie:'Warmtemarge splitsen in commerciële en inkoopmarge',eig:'Business control',fase:1},
+ {id:'W-M2',tab:'marge',laag:2,groep:'Warmtemarge',norm:'Gevraagde tegenover gerealiseerde kostprijs (kostenbijdrage) wordt maandelijks gevolgd',actie:'Kostenbijdrage-analyse per tariefcategorie invoeren',eig:'Business control',fase:1},
+ {id:'W-O1',tab:'opwekking',laag:2,groep:'Projecten en opwek',norm:'Kosten en investeringen zijn per project of net gescheiden',actie:'Kosten en investeringen per project of net scheiden',eig:'Financial control',fase:1},
+ {id:'W-O2',tab:'opwekking',laag:2,groep:'Projecten en opwek',norm:'Opwekkosten per GJ en SCOP worden per installatie gevolgd',actie:'Opwekkosten en SCOP per installatie maandelijks rapporteren',eig:'Operations',fase:1},
+ {id:'W-O3',tab:'opwekking',laag:2,groep:'Projecten en opwek',norm:'Rendement per project wordt per kwartaal getoetst aan de rendementseis',actie:'Kwartaaltoets rendement per project invoeren',eig:'Business control',fase:2},
+ {id:'W-O4',tab:'opwekking',laag:4,groep:'Projecten en opwek',norm:'Rapportage per entiteit en aan partners heeft een vaste opzet',actie:'Standaard partnerrapportage per entiteit opzetten',eig:'Business control',fase:1},
+ {id:'W-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Duurzaamheids-KPI\'s (aandeel duurzaam, CO₂) worden maandelijks gemeten',actie:'Duurzaamheids-KPI\'s inrichten',eig:'Inkoop / operations',fase:2},
+ {id:'W-Y1',tab:'cyclus',laag:4,groep:'Stuurcyclus',norm:'Rapportage aan de toezichthouder staat in de rapportagekalender',actie:'Regulatoire rapportage opnemen in de kalender',eig:'Financial control',fase:1}
+];
+window.RM_CFG={naam:'warmte',key:()=>'wcf_rm_v1',fases:RM_FASES,lagen:RM_LAGEN,items:()=>RM_CORE.concat(RM_WARMTE),
+ demo:()=>({'C-B1':'deels','C-B2':'deels','C-B3':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet','C-K1':'deels','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'deels','C-D1':'niet','C-D2':'deels',
+  'W-B1':'niet','W-B2':'deels','W-M1':'niet','W-M2':'niet','W-O1':'deels','W-O2':'niet','W-O3':'niet','W-O4':'deels','W-K1':'niet','W-Y1':'ok'})};

@@ -66,9 +66,13 @@ function rowsRoad(){return [['Fase','Periode','Laag','Actie','Bevinding','Toelic
 function rowsVast(){return [['Tabblad','Laag','Onderwerp','Doelsituatie','Beoordeling','Toelichting','Actie bij afwijking']].concat(items().map(it=>[tabNaam(it.tab),it.laag,it.groep,it.norm,LAB[st(it.id)]||'Nog niet beoordeeld',(D.st[it.id]||{}).o||'',it.actie]))}
 const toCsv=rows=>'﻿'+rows.map(r=>r.map(v=>{v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')).join('\r\n');
 const csvRoad=()=>toCsv(rowsRoad()),csvVast=()=>toCsv(rowsVast());
-function download(txt,name){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);msg('Bestand '+name+' gedownload.')}catch(e){msg('Downloaden lukt hier niet; gebruik Kopieer roadmap.')}}
+let DL=null;try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}catch(e){}
+async function download(txt,name){
+  if(DL){try{await DL.save({filename:name,data:txt});msg('Bestand '+name+' opgeslagen.')}catch(e){msg(e&&e.code==='declined'?'Opslaan geannuleerd.':'Opslaan lukt hier niet; gebruik Kopieer roadmap.')}return}
+  if(window.claude){msg('Opslaan lukt in deze weergave niet; gebruik Kopieer roadmap en plak in Excel.');return}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);msg('Bestand '+name+' gedownload.')}catch(e){msg('Downloaden lukt hier niet; gebruik Kopieer roadmap.')}}
 function msg(t){const m=$('#rmMsg');if(m)m.textContent=t}
 function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road()}
-window.RM={refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}all()}};
+window.RM={refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}document.querySelectorAll('.rmPanel').forEach(c=>c.remove());all()}};
 all();
 })();
