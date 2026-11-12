@@ -8,4 +8,4 @@ Wordt automatisch bijgewerkt door de knoppen onder *Actions*. De links zelf staa
 | 12-11-2026 | Tom Test 2 | /inwarmte/ | 13-11-2026 | 2c6db1be | ingetrokken 12-11-2026 |
 | 12-11-2026 | Emile | /inwarmte/ | 14-11-2026 | e405f54c | ingetrokken 12-11-2026 |
 | 12-11-2026 | Emile Eleveld | /inwarmte/ | 14-11-2026 | 7c0b6360 | actief |
-| 12-11-2026 | Tom | /inwarmte/ | 26-11-2026 | f403e811 | actief |
+| 12-11-2026 | Tom | /inwarmte/ | 26-11-2026 | f403e811 | ingetrokken 12-11-2026 |
