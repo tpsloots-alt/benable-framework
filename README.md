@@ -61,9 +61,10 @@ Bij de eerste klik zet de server een cookie en haalt de link uit de adresbalk. I
 
 Elke link wordt lokaal bijgehouden in `links-log.csv` (niet in git): datum, naam, pagina, vervaldatum en id.
 
-## Een link intrekken
+## Overzicht en intrekken
 
-Zet het id in `functions/ingetrokken.js`, commit en push. Na de deploy (ongeveer een minuut) werkt die link niet meer.
+- **Overzicht:** `toegang/links.md` toont alle uitgegeven links: naam, pagina, geldig tot, id en status. De knop *Maak toegangslink* werkt het bij.
+- **Intrekken:** Actions → **Trek toegangslink in** → Run workflow → vul het id in. Het id komt in `functions/ingetrokken.js` en de status in het overzicht wordt bijgewerkt. Na de deploy (1 à 2 minuten) werkt de link niet meer.
 
 ## De pincode
 

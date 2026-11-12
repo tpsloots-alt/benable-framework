@@ -27,7 +27,11 @@ on:
           - https://benable-framework.pages.dev
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: toegang
+  cancel-in-progress: false
 
 jobs:
   link:
@@ -46,10 +50,23 @@ jobs:
           DOMEIN: ${{ inputs.domein }}
         run: |
           OUT=$(node scripts/maak-link.mjs --naam "$NAAM" --dagen "$DAGEN" --pad "$PAD" --domein "$DOMEIN")
+          ID=$(echo "$OUT" | grep -o 'id [0-9a-f]\{8\}' | cut -d' ' -f2)
+          TOT=$(date -u -d "+${DAGEN} days" +%d-%m-%Y)
+          VANDAAG=$(date -u +%d-%m-%Y)
+          SCHOON=$(echo "$NAAM" | tr -d '|\n')
+          echo "| $VANDAAG | $SCHOON | $PAD | $TOT | $ID | actief |" >> toegang/links.md
           {
             echo "## Toegangslink"
             echo '```'
             echo "$OUT"
             echo '```'
-            echo "Kopieer de regel die met https begint en stuur die naar de bezoeker. Het id heb je nodig om de link in te trekken."
+            echo "Kopieer de regel die met https begint en stuur die naar de bezoeker."
+            echo "Intrekken: Actions → **Trek toegangslink in** → id \`$ID\`."
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Overzicht bijwerken
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add toegang/links.md
+          git commit -m "Toegangslink uitgegeven [CF-Pages-Skip]"
+          git push

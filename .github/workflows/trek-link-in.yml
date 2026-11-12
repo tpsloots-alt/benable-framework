@@ -1,0 +1,38 @@
+name: Trek toegangslink in
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: 'Id van de link (8 tekens, zie toegang/links.md of de run waarin de link is gemaakt)'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: toegang
+  cancel-in-progress: false
+
+jobs:
+  intrekken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Id toevoegen aan ingetrokken links
+        env:
+          ID: ${{ inputs.id }}
+        run: |
+          ID=$(echo "$ID" | tr -d ' ' | tr 'A-F' 'a-f')
+          if ! echo "$ID" | grep -qx '[0-9a-f]\{8\}'; then echo "Ongeldig id: gebruik de 8 tekens uit het overzicht." >&2; exit 1; fi
+          if grep -q "'$ID'" functions/ingetrokken.js; then echo "Link $ID was al ingetrokken." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          VANDAAG=$(date -u +%d-%m-%Y)
+          sed -i "s#^];#  '$ID', // ingetrokken $VANDAAG\n];#" functions/ingetrokken.js
+          sed -i "/| $ID | actief |/s/| actief |/| ingetrokken $VANDAAG |/" toegang/links.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add functions/ingetrokken.js toegang/links.md
+          git commit -m "Toegangslink $ID ingetrokken"
+          git push
+          echo "## Link $ID ingetrokken" >> "$GITHUB_STEP_SUMMARY"
+          echo "Na de deploy in Cloudflare (1 à 2 minuten) werkt deze link niet meer." >> "$GITHUB_STEP_SUMMARY"
