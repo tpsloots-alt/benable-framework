@@ -1,14 +1,15 @@
 /* InWarmte: branchepunten (B1 warmte, toegespitst) */
 const RM_INW=[
  {id:'I-V1',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Elke project-BV heeft een eigen administratie met hetzelfde rekeningschema en vaste mapping',actie:'Rekeningschema en mapping per BV gelijktrekken',eig:'Financial control',fase:0},
- {id:'I-V2',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Facturatieruns worden via een koppeling geboekt; runtotalen sluiten maandelijks aan op de omzet per BV',actie:'Facturatierun ↔ omzet per BV maandelijks aansluiten',eig:'Financial control',fase:0},
+ {id:'I-V2',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Facturatie ↔ omzet: facturatieruns worden via een koppeling geboekt; runtotalen sluiten maandelijks aan op de omzet per BV',actie:'Facturatierun ↔ omzet per BV maandelijks aansluiten',eig:'Financial control',fase:0},
  {id:'I-V3',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Projectdimensie is verplicht op elke omzet- en kostenboeking',actie:'Projectdimensie verplicht maken in Exact Online',eig:'Financial control',fase:0},
- {id:'I-V4',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Intercompany tussen levering-BV en project-BV\'s wordt maandelijks afgestemd',actie:'Maandelijkse intercompany-afstemming invoeren',eig:'Financial control',fase:1},
+ {id:'I-V4',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Intercompany: rekening-courant tussen levering-BV en project-BV\'s wordt maandelijks afgestemd',actie:'Maandelijkse intercompany-afstemming invoeren',eig:'Financial control',fase:1},
  {id:'I-V5',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Register van aansluitingen wordt maandelijks gematcht met contracten en facturatie',actie:'Maandelijkse match register ↔ contract ↔ factuur met uitzonderingenlijst',eig:'Financial control / operations',fase:0},
  {id:'I-V9',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Mutaties (nieuw, verhuizing, leegstand) worden binnen de maand verwerkt in contract en facturatie',actie:'Mutatieproces aansluitingen met doorlooptijdnorm inrichten',eig:'Operations',fase:0},
  {id:'I-V6',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Bij een overname liggen klantbestand, tarieven en openingsbalans vast vóór de eerste eigen facturatierun',actie:'Overnamechecklist (dag 1) voor finance opstellen',eig:'Financial control',fase:1},
  {id:'I-V7',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Nog te factureren en vooruitgefactureerd worden per project berekend en geboekt',actie:'Berekening nog te factureren per project invoeren',eig:'Financial control',fase:1},
- {id:'I-V8',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Tussenrekeningen en vraagposten zijn aan het eind van de maand leeg of verklaard',actie:'Tussenrekeningen maandelijks opschonen en verklaren',eig:'Financial control',fase:0},
+ {id:'I-V10',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Voorschotten en eindafrekeningen (collectieve netten) sluiten aan op het grootboek',actie:'Aansluiting voorschotten en eindafrekeningen invoeren',eig:'Financial control',fase:1},
+ {id:'I-V11',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Energiebalans collectieve netten: ingevoed, geleverd, gefactureerd en geboekt sluiten maandelijks aan',actie:'Maandelijkse energiebalans voor de collectieve netten invoeren',eig:'Finance / operations',fase:1},
  {id:'I-M1',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Tarieven (bron, koude, huur) liggen per project vast en worden volgens een vaste regel geïndexeerd',actie:'Tariefregister per project met indexatieregel opzetten',eig:'Commercie',fase:1},
  {id:'I-M2',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Bij collectieve netten wordt gevraagde tegenover gerealiseerde kostprijs maandelijks gevolgd',actie:'Kostenbijdrage-analyse collectieve netten invoeren',eig:'Business control',fase:1},
  {id:'I-P1',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Resultaat en rendement per project worden periodiek berekend (na energie, onderhoud en afschrijving)',actie:'Projectresultaat en rendement per project per kwartaal rapporteren',eig:'Business control',fase:1},
@@ -26,8 +27,8 @@ const RM_INW=[
  {id:'I-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Klantportaal en facturatie zijn per BV gekoppeld aan Exact Online',actie:'Koppeling facturatie ↔ Exact Online per BV realiseren',eig:'IT / finance',fase:2}
 ];
 window.RM_CFG={naam:'inwarmte',key:()=>'inw_rm_v1',fases:RM_FASES,lagen:RM_LAGEN,items:()=>RM_CORE.concat(RM_INW),
- demo:()=>({'I-V1':'deels','I-V2':'niet','I-V3':'deels','I-V4':'niet','I-V5':'niet','I-V9':'niet','I-V6':'deels','I-V7':'niet','I-V8':'deels',
-  'C-B1':'deels','C-B2':'niet','C-B3':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
+ demo:()=>({'I-V1':'deels','I-V2':'niet','I-V3':'deels','I-V4':'niet','I-V5':'niet','I-V9':'niet','I-V6':'deels','I-V7':'niet','I-V10':'deels','I-V11':'niet',
+  'C-B1':'deels','C-B2':'niet','C-B3':'niet','C-R1':'ok','C-R2':'deels','C-R3':'deels','C-R4':'ok','C-R5':'ok','C-R6':'niet','C-R7':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
   'C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'niet','C-D1':'niet','C-D2':'deels',
   'I-M1':'ok','I-M2':'deels','I-P1':'deels','I-P2':'niet','I-P3':'deels','I-P4':'niet','I-R1':'ok','I-R2':'deels','I-R3':'niet','I-R4':'niet','I-R5':'niet',
   'I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
