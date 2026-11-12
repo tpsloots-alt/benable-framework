@@ -1,0 +1,210 @@
+{
+  "$schema_note": "B.Enable huisstijl-tokens, eerste aanzet (v0.1). Niet afgeleid van officiële huisstijl: de website (benable.nl) bevat geen uitleesbare kleur- of lettertypegegevens. Kleuren zijn een voorstel dat aansluit op de toon van de site en het huidige Control Framework.",
+  "version": "0.2",
+  "date": "2026-11-12",
+  "brand": {
+    "name": "B.Enable",
+    "naamgebruik": {
+      "lopende_tekst": "B.Enable",
+      "logo_tekst": "B.enable",
+      "niet_gebruiken": [
+        "Benable",
+        "B-Enable",
+        "BEnable"
+      ]
+    },
+    "volledige_naam": "Business Enablers",
+    "tagline": "Grip op groei",
+    "propositie": "Ondersteuning in Finance, Control en Operations",
+    "producten": {
+      "control_framework": "B.Enable · Control Framework",
+      "zelfscan": "B.Enable · Zelfscan"
+    },
+    "logo": {
+      "type": "woordmerk (tekst)",
+      "bestand": null,
+      "opmerking": "Geen logobestand gevonden op de website; tot er een SVG is, het woordmerk in het display-lettertype zetten."
+    },
+    "website": "https://www.benable.nl/",
+    "pictogram": {
+      "omschrijving": "Monogram: witte B met oranje punt (naar het woordmerk B.enable) op een donkerblauw afgerond vierkant",
+      "kleuren": {
+        "vlak": "#1E3A5F (primary)",
+        "letter": "#FFFFFF",
+        "punt": "#F0773A (accent, lichte variant voor contrast op donkerblauw)"
+      },
+      "radius": "12 op 64 (≈ 19%)",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"12\" fill=\"#1E3A5F\"/><text x=\"27\" y=\"48\" text-anchor=\"middle\" font-family=\"Arial, Helvetica, sans-serif\" font-weight=\"700\" font-size=\"46\" fill=\"#fff\">B</text><circle cx=\"49\" cy=\"43\" r=\"5.5\" fill=\"#F0773A\"/></svg>",
+      "bestanden": {
+        "favicon.svg": "browsertabblad (moderne browsers)",
+        "favicon-32.png": "fallback 32×32",
+        "favicon.ico": "16/32/48 voor oudere browsers en Windows",
+        "apple-touch-icon.png": "180×180 voor iPhone/iPad-beginscherm"
+      },
+      "gebruik": "Standaard op elke pagina en elk artefact van B.Enable, ook in klantvarianten (het product blijft B.Enable). huisstijl-generator.py zet het automatisch als favicon in de <head>. Vervangen zodra er een officieel logo is."
+    }
+  },
+  "colors": {
+    "light": {
+      "background": "#F3F5F8",
+      "surface": "#FFFFFF",
+      "border": "#D5DBE2",
+      "text": "#14263A",
+      "text_muted": "#566577",
+      "primary": "#1E3A5F",
+      "primary_soft": "#DDE7F2",
+      "accent": "#C2410C",
+      "accent_soft": "#FBE5D8",
+      "on_primary": "#FFFFFF",
+      "on_accent": "#FFFFFF"
+    },
+    "dark": {
+      "background": "#0E1620",
+      "surface": "#16212D",
+      "border": "#2A3743",
+      "text": "#E6ECF2",
+      "text_muted": "#98A6B5",
+      "primary": "#7FA8D6",
+      "primary_soft": "#16303F",
+      "accent": "#F0773A",
+      "accent_soft": "#3A2216",
+      "on_primary": "#0E1620",
+      "on_accent": "#0E1620"
+    },
+    "status": {
+      "light": {
+        "good": "#1C7C4A",
+        "good_soft": "#DCF1E4",
+        "warning": "#8F5E00",
+        "warning_soft": "#FBEFD2",
+        "critical": "#B42318",
+        "critical_soft": "#FBE0DD"
+      },
+      "dark": {
+        "good": "#4CC283",
+        "good_soft": "#143323",
+        "warning": "#E3A93A",
+        "warning_soft": "#3A2C10",
+        "critical": "#F07068",
+        "critical_soft": "#3D1A18"
+      }
+    },
+    "chart": {
+      "categorical": [
+        "#1E3A5F",
+        "#2A9D8F",
+        "#C2410C",
+        "#8D6CAB",
+        "#6A994E",
+        "#D08A1D",
+        "#8A8F98"
+      ],
+      "opmerking": "Statuskleuren (goed/waarschuwing/kritiek) niet als reekskleur gebruiken."
+    },
+    "gebruik": {
+      "primary": "Navigatie, koppen, actieve elementen, totaalbalken in grafieken",
+      "accent": "Eén accent per scherm: geselecteerde staat, primaire knop, markering",
+      "status": "Alleen voor betekenis (groen/oranje/rood), los van het accent"
+    },
+    "contrast_wcag": {
+      "text_op_surface": 15.35,
+      "muted_op_surface": 5.96,
+      "primary_op_surface": 11.5,
+      "accent_op_surface": 5.18,
+      "warning_op_surface": 5.57,
+      "wit_op_primary": 11.5,
+      "wit_op_accent": 5.18,
+      "norm": "Alle tekstkleuren ≥ 4,5:1 (AA)"
+    }
+  },
+  "typography": {
+    "display": {
+      "family": "Archivo",
+      "weights": [
+        600,
+        700,
+        800
+      ],
+      "fallback": "'Helvetica Neue', Arial, sans-serif",
+      "bron": "Google Fonts"
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "weights": [
+        400,
+        500,
+        600
+      ],
+      "fallback": "'Segoe UI', Arial, sans-serif",
+      "bron": "Google Fonts"
+    },
+    "mono": {
+      "family": "IBM Plex Mono",
+      "weights": [
+        400,
+        500
+      ],
+      "fallback": "ui-monospace, Menlo, monospace",
+      "gebruik": "Cijfers in tabellen, KPI-codes"
+    },
+    "scale_px": {
+      "caption": 12,
+      "small": 13.5,
+      "body": 15,
+      "h3": 15,
+      "h2": 18,
+      "h1": 28,
+      "kpi": 24
+    },
+    "cijfers": "Tabulaire cijfers (font-variant-numeric: tabular-nums); notatie nl-NL: € 1.234.567, 12,5%"
+  },
+  "shape": {
+    "radius_px": {
+      "small": 4,
+      "default": 8,
+      "pill": 99
+    },
+    "spacing_px": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32
+    ],
+    "border_px": 1,
+    "schaduw": "Spaarzaam; kaarten met rand in plaats van schaduw"
+  },
+  "components": {
+    "kaart": "Wit vlak, 1px rand, radius 8, padding 18",
+    "kpi_tegel": "Linkerrand 5px in statuskleur; code, naam, waarde, referentie",
+    "knop_primair": "Accent als vlak, witte tekst",
+    "knop_secundair": "Wit vlak, rand, tekst in primary",
+    "demo_label": {
+      "tekst": "Demo – fictieve data",
+      "stijl": "warning_soft vlak, warning rand en tekst",
+      "verplicht": "Op elk scherm met fictieve cijfers"
+    }
+  },
+  "voice": {
+    "taal": "nl",
+    "toon": [
+      "zakelijk",
+      "helder",
+      "direct",
+      "ondersteunend"
+    ],
+    "aanspreekvorm": "je/jij in tools, u in formele rapportage (per klant te bepalen)",
+    "richtlijnen": [
+      "Korte, actieve zinnen",
+      "Termen uit de begrippenlijst van het Control Framework gebruiken",
+      "Geen jargon van specifieke organisaties",
+      "Cijfers altijd met eenheid en referentie (begroting, vorig jaar)"
+    ]
+  },
+  "status_open": [
+    "Officieel logo (SVG) ontbreekt; het pictogram is een tijdelijk monogram",
+    "Huisstijlkleuren zijn een voorstel; bevestigen of vervangen",
+    "Aanspreekvorm vaststellen"
+  ]
+}
