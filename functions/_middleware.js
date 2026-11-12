@@ -27,7 +27,7 @@ const cookie = (req, naam) => {
 };
 
 function geweigerd(reden) {
-  const html = `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>B.Enable · Control Framework</title>
+  const html = `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>B.Enable · Control Framework</title>
 <style>body{font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;background:#F3F5F8;color:#14263A;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:460px;padding:32px;background:#fff;border:1px solid #D5DBE2;border-top:4px solid #1E3A5F;border-radius:12px}h1{font-size:20px;margin:0 0 10px}p{color:#566577;line-height:1.5}</style></head>
 <body><main><h1>B.Enable · Control Framework</h1><p>${reden}</p><p>Neem contact op met B.Enable voor een nieuwe link.</p></main></body></html>`;
   return new Response(html, { status: 403, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' } });

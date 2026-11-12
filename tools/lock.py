@@ -1,7 +1,8 @@
 """Maakt de sitebuild van een framework-pagina met een presentatie-slot (blur + pincode).
 Gebruik: python3 tools/lock.py bron.html doel.html sturing,organisatie,cyclus,datamodel,roadmap
 De pincode zet je daarna met: node scripts/zet-pincode.mjs <pincode> <doel.html>"""
-import sys
+import sys,re
+ICONS='<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">'
 src,dst,views=sys.argv[1],sys.argv[2],sys.argv[3].split(',')
 h=open(src).read()
 css='''
@@ -45,5 +46,6 @@ try{const m=document.cookie.match(/(?:^|; )be_who=([^;]*)/);if(m){const [n,e]=de
 /* LOCK:END */
 ''' % repr(views).replace("'",'"')
 i=h.rindex('</script>');h=h[:i]+js+h[i:]
-h=h.replace('<head>','<head>\n<meta name="robots" content="noindex,nofollow">',1)
+h=re.sub(r'<link rel="(?:icon|apple-touch-icon)"[^>]*>','',h)
+h=h.replace('<head>','<head>\n<meta name="robots" content="noindex,nofollow">\n'+ICONS,1)
 open(dst,'w').write(h);print('ok',dst)
