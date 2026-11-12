@@ -1,0 +1,19 @@
+/* RM:START vastleggen en roadmap */
+.rmPanel{margin-top:16px}
+.rmG{margin:14px 0 2px;font-size:14px}
+.rmRow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(160px,220px);gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.rmT{font-weight:500}
+.rmSeg button{white-space:nowrap}
+.rmSeg button.on.rm-ok{background:var(--good);border-color:var(--good);color:#fff}
+.rmSeg button.on.rm-deels{background:var(--warn);border-color:var(--warn);color:#fff}
+.rmSeg button.on.rm-niet{background:var(--bad);border-color:var(--bad);color:#fff}
+.rmO{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.rmAct{border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:10px 12px;background:var(--panel)}
+.rmAct.deels{border-left-color:var(--warn)}.rmAct.eigen{border-left-color:var(--cool)}
+.rmAct.done{opacity:.55}.rmAct.done .rmT{text-decoration:line-through}
+.rmCtl{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.rmCtl select,.rmCtl input,#rmNT,#rmNL,#rmNF{font:inherit;font-size:12.5px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0}
+#rmNT{width:100%;font-size:14px;padding:8px}
+.rmMsg{min-height:1em;margin:4px 0 0}
+@media (max-width:900px){.rmRow{grid-template-columns:1fr}}
+/* RM:END */

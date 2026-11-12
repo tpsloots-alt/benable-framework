@@ -189,6 +189,25 @@ tr.done td{opacity:.55}
 .phase{display:flex;flex-direction:column;gap:8px}
 @media (max-width:1000px){.principles,.kpigrid{grid-template-columns:repeat(2,minmax(0,1fr))}#kpiGrid,#scanGrid{grid-template-columns:1fr!important}#cycForm{grid-template-columns:1fr 1fr!important}}
 @media (max-width:760px){.navgrp{display:none}.gloss{grid-template-columns:1fr}.principles,.kpigrid{grid-template-columns:1fr}}
+/* RM:START vastleggen en roadmap */
+.rmPanel{margin-top:16px}
+.rmG{margin:14px 0 2px;font-size:14px}
+.rmRow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(160px,220px);gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.rmT{font-weight:500}
+.rmSeg button{white-space:nowrap}
+.rmSeg button.on.rm-ok{background:var(--good);border-color:var(--good);color:#fff}
+.rmSeg button.on.rm-deels{background:var(--warn);border-color:var(--warn);color:#fff}
+.rmSeg button.on.rm-niet{background:var(--bad);border-color:var(--bad);color:#fff}
+.rmO{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.rmAct{border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:10px 12px;background:var(--panel)}
+.rmAct.deels{border-left-color:var(--warn)}.rmAct.eigen{border-left-color:var(--cool)}
+.rmAct.done{opacity:.55}.rmAct.done .rmT{text-decoration:line-through}
+.rmCtl{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.rmCtl select,.rmCtl input,#rmNT,#rmNL,#rmNF{font:inherit;font-size:12.5px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0}
+#rmNT{width:100%;font-size:14px;padding:8px}
+.rmMsg{min-height:1em;margin:4px 0 0}
+@media (max-width:900px){.rmRow{grid-template-columns:1fr}}
+/* RM:END */
 
 /* LOCK:START presentatie-slot */
 section.view.locked{position:relative}
@@ -292,9 +311,8 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
       <div class="form stack" id="volForm"></div>
       <div class="stack"><div class="chart" id="volChart"></div><div class="tablewrap"><table id="volTable"></table></div></div>
     </div>
-    <h3 style="margin-top:14px">Toetspunten voor de nulmeting</h3>
-    <p class="note" style="margin-top:-6px">Wat je in de eerste weken vaststelt. Vink af wat aantoonbaar op orde is.</p>
-    <div id="volChecks" class="grid g2" style="gap:6px 18px"></div>
+    <p class="note" style="margin-top:12px">De toetspunten voor de omzetketen staan onderaan deze pagina bij <i>Vastleggen</i>; wat niet op orde is, komt in de verbeterroadmap.</p>
+    <div id="volChecks" style="display:none"></div>
   </div>
   <div class="grid g2" style="margin-top:16px">
     <div class="card">
@@ -559,16 +577,17 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
 <!-- 11 ROADMAP -->
 <section class="view" id="v-roadmap">
   <h1>Verbeterroadmap</h1>
-  <p class="lede">Groei van de huidige situatie naar het doelmodel. Begin met de nulmeting: verbeteren start bij de laagste laag die nog niet op orde is, want elke laag bouwt voort op de laag eronder.</p>
+  <p class="lede">Groei van de huidige situatie naar het doelmodel. De acties hieronder komen uit wat je per tabblad bij <i>Vastleggen</i> als niet of deels op orde hebt beoordeeld. Begin met de nulmeting: verbeteren start bij de laagste laag die nog niet op orde is, want elke laag bouwt voort op de laag eronder.</p>
   <div class="grid" style="grid-template-columns:minmax(0,1fr) 340px" id="scanGrid">
     <div class="card"><h2>Nulmeting (volwassenheidsscan)</h2><div id="scan" class="stack" style="gap:12px"></div></div>
     <div class="card" id="scanRes"></div>
   </div>
-  <div class="card" style="margin:16px 0">
+  <div class="card" style="display:none" style="margin:16px 0">
     <div class="row" style="justify-content:space-between"><b id="progTxt"></b><span class="note" id="progSub"></span></div>
     <div class="bar" style="margin-top:8px"><i id="progBar"></i></div>
   </div>
-  <div class="grid g3" id="roadmapCols"></div>
+  <div class="grid g3" id="roadmapCols" style="display:none"></div>
+  <div id="rmRoad"></div>
 </section>
 
 <!-- A BEGRIPPEN -->
@@ -1395,6 +1414,144 @@ $('#glQ').oninput=renderGloss;
 /* ---------- INIT ---------- */
 renderLayers();renderStrat();renderFacts();renderChallenges();buildDrivers();buildOpex();buildOpwek();renderActs();renderDoa();renderRaci();renderCyc();renderMap();renderScan();renderRoad();renderGloss();update();renderKd();renderKpis();route();
 })();
+</script>
+<script>
+/* RM:START */
+/* Kernpunten (deel A van het framework): gelden voor elke organisatie.
+   tab = id van het tabblad (section#v-<tab>), laag 1–4, fase 0/1/2 = standaardperiode in de roadmap. */
+const RM_CORE=[
+ {id:'C-B1',tab:'basis',laag:1,groep:'Maandafsluiting',norm:'Vaste afsluitkalender; de maand is dicht op een vaste werkdag',actie:'Afsluitkalender met doelwerkdag invoeren en bewaken',eig:'Financial control',fase:0},
+ {id:'C-B2',tab:'basis',laag:1,groep:'Maandafsluiting',norm:'Mapping van grootboek naar management P&L vastgelegd en onderhouden',actie:'Mappingtabel grootboek → management P&L opstellen',eig:'Financial control',fase:0},
+ {id:'C-B3',tab:'basis',laag:1,groep:'Reconciliaties en beheersing',norm:'Reconciliaties maandelijks gedaan, met eigenaar en aftekening',actie:'Reconciliatieschema met eigenaren en aftekening invoeren',eig:'Financial control',fase:1},
+ {id:'C-B4',tab:'basis',laag:1,groep:'Reconciliaties en beheersing',norm:'Functiescheiding en vier-ogenprincipe op stamdata en betalingen',actie:'Functiescheiding en vier-ogenprincipe inrichten',eig:'Financial control',fase:1},
+ {id:'C-B5',tab:'basis',laag:1,groep:'Reconciliaties en beheersing',norm:'Kritieke Excel-bestanden zijn gedocumenteerd en beheerst',actie:'Kritieke Excel-processen inventariseren en documenteren',eig:'Business control',fase:0},
+ {id:'C-P1',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'Afwijkingen worden maandelijks verklaard naar volume, prijs en efficiëntie',actie:'Standaard afwijkingsanalyse invoeren in de maandrapportage',eig:'Business control',fase:1},
+ {id:'C-P2',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'Er is een Best Estimate of rolling forecast, minstens per kwartaal',actie:'Best Estimate per kwartaal invoeren',eig:'Business control',fase:1},
+ {id:'C-P3',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'De belangrijkste risico\'s zijn als scenario doorgerekend',actie:'Scenario\'s voor de grootste risico\'s uitwerken',eig:'Business control',fase:2},
+ {id:'C-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Er is een vastgestelde kernset van 10–15 KPI\'s',actie:'Kernset van 10–15 KPI\'s vaststellen met directie',eig:'Business control',fase:0},
+ {id:'C-K2',tab:'kpis',laag:3,groep:'KPI-set',norm:'Elke kern-KPI heeft een KPI-kaart met definitie, formule, eigenaar en norm',actie:'KPI-kaarten opstellen voor de kernset',eig:'Business control',fase:0},
+ {id:'C-K3',tab:'kpis',laag:3,groep:'KPI-set',norm:'Het dashboard wordt automatisch gevuld uit één bron',actie:'Dashboard automatisch vullen vanuit één datamodel',eig:'IT / finance',fase:2},
+ {id:'C-S1',tab:'sturing',laag:4,groep:'Business review',norm:'Business review met vaste agenda en actielijst (eigenaar, deadline, effect)',actie:'Vaste agenda en actielijst voor de business review invoeren',eig:'Finance business partner',fase:0},
+ {id:'C-S2',tab:'sturing',laag:4,groep:'Business review',norm:'Opvolging van acties is vast agendapunt; het effect wordt gemeten',actie:'Opvolging en effectmeting van acties borgen',eig:'Directie',fase:1},
+ {id:'C-O1',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Bevoegdhedenmatrix met drempelbedragen is vastgesteld',actie:'Bevoegdhedenmatrix vaststellen',eig:'Directie',fase:1},
+ {id:'C-O2',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Rollen van financial control, business control en lijn zijn vastgelegd (RACI)',actie:'RACI per kernproces vastleggen',eig:'Finance',fase:1},
+ {id:'C-Y1',tab:'cyclus',laag:4,groep:'Stuurcyclus',norm:'Stuurcyclus en rapportagekalender zijn vastgesteld en bekend',actie:'Stuurcyclus en rapportagekalender vaststellen en publiceren',eig:'Business control',fase:0},
+ {id:'C-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Eén bron per gegeven; bronsystemen en koppelingen zijn beschreven',actie:'Bronnen en koppelingen beschrijven; één bron per gegeven afspreken',eig:'IT / finance',fase:1},
+ {id:'C-D2',tab:'datamodel',laag:1,groep:'Data',norm:'Standaarddimensies (project, entiteit, kostenplaats) zijn verplicht bij het boeken',actie:'Verplichte dimensies instellen in het financieel pakket',eig:'Financial control',fase:1}
+];
+const RM_FASES=[['Snelle verbeteringen','0–3 maanden'],['Basis op orde','3–9 maanden'],['Doorontwikkeling','9–18 maanden']];
+const RM_LAGEN=['Financiële basis','Business drivers','KPI\'s','Sturing'];
+
+/* InWarmte: branchepunten (B1 warmte, toegespitst) */
+const RM_INW=[
+ {id:'I-V1',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Elke project-BV heeft een eigen administratie met hetzelfde rekeningschema en vaste mapping',actie:'Rekeningschema en mapping per BV gelijktrekken',eig:'Financial control',fase:0},
+ {id:'I-V2',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Facturatieruns worden via een koppeling geboekt; runtotalen sluiten maandelijks aan op de omzet per BV',actie:'Facturatierun ↔ omzet per BV maandelijks aansluiten',eig:'Financial control',fase:0},
+ {id:'I-V3',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Projectdimensie is verplicht op elke omzet- en kostenboeking',actie:'Projectdimensie verplicht maken in Exact Online',eig:'Financial control',fase:0},
+ {id:'I-V4',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Intercompany tussen levering-BV en project-BV\'s wordt maandelijks afgestemd',actie:'Maandelijkse intercompany-afstemming invoeren',eig:'Financial control',fase:1},
+ {id:'I-V5',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Register van aansluitingen wordt maandelijks gematcht met contracten en facturatie',actie:'Maandelijkse match register ↔ contract ↔ factuur met uitzonderingenlijst',eig:'Financial control / operations',fase:0},
+ {id:'I-V9',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Mutaties (nieuw, verhuizing, leegstand) worden binnen de maand verwerkt in contract en facturatie',actie:'Mutatieproces aansluitingen met doorlooptijdnorm inrichten',eig:'Operations',fase:0},
+ {id:'I-V6',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Bij een overname liggen klantbestand, tarieven en openingsbalans vast vóór de eerste eigen facturatierun',actie:'Overnamechecklist (dag 1) voor finance opstellen',eig:'Financial control',fase:1},
+ {id:'I-V7',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Nog te factureren en vooruitgefactureerd worden per project berekend en geboekt',actie:'Berekening nog te factureren per project invoeren',eig:'Financial control',fase:1},
+ {id:'I-V8',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Tussenrekeningen en vraagposten zijn aan het eind van de maand leeg of verklaard',actie:'Tussenrekeningen maandelijks opschonen en verklaren',eig:'Financial control',fase:0},
+ {id:'I-M1',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Tarieven (bron, koude, huur) liggen per project vast en worden volgens een vaste regel geïndexeerd',actie:'Tariefregister per project met indexatieregel opzetten',eig:'Commercie',fase:1},
+ {id:'I-M2',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Bij collectieve netten wordt gevraagde tegenover gerealiseerde kostprijs maandelijks gevolgd',actie:'Kostenbijdrage-analyse collectieve netten invoeren',eig:'Business control',fase:1},
+ {id:'I-P1',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Resultaat en rendement per project worden periodiek berekend (na energie, onderhoud en afschrijving)',actie:'Projectresultaat en rendement per project per kwartaal rapporteren',eig:'Business control',fase:1},
+ {id:'I-P2',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Projecten onder de rendementseis worden besproken met een maatregel',actie:'Portefeuillereview met maatregelen voor projecten onder de eis',eig:'Directie',fase:2},
+ {id:'I-P3',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Investeringen, aansluitbijdragen en subsidies per project sluiten aan op het activaregister',actie:'Activaregister per project en entiteit aansluiten',eig:'Financial control',fase:1},
+ {id:'I-P4',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Kosten van onderhoud en storingen (onderaanneming) zijn per project en techniek zichtbaar',actie:'Facturen onderaannemers per project en techniek coderen',eig:'Operations',fase:1},
+ {id:'I-R1',tab:'realisatie',laag:2,groep:'Ontwikkeling en realisatie',norm:'Investeringsbesluit met vaste criteria en businesscase per project',actie:'Go/no-go-criteria en sjabloon businesscase vaststellen',eig:'Directie',fase:0},
+ {id:'I-R2',tab:'realisatie',laag:2,groep:'Ontwikkeling en realisatie',norm:'De projectmanager stelt maandelijks de prognose bij gereedkomen op',actie:'Maandelijkse prognose per realisatieproject invoeren',eig:'Projectmanagement',fase:0},
+ {id:'I-R3',tab:'realisatie',laag:2,groep:'Activering eigen uren',norm:'Eigen uren worden na het investeringsbesluit op het project geschreven',actie:'Urenregistratie per project verplicht maken voor realisatie',eig:'Projectmanagement',fase:0},
+ {id:'I-R4',tab:'realisatie',laag:1,groep:'Activering eigen uren',norm:'Activeringsbeleid is vastgelegd en afgestemd met de accountant',actie:'Activeringsbeleid eigen uren vastleggen en afstemmen',eig:'Financial control',fase:0},
+ {id:'I-R5',tab:'realisatie',laag:2,groep:'Ontwikkeling en realisatie',norm:'Na oplevering volgt een nacalculatie tegenover de businesscase',actie:'Nacalculatie na oplevering standaard maken',eig:'Business control',fase:2},
+ {id:'I-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Omzetvolledigheid (KWA-07) wordt maandelijks gemeten',actie:'KPI omzetvolledigheid inrichten',eig:'Financial control',fase:1},
+ {id:'I-S1',tab:'sturing',laag:4,groep:'Externe verantwoording',norm:'Rapportage per entiteit en aan partners (corporaties, VvE) heeft een vaste opzet',actie:'Standaard partnerrapportage per entiteit opzetten',eig:'Business control',fase:1},
+ {id:'I-S2',tab:'sturing',laag:4,groep:'Externe verantwoording',norm:'Noodlevering wordt apart verantwoord, met zicht op kostendekking',actie:'Aparte verantwoording noodlevering inrichten',eig:'Financial control',fase:1},
+ {id:'I-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Klantportaal en facturatie zijn per BV gekoppeld aan Exact Online',actie:'Koppeling facturatie ↔ Exact Online per BV realiseren',eig:'IT / finance',fase:2}
+];
+window.RM_CFG={naam:'inwarmte',key:()=>'inw_rm_v1',fases:RM_FASES,lagen:RM_LAGEN,items:()=>RM_CORE.concat(RM_INW),
+ demo:()=>({'I-V1':'deels','I-V2':'niet','I-V3':'deels','I-V4':'niet','I-V5':'niet','I-V9':'niet','I-V6':'deels','I-V7':'niet','I-V8':'deels',
+  'C-B1':'deels','C-B2':'niet','C-B3':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
+  'C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'niet','C-D1':'niet','C-D2':'deels',
+  'I-M1':'ok','I-M2':'deels','I-P1':'deels','I-P2':'niet','I-P3':'deels','I-P4':'niet','I-R1':'ok','I-R2':'deels','I-R3':'niet','I-R4':'niet','I-R5':'niet',
+  'I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
+
+/* B.Enable · module Vastleggen → Verbeterroadmap (generiek, voor alle frameworks)
+   Verwacht window.RM_CFG = {
+     naam:'inwarmte', key:()=>'opslagsleutel', items:()=>[{id,tab,laag,groep,norm,actie,eig,fase}],
+     fases:[['Snelle verbeteringen','0–3 maanden'],...], lagen:['Financiële basis',...], demo:()=>({id:'ok'|'deels'|'niet'}) }
+   Zet per tabblad (section#v-<tab>) een kaart "Vastleggen" en bouwt in #rmRoad de roadmap. */
+(function(){
+const C=window.RM_CFG;if(!C)return;
+const $=s=>document.querySelector(s);
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LAB={ok:'Op orde',deels:'Deels',niet:'Niet op orde'};
+const PRIO=['Hoog','Midden','Laag'],STAT=['Niet gestart','Loopt','Gereed'];
+function fresh(demo){const d={st:{},act:{},extra:[],demo:!!demo};if(demo&&C.demo)Object.entries(C.demo()).forEach(([id,s])=>d.st[id]={s,o:''});return d}
+let K=C.key(),D=LS.get(K,null)||fresh(true);
+const save=()=>LS.set(K,D);
+const items=()=>C.items().filter(it=>document.getElementById('v-'+it.tab));
+const tabNaam=t=>{const a=document.querySelector('#nav a[href="#'+t+'"]');if(!a)return t;const sp=a.querySelector('span');return a.textContent.slice(sp?sp.textContent.length:0).trim()};
+const st=id=>(D.st[id]&&D.st[id].s)||'';
+const act=(id,it)=>Object.assign({fase:it.fase||0,prio:1,stat:0,eig:it.eig||''},D.act[id]||{});
+
+function panel(tab){const sec=document.getElementById('v-'+tab);if(!sec)return;const its=items().filter(i=>i.tab===tab);if(!its.length)return;
+  let card=sec.querySelector(':scope>.rmPanel');if(!card){card=document.createElement('div');card.className='card rmPanel';sec.appendChild(card)}
+  const n=its.filter(i=>st(i.id)).length,ok=its.filter(i=>st(i.id)==='ok').length;const groepen=[...new Set(its.map(i=>i.groep))];
+  card.innerHTML=`<div class="row" style="justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px"><h2 style="margin:0">Vastleggen: hoe staat het bij jullie?</h2><span class="note">${n} van ${its.length} beoordeeld · ${ok} op orde</span></div>
+   <p class="note" style="margin:4px 0 6px">Beoordeel per punt de huidige situatie. Wat niet of deels op orde is, wordt een actie in de <a href="#roadmap">verbeterroadmap</a>.${D.demo?' <span class="badge-ex">voorbeeldinvulling</span>':''}</p>`+
+   groepen.map(g=>`<h3 class="rmG">${esc(g)}</h3>`+its.filter(i=>i.groep===g).map(it=>{const s=st(it.id),o=(D.st[it.id]||{}).o||'';
+    return `<div class="rmRow"><div><div class="rmT">${esc(it.norm)}</div><div class="note">Laag ${it.laag}${s&&s!=='ok'?' · actie: '+esc(it.actie):''}</div></div>
+     <div class="seg rmSeg" role="group" aria-label="Beoordeling">${['ok','deels','niet'].map(k=>`<button type="button" class="${s===k?'on rm-'+k:''}" data-id="${it.id}" data-s="${k}" aria-pressed="${s===k}">${LAB[k]}</button>`).join('')}</div>
+     <input class="rmO" data-id="${it.id}" value="${esc(o)}" placeholder="Toelichting" aria-label="Toelichting"></div>`}).join('')).join('');
+  card.querySelectorAll('.rmSeg button').forEach(b=>b.onclick=()=>{const id=b.dataset.id,cur=st(id);D.st[id]=Object.assign(D.st[id]||{o:''},{s:cur===b.dataset.s?'':b.dataset.s});save();all()});
+  card.querySelectorAll('.rmO').forEach(el=>el.onchange=()=>{const id=el.dataset.id;D.st[id]=Object.assign(D.st[id]||{s:''},{o:el.value});save();road()});
+}
+function acties(){const out=[];items().forEach(it=>{const s=st(it.id);if(s==='deels'||s==='niet')out.push(Object.assign({it,s,o:(D.st[it.id]||{}).o||''},act(it.id,it),{id:it.id,tekst:it.actie,laag:it.laag,tab:it.tab}))});
+  D.extra.forEach(x=>out.push(Object.assign({s:'eigen',o:'',tab:''},act(x.id,x),{id:x.id,tekst:x.tekst,laag:x.laag,eigen:1})));
+  return out.sort((a,b)=>a.laag-b.laag||a.prio-b.prio)}
+function road(){const host=$('#rmRoad');if(!host)return;const its=items(),A=acties();
+  const lagen=C.lagen.map((l,i)=>{const li=its.filter(x=>x.laag===i+1),b=li.filter(x=>st(x.id)),ok=b.filter(x=>st(x.id)==='ok').length,de=b.filter(x=>st(x.id)==='deels').length;const pct=b.length?(ok+de*0.5)/b.length:null;return{l,n:li.length,b:b.length,ok,de,pct,score:pct==null?null:1+Math.round(pct*4)}});
+  const open=its.filter(x=>!st(x.id)),gereed=A.filter(a=>a.stat===2).length;
+  host.innerHTML=`<div class="card" style="margin-top:16px"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Roadmap uit de vastleggingen</h2><p class="note" style="margin:2px 0 0">${A.length} acties · ${gereed} gereed · ${open.length} punten nog niet beoordeeld${D.demo?' · <span class="badge-ex">voorbeeldinvulling</span>':''}</p></div>
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" id="rmCsv">Exporteer roadmap (Excel)</button><button class="btn" id="rmCsv2">Exporteer vastleggingen</button><button class="btn" id="rmCopy">Kopieer roadmap</button><button class="btn" id="rmNieuw">Begin nulmeting (alles leeg)</button>${D.demo?'':'<button class="btn" id="rmDemo">Voorbeeld terugzetten</button>'}</div></div>
+    <p class="note rmMsg" id="rmMsg" role="status"></p>
+    <div class="grid g4" style="margin-top:8px">${lagen.map((x,i)=>`<div class="tile"><div class="lbl">Laag ${i+1} · ${esc(x.l)}</div><div class="val">${x.pct==null?'–':Math.round(x.pct*100)+'%'}</div><div class="sub">${x.ok} op orde · ${x.de} deels · ${x.b-x.ok-x.de} niet · ${x.n-x.b} open${x.score?` · indicatie niveau ${x.score}`:''}</div><div class="bar" style="margin-top:6px"><i style="width:${(x.pct||0)*100}%;background:${x.pct==null?'var(--line)':x.pct>=0.6?'var(--good)':x.pct>=0.35?'var(--warn)':'var(--bad)'}"></i></div></div>`).join('')}</div></div>
+   <div class="grid g3" style="margin-top:16px">${C.fases.map((f,fi)=>{const L=A.filter(a=>a.fase===fi);return `<div class="phase"><div><h2 style="margin:0">${esc(f[0])}</h2><span class="note">${esc(f[1])} · ${L.length} acties</span></div>${L.map(card).join('')||'<p class="note">Geen acties.</p>'}</div>`}).join('')}</div>
+   <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px">
+    <div class="card"><h2>Eigen actie toevoegen</h2><div class="stack" style="gap:8px"><input id="rmNT" placeholder="Omschrijving van de actie" aria-label="Omschrijving"><div class="row" style="gap:8px"><select id="rmNL" aria-label="Laag">${C.lagen.map((l,i)=>`<option value="${i+1}">Laag ${i+1} · ${esc(l)}</option>`).join('')}</select><select id="rmNF" aria-label="Fase">${C.fases.map((f,i)=>`<option value="${i}">${esc(f[0])}</option>`).join('')}</select><button class="btn pri" id="rmAdd">Toevoegen</button></div></div></div>
+    <div class="card"><h2>Nog te beoordelen (${open.length})</h2>${open.length?[...new Set(open.map(x=>x.tab))].map(t=>`<p style="margin:4px 0"><a href="#${t}">${esc(tabNaam(t))}</a> <span class="note">· ${open.filter(x=>x.tab===t).length} punten</span></p>`).join(''):'<p class="note">Alles is beoordeeld.</p>'}</div>
+   </div>`;
+  host.querySelectorAll('[data-a]').forEach(el=>el.onchange=()=>{const id=el.dataset.id;D.act[id]=Object.assign(D.act[id]||{},{[el.dataset.a]:el.dataset.a==='eig'?el.value:+el.value});save();road()});
+  host.querySelectorAll('.rmDel').forEach(b=>b.onclick=()=>{D.extra=D.extra.filter(x=>x.id!==b.dataset.id);delete D.act[b.dataset.id];save();road()});
+  $('#rmAdd').onclick=()=>{const t=$('#rmNT').value.trim();if(!t)return;const id='x'+Date.now().toString(36);D.extra.push({id,tekst:t,laag:+$('#rmNL').value,fase:+$('#rmNF').value});D.act[id]={fase:+$('#rmNF').value};save();road()};
+  $('#rmCsv').onclick=()=>download(csvRoad(),C.naam+'-verbeterroadmap.csv');
+  $('#rmCsv2').onclick=()=>download(csvVast(),C.naam+'-vastleggingen.csv');
+  $('#rmCopy').onclick=()=>{const t=rowsRoad().map(r=>r.join('\t')).join('\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>msg('Gekopieerd. Plak in Excel.'),()=>msg('Kopiëren lukt hier niet; gebruik de export.'))};
+  $('#rmNieuw').onclick=()=>{if(!host.dataset.sure){host.dataset.sure=1;msg('Klik nogmaals om alle vastleggingen en acties te wissen.');setTimeout(()=>delete host.dataset.sure,4000);return}delete host.dataset.sure;D=fresh(false);save();all();msg('Alles is leeg. Beoordeel per tabblad wat op orde is.')};
+  const dm=$('#rmDemo');if(dm)dm.onclick=()=>{D=fresh(true);save();all()};
+}
+function card(a){const lagL=C.lagen[a.laag-1]||'';return `<div class="rmAct ${a.s} ${a.stat===2?'done':''}"><div class="rmT">${esc(a.tekst)}</div>
+  <div class="row" style="gap:6px;margin-top:4px;flex-wrap:wrap"><span class="pill p-cool">Laag ${a.laag}</span>${a.eigen?'<span class="pill p-mut">eigen actie</span>':`<span class="pill ${a.s==='niet'?'p-bad':'p-warn'}">${LAB[a.s]}</span><a class="note" href="#${a.tab}">${esc(tabNaam(a.tab))}</a>`}</div>
+  ${a.o?`<p class="note" style="margin:6px 0 0">${esc(a.o)}</p>`:''}
+  <div class="rmCtl"><select data-a="fase" data-id="${a.id}" aria-label="Fase">${C.fases.map((f,i)=>`<option value="${i}"${i===a.fase?' selected':''}>${esc(f[1])}</option>`).join('')}</select>
+   <select data-a="prio" data-id="${a.id}" aria-label="Prioriteit">${PRIO.map((p,i)=>`<option value="${i}"${i===a.prio?' selected':''}>Prio ${p.toLowerCase()}</option>`).join('')}</select>
+   <select data-a="stat" data-id="${a.id}" aria-label="Status">${STAT.map((p,i)=>`<option value="${i}"${i===a.stat?' selected':''}>${p}</option>`).join('')}</select>
+   <input data-a="eig" data-id="${a.id}" value="${esc(a.eig)}" placeholder="Eigenaar" aria-label="Eigenaar"></div>
+  ${a.eigen?`<button class="btn rmDel" data-id="${a.id}" style="margin-top:6px">Verwijderen</button>`:''}</div>`}
+function rowsRoad(){return [['Fase','Periode','Laag','Actie','Bevinding','Toelichting','Eigenaar','Prioriteit','Status','Tabblad']].concat(acties().sort((a,b)=>a.fase-b.fase||a.laag-b.laag||a.prio-b.prio).map(a=>[C.fases[a.fase][0],C.fases[a.fase][1],a.laag+' · '+(C.lagen[a.laag-1]||''),a.tekst,a.eigen?'eigen actie':LAB[a.s],a.o,a.eig,PRIO[a.prio],STAT[a.stat],a.tab?tabNaam(a.tab):'']))}
+function rowsVast(){return [['Tabblad','Laag','Onderwerp','Doelsituatie','Beoordeling','Toelichting','Actie bij afwijking']].concat(items().map(it=>[tabNaam(it.tab),it.laag,it.groep,it.norm,LAB[st(it.id)]||'Nog niet beoordeeld',(D.st[it.id]||{}).o||'',it.actie]))}
+const toCsv=rows=>'﻿'+rows.map(r=>r.map(v=>{v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')).join('\r\n');
+const csvRoad=()=>toCsv(rowsRoad()),csvVast=()=>toCsv(rowsVast());
+function download(txt,name){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);msg('Bestand '+name+' gedownload.')}catch(e){msg('Downloaden lukt hier niet; gebruik Kopieer roadmap.')}}
+function msg(t){const m=$('#rmMsg');if(m)m.textContent=t}
+function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road()}
+window.RM={refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}all()}};
+all();
+})();
+
+/* RM:END */
 
 /* LOCK:START presentatie-slot: geen beveiliging, alleen voor de presentatie */
 (function(){
