@@ -1,0 +1,10 @@
+{
+  "name": "benable-framework-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "link": "node scripts/maak-link.mjs",
+    "pincode": "node scripts/zet-pincode.mjs",
+    "dev": "npx wrangler pages dev public"
+  }
+}

@@ -1,0 +1,90 @@
+# B.Enable · Control Framework — online omgeving
+
+Statische site voor de framework-pagina's per organisatie, met:
+
+- **Persoonlijke links met vervaldatum.** Zonder geldige link krijgt een bezoeker een nette weigerpagina.
+- **Presentatie-slot.** Gekozen tabbladen zijn geblurd en gaan open met een pincode die je in de sessie geeft.
+- **Niet vindbaar.** Zoekmachines worden overal geweerd (`noindex`, `robots.txt`).
+
+Hosting via **Cloudflare Pages**, gekoppeld aan deze GitHub-repo. Elke push zet een nieuwe versie online.
+
+```
+public/                 de site zelf
+  index.html            startpagina (openbaar, zonder inhoud)
+  inwarmte/index.html   framework InWarmte (alleen met link)
+functions/
+  _middleware.js        controleert de links; hier staan ook de beschermde paden
+  ingetrokken.js        id's van links die niet meer mogen werken
+scripts/
+  maak-link.mjs         maakt een persoonlijke link
+  zet-pincode.mjs       zet de pincode van het presentatie-slot
+tools/
+  lock.py               maakt van een framework-pagina een sitepagina met slot
+```
+
+## Eenmalig inrichten
+
+1. **GitHub.** Maak een *private* repo (bijv. `benable-framework`) en zet deze bestanden erin.
+2. **Cloudflare Pages.** Maak een gratis account op cloudflare.com. Ga naar *Workers & Pages → Create → Pages → Connect to Git* en kies de repo. Vul in:
+   - Build command: leeg laten
+   - Build output directory: `public`
+3. **Geheime sleutel.** Maak een lange willekeurige sleutel:
+   ```
+   node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+   ```
+   Zet die in Cloudflare onder *Settings → Variables and Secrets* als **secret** met de naam `LINK_SECRET` (Production). Deploy daarna opnieuw.
+4. **Domein.** Kies in Cloudflare Pages *Custom domains → framework.benable.nl*. Cloudflare geeft een CNAME-record (naar `<project>.pages.dev`). Zet dat record bij de partij waar het DNS van benable.nl wordt beheerd.
+5. **Lokaal.** Maak in de map van de repo een bestand `.env` met dezelfde sleutel:
+   ```
+   LINK_SECRET=<dezelfde sleutel>
+   ```
+   Dit bestand staat in `.gitignore` en komt nooit in GitHub.
+
+## Een link maken voor iemand
+
+```
+node scripts/maak-link.mjs --naam "Jan Jansen" --dagen 14
+```
+
+Je krijgt een link die 14 dagen geldig is, plus een **id**. De link is gekoppeld aan één pagina; standaard is dat `/inwarmte/`, met `--pad /algemeen/` kies je een andere.
+
+Bij de eerste klik zet de server een cookie en haalt de link uit de adresbalk. In het menu ziet de bezoeker voor wie de toegang is en tot wanneer.
+
+Elke link wordt lokaal bijgehouden in `links-log.csv` (niet in git): datum, naam, pagina, vervaldatum en id.
+
+## Een link intrekken
+
+Zet het id in `functions/ingetrokken.js`, commit en push. Na de deploy (ongeveer een minuut) werkt die link niet meer.
+
+## De pincode
+
+Wijzigen:
+
+```
+node scripts/zet-pincode.mjs 482913 public/inwarmte/index.html
+```
+
+Commit en push daarna. In de sessie geef je de pincode mondeling of in de chat. Een geopend tabblad blijft open tot de bezoeker het browsertabblad sluit.
+
+## Een nieuwe versie van het framework plaatsen
+
+Exporteer de bijgewerkte pagina als HTML. Maak er dan een sitepagina met slot van:
+
+```
+python3 tools/lock.py inwarmte.html public/inwarmte/index.html sturing,organisatie,cyclus,datamodel,roadmap
+node scripts/zet-pincode.mjs <pincode> public/inwarmte/index.html
+```
+
+Het laatste argument van `lock.py` bepaalt welke tabbladen geblurd zijn. Na `lock.py` moet je de pincode altijd opnieuw zetten.
+
+## Later: het algemene model of een andere klant
+
+1. Zet de pagina in een nieuwe map, bijv. `public/algemeen/index.html` (met `tools/lock.py`).
+2. Voeg het pad toe aan `BESCHERMD` in `functions/_middleware.js`, bijv. `['/inwarmte/', '/algemeen/']`.
+3. Maak links met `--pad /algemeen/`.
+
+## Wat dit wel en niet beschermt
+
+- **De link is echte toegangscontrole.** De server controleert handtekening, pagina en vervaldatum. Zonder geldige link komt niemand bij de pagina.
+- **Het pincode-slot is een presentatiemiddel.** Het slot werkt in de browser van iemand die al toegang heeft. Een technisch handige bezoeker kan de geblurde inhoud via de broncode zien. Dat is acceptabel zolang de data fictief is. Bij echte klantcijfers kunnen de afgeschermde onderdelen pas na de pincode van de server worden geladen.
+- **Een link is overdraagbaar.** Wie een link doorstuurt, geeft toegang tot de vervaldatum. Houd de looptijd daarom kort, en trek een link in als dat nodig is.
