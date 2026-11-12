@@ -12,6 +12,7 @@ Hosting via **Cloudflare Pages**, gekoppeld aan deze GitHub-repo. Elke push zet 
 public/                 de site zelf
   index.html            startpagina (openbaar, zonder inhoud)
   inwarmte/index.html   framework InWarmte (alleen met link)
+  projectorganisaties/index.html   framework Projectorganisaties (alleen met link)
 functions/
   _middleware.js        controleert de links; hier staan ook de beschermde paden
   ingetrokken.js        id's van links die niet meer mogen werken

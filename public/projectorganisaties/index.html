@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B.Enable · Control Framework · Projectorganisaties</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START · gegenereerd uit B.Enable huisstijl v0.2 · niet met de hand wijzigen */
+:root{
+  --bg:#F3F5F8; --panel:#FFFFFF; --ink:#14263A; --muted:#566577; --line:#D5DBE2; --accent:#C2410C; --accent-soft:#FBE5D8; --cool:#1E3A5F; --cool-soft:#DDE7F2; --primary:#1E3A5F; --good:#1C7C4A; --good-soft:#DCF1E4; --warn:#8F5E00; --warn-soft:#FBEFD2; --bad:#B42318; --bad-soft:#FBE0DD;
+  --display:"Archivo", 'Helvetica Neue', Arial, sans-serif; --body:"IBM Plex Sans", 'Segoe UI', Arial, sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --radius:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1620; --panel:#16212D; --ink:#E6ECF2; --muted:#98A6B5; --line:#2A3743; --accent:#F0773A; --accent-soft:#3A2216; --cool:#7FA8D6; --cool-soft:#16303F; --primary:#7FA8D6; --good:#4CC283; --good-soft:#143323; --warn:#E3A93A; --warn-soft:#3A2C10; --bad:#F07068; --bad-soft:#3D1A18;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1620; --panel:#16212D; --ink:#E6ECF2; --muted:#98A6B5; --line:#2A3743; --accent:#F0773A; --accent-soft:#3A2216; --cool:#7FA8D6; --cool-soft:#16303F; --primary:#7FA8D6; --good:#4CC283; --good-soft:#143323; --warn:#E3A93A; --warn-soft:#3A2C10; --bad:#F07068; --bad-soft:#3D1A18;
+  color-scheme:dark;
+}
+/* BRAND:END */
+*{box-sizing:border-box}
+a{color:var(--cool)}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+nav.side{background:var(--panel);border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{color:var(--primary);font-family:var(--display);font-weight:800;font-size:17px;line-height:1.2;padding:0 10px 4px}
+.brand small{display:block;font:500 12px var(--body);color:var(--muted);margin-top:4px}
+.navlist{display:flex;flex-direction:column;gap:2px;margin-top:18px}
+.navlist a{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-weight:500}
+.navlist a span{font:500 11px var(--mono);color:var(--muted);width:18px}
+.navlist a:hover{background:var(--bg)}
+.navlist a.on{background:var(--accent-soft);color:var(--accent)}
+.navlist a.on span{color:var(--accent)}
+.sidenote{margin:22px 10px 0;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+main{padding:28px 32px 60px;min-width:0}
+.view{display:none;max-width:1180px}
+.view.on{display:block}
+.scrolly{max-height:540px;overflow:auto}
+#oTable,#oEnt{font-size:12.5px}
+#oTable th,#oTable td,#oEnt th,#oEnt td{padding:7px 7px}
+.scrolly thead th{position:sticky;top:0;background:var(--panel);z-index:1}
+.sortbtn{all:unset;cursor:pointer;font:inherit;color:inherit}
+.sortbtn:focus-visible{outline:2px solid var(--accent)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+.projsel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.projsel button{font:500 12.5px var(--body);text-align:left;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer}
+.projsel button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--bg)} tr.sel td{background:var(--accent-soft)}
+h1{color:var(--primary);font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;margin:0 0 6px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 12px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:15px;margin:0 0 6px}
+.lede{color:var(--muted);max-width:68ch;margin:0 0 22px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.tile .lbl{font-size:12px;color:var(--muted);font-weight:500}
+.tile .val{font:600 24px var(--display);font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .sub{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+.pill{display:inline-block;font:500 11px var(--body);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-cool{background:var(--cool-soft);color:var(--cool)}
+.p-acc{background:var(--accent-soft);color:var(--accent)} .p-mut{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.layers{display:flex;flex-direction:column;gap:8px}
+.layer{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;text-align:left;width:100%;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--cool);border-radius:8px;padding:14px 16px;cursor:pointer;color:var(--ink);font:inherit}
+.layer:hover{border-color:var(--cool)}
+.layer.on{border-left-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.layer .no{font:700 22px var(--display);color:var(--muted)}
+.layer.on .no{color:var(--accent)}
+.layer b{font-family:var(--display);font-size:15px}
+.layer p{margin:2px 0 0;color:var(--muted);font-size:13px}
+ul.clean{margin:0;padding-left:18px} ul.clean li{margin:3px 0}
+.form{display:grid;gap:12px;align-content:start}
+.field{display:grid;gap:4px}
+.field label{font-size:12.5px;font-weight:500;display:flex;justify-content:space-between;gap:8px}
+.field label output{font:500 12.5px var(--mono);color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=number],input[type=text],input[type=search],select{font:14px var(--body);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font:500 13px var(--body);padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{filter:brightness(1.08);color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{font:500 12.5px var(--body);padding:6px 11px;border:0;background:var(--panel);color:var(--muted);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--panel)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13px;white-space:nowrap}
+tr.sum td{font-weight:600;border-top:2px solid var(--ink)}
+tr.sum td:first-child{font-family:var(--display)}
+tr.ind td:first-child{padding-left:26px;color:var(--muted)}
+.formula{font:13px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;line-height:1.7}
+.formula b{color:var(--accent);font-weight:500}
+.note{font-size:12.5px;color:var(--muted)}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:11px var(--body)}
+.chart .vl{fill:var(--ink);font:500 11px var(--mono)}
+.org{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.mgr{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--cool);border-radius:8px;padding:14px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.mgr.on{border-top-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.mgr b{font-family:var(--display);display:block}
+.mgr small{color:var(--muted)}
+.dir{background:var(--ink);color:var(--panel);border-radius:8px;padding:12px 16px;text-align:center;font-family:var(--display);font-weight:600;max-width:340px;margin:0 auto 14px}
+.dir small{display:block;font:400 12px var(--body);opacity:.75}
+.timeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tl{border-top:4px solid var(--cool);background:var(--panel);border:1px solid var(--line);border-top-width:4px;border-radius:8px;padding:12px}
+.tl .f{font:600 12px var(--mono);color:var(--cool)}
+.rep{display:flex;flex-direction:column;gap:8px}
+.rep dl{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;margin:0;font-size:13px}
+.rep dt{color:var(--muted)} .rep dd{margin:0}
+.phase{display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.item.done{opacity:.6}
+.item.done .t{text-decoration:line-through}
+.item .t{font-weight:600;font-size:14px}
+.item .m{font-size:12.5px;color:var(--muted);margin-top:2px}
+.item select{width:auto;font-size:12px;padding:4px 6px}
+.bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--good)}
+.hint{display:inline-block;border-bottom:1px dotted var(--muted);cursor:help}
+.badge-ex{font:500 11px var(--body);color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:4px}
+@media (max-width:1000px){#oTiles{grid-template-columns:repeat(3,minmax(0,1fr))!important}#margeGrid,#plGrid,#opwGrid{grid-template-columns:1fr!important}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3,.org,.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  nav.side{position:static;height:auto;padding:14px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .navlist{flex-direction:row;overflow-x:auto;margin-top:10px}
+  .navlist a{white-space:nowrap}
+  .sidenote{display:none}
+  main{padding:20px 16px 48px}
+  .g2,.g3,.g4,.org,.timeline{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.demo-flag{display:block;width:max-content;margin-top:8px;font:600 11px var(--body);color:var(--warn);background:var(--warn-soft);border:1px solid var(--warn);padding:3px 8px;border-radius:4px}
+.demo-banner{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;background:var(--warn-soft);border:1px solid var(--warn);border-left-width:5px;border-radius:6px;padding:10px 14px;margin-bottom:14px;color:var(--ink);font-size:13.5px}
+.demo-banner b{color:var(--warn);font-family:var(--display);font-size:15px;white-space:nowrap}
+.navgrp{font:600 10.5px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 10px 3px}
+.principles{grid-template-columns:repeat(5,minmax(0,1fr))}
+.pno{font:700 22px var(--display);color:var(--accent)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:14px;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--accent)}
+textarea{font:14px var(--body);padding:8px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;resize:vertical}
+.kpigrid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.kpitile{display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.kpitile:hover{border-color:var(--accent)}
+.kpitile.good{border-left-color:var(--good)}.kpitile.warn{border-left-color:var(--warn)}.kpitile.bad{border-left-color:var(--bad)}
+.kpitile .kc{font:500 11px var(--mono);color:var(--muted)}
+.kpitile .kn{font-size:12.5px;font-weight:600;line-height:1.3}
+.kpitile .kv{font:600 19px var(--display);font-variant-numeric:tabular-nums;margin-top:4px}
+.kpitile .kb{font-size:11.5px;color:var(--muted)}
+#kdCard summary{cursor:pointer;list-style-position:outside}
+#kdCard[open] summary{margin-bottom:8px}
+table.kv th{text-transform:none;letter-spacing:0;font-size:12.5px;width:36%;vertical-align:top}
+table.kv td{font-size:13px}
+tr.done td{opacity:.55}
+.cal td,.cal th{padding:6px 4px}
+.cal td:first-child{white-space:nowrap;padding-right:10px}
+.calc{display:inline-block;min-width:16px;color:var(--cool);font-weight:700}
+.calc.big{font:600 10.5px var(--mono);background:var(--cool-soft);color:var(--cool);padding:2px 4px;border-radius:4px}
+.raciBtn{font:600 12px var(--mono);width:30px;height:26px;border-radius:5px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer}
+.raciBtn.r-R{background:var(--cool-soft);color:var(--cool);border-color:var(--cool)}
+.raciBtn.r-A{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.raciBtn.r-C{background:var(--good-soft);color:var(--good)}
+.raciBtn.r-I{background:var(--warn-soft);color:var(--warn)}
+.gloss{display:grid;grid-template-columns:220px 1fr;gap:8px 18px;margin:0}
+.gloss dt{font-weight:600}.gloss dd{margin:0}
+.phase{display:flex;flex-direction:column;gap:8px}
+@media (max-width:1000px){.principles,.kpigrid{grid-template-columns:repeat(2,minmax(0,1fr))}#kpiGrid,#scanGrid{grid-template-columns:1fr!important}#cycForm{grid-template-columns:1fr 1fr!important}}
+@media (max-width:760px){.navgrp{display:none}.gloss{grid-template-columns:1fr}.principles,.kpigrid{grid-template-columns:1fr}}
+.brbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:-8px 0 18px;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+.brbar .seg button{font-size:13px;padding:7px 12px}
+.selv{background:var(--accent-soft);color:var(--accent);font-weight:600}
+#wfGrid{align-items:start}
+@media (max-width:1000px){#wfGrid{grid-template-columns:1fr!important}}
+/* RM:START vastleggen en roadmap */
+.rmPanel{margin-top:16px}
+.rmG{margin:14px 0 2px;font-size:14px}
+.rmRow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(160px,220px);gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.rmT{font-weight:500}
+.rmSeg button{white-space:nowrap}
+.rmSeg button.on.rm-ok{background:var(--good);border-color:var(--good);color:#fff}
+.rmSeg button.on.rm-deels{background:var(--warn);border-color:var(--warn);color:#fff}
+.rmSeg button.on.rm-niet{background:var(--bad);border-color:var(--bad);color:#fff}
+.rmO{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.rmAct{border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:10px 12px;background:var(--panel)}
+.rmAct.deels{border-left-color:var(--warn)}.rmAct.eigen{border-left-color:var(--cool)}
+.rmAct.done{opacity:.55}.rmAct.done .rmT{text-decoration:line-through}
+.rmCtl{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.rmCtl select,.rmCtl input,#rmNT,#rmNL,#rmNF{font:inherit;font-size:12.5px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0}
+#rmNT{width:100%;font-size:14px;padding:8px}
+.rmMsg{min-height:1em;margin:4px 0 0}
+@media (max-width:900px){.rmRow{grid-template-columns:1fr}}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit;font-size:12.5px}
+/* RM:END */
+
+/* LOCK:START presentatie-slot */
+section.view.locked{position:relative}
+section.view.locked>*:not(.lockbox){filter:blur(7px);pointer-events:none;user-select:none}
+.lockbox{display:none}
+section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;max-width:420px;margin:0 auto 24px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+.lockbox h2{margin:0 0 6px}.lockbox p{margin:0 0 12px;color:var(--muted)}
+.lockbox form{display:flex;gap:8px}.lockbox input{flex:1;font:inherit;font-size:20px;letter-spacing:.3em;text-align:center;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.lockbox .msg{min-height:1.2em;margin-top:8px;font-size:13px;color:var(--bad)}
+#nav a.lk::after{content:"🔒";font-size:11px;margin-left:6px;opacity:.7}
+.who{margin-top:10px;font-size:12px;color:var(--muted)}
+/* LOCK:END */
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="side" aria-label="Onderdelen">
+  <div class="brand">B.Enable · Control Framework<small style="display:block;font:500 12px var(--body);color:var(--muted);margin-top:4px">Projectorganisaties</small><span class="demo-flag">Demo – fictieve data</span></div>
+  <div class="navlist" id="nav">
+    <div class="navgrp">Framework</div>
+    <a href="#overzicht"><span>01</span>Overzicht en branche</a>
+    <div class="navgrp">Laag 1 · Klopt het?</div>
+    <a href="#basis"><span>02</span>Financiële basis</a>
+    <div class="navgrp">Laag 2 · Waarom?</div>
+    <a href="#uren"><span>03</span>Uren en capaciteit</a>
+    <a href="#projecten"><span>04</span>Projectportfolio</a>
+    <a href="#licenties" id="navLic"><span>05</span>Abonnementen en licenties</a>
+    <a href="#pl"><span>06</span>Margestaffel en afwijkingen</a>
+    <a href="#segmenten"><span>07</span>Gesegmenteerde P&amp;L</a>
+    <div class="navgrp">Laag 3 · Presteren we?</div>
+    <a href="#kpis"><span>08</span>KPI's</a>
+    <div class="navgrp">Laag 4 · Wat gaan we doen?</div>
+    <a href="#sturing"><span>09</span>Sturing en acties</a>
+    <div class="navgrp">Inrichting</div>
+    <a href="#organisatie"><span>10</span>Organisatie</a>
+    <a href="#cyclus"><span>11</span>Stuurcyclus en rapportages</a>
+    <a href="#datamodel"><span>12</span>Datamodel</a>
+    <a href="#roadmap"><span>13</span>Verbeterroadmap</a>
+    <a href="#begrippen"><span>A</span>Begrippen</a>
+  </div>
+  <div class="sidenote" id="sideNote"></div>
+</nav>
+
+<main>
+<div class="brbar" role="group" aria-label="Kies branche"><span class="note">Branche:</span><div class="seg" id="brSeg"></div><span class="note" id="brDesc"></span></div>
+
+<!-- 01 OVERZICHT -->
+<section class="view" id="v-overzicht">
+  <h1>Control Framework voor projectorganisaties</h1>
+  <p class="lede" id="ovLede"></p>
+  <div class="grid g4" id="ovTiles"></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="layers" id="layers"></div>
+    <div class="card" id="layerDetail"></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <h2>Resultaat waar het beïnvloed wordt</h2>
+      <div class="grid g2">
+        <div><h3>DCM en TCM</h3><p class="note" style="margin:0">DCM = productie − directe projectkosten (eigenaar: projectleider). TCM = DCM − indirecte kosten van de uitvoering (eigenaar: regio). Daaronder de overhead naar EBITDA.</p></div>
+        <div><h3>Voorcalculatie tegenover prognose</h3><p class="note" style="margin:0">Het verschil tussen de DCM bij voorcalculatie en de prognose bij gereedkomen is het uitvoeringsresultaat. De projectleider verklaart het; finance toetst.</p></div>
+      </div>
+      <h3 style="margin-top:14px">Vijf principes</h3>
+      <ol class="clean" id="principles"></ol>
+    </div>
+    <div class="stack">
+      <div class="card"><h2>Belangrijkste uitdagingen</h2><p class="note" style="margin-top:-6px">Vink aan wat speelt; wordt in deze browser bewaard.</p><div id="challenges" class="stack" style="gap:6px"></div></div>
+      <div class="card form" id="strat"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 BASIS -->
+<section class="view" id="v-basis">
+  <h1>Laag 1 · Financiële basis</h1>
+  <p class="lede">Kloppen de cijfers? Bij een projectorganisatie hangt dat af van drie dingen: alle uren tijdig op het juiste project, onderhanden werk dat aansluit op de voortgang, en meerwerk dat is vastgelegd voordat het wordt uitgevoerd.</p>
+  <div class="grid g4" id="bTiles"></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2 style="margin:0">Afsluitkalender</h2><label class="note" for="wdTarget">Doel: gesloten op werkdag <input type="number" id="wdTarget" min="1" max="15" style="width:60px;display:inline-block"></label></div>
+      <div class="tablewrap" style="margin-top:8px"><table id="closeTable"></table></div>
+    </div>
+    <div class="stack">
+      <div class="card"><h2>Urenbalans (jaar)</h2><p class="note" style="margin-top:-6px">Beschikbare uren van het uitvoerend personeel moeten volledig verklaard zijn.</p><div class="tablewrap"><table id="urenBal"></table></div></div>
+      <div class="card"><h2>Herstel en terugkomen</h2><p class="note" style="margin-top:-6px">Welk deel van de uren die niet in één keer goed zijn, mag aan de klant worden doorbelast? Het niet-doorbelastbare deel komt als aparte regel boven de DCM.</p><div id="doorbBox"></div><ul class="clean"><li>Herstel- en terugkom-uren altijd op het project of een gekoppelde herstelorder, nooit op een algemene kostenplaats.</li><li>Herstel-uren tellen niet mee als voortgang.</li><li>Verwacht herstel zit als risicopost in de nog te maken kosten.</li></ul></div>
+      <div class="card"><h2>Uitgangspunten resultaatneming</h2><p class="note" style="margin-top:-6px">Vastgesteld door directie en finance; getoetst door business control.</p><div id="pocBox"></div></div>
+      <div class="card"><h2>Onderhanden werk</h2><div class="tablewrap"><table id="ohwRec"></table></div></div>
+      <div class="card" id="licBalCard"><h2>Licentiebalans</h2><div class="tablewrap"><table id="licBal"></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 UREN -->
+<section class="view" id="v-uren">
+  <h1>Laag 2 · Uren en capaciteit</h1>
+  <p class="lede">De urenmachine bepaalt een groot deel van het resultaat: hoeveel van de contracturen uiteindelijk werktijd op een opdracht worden, tegen welk tarief en tegen welke kostprijs. De waterval laat per trede zien waar uren en loonkosten heen gaan. Pas de drivers per functiegroep aan; begroting staat ernaast. <span class="badge-ex">fictieve waarden</span></p>
+  <div class="grid g4" id="uTiles"></div>
+  <div class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Urenwaterval · gewaardeerd tegen kostprijs</h2><select id="wfSel" aria-label="Functiegroep" style="width:auto"></select></div>
+    <div class="grid g4" id="wfTiles" style="margin-bottom:12px"></div>
+    <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;gap:16px" id="wfGrid">
+      <div><div class="chart" id="wfChart"></div><div class="tablewrap"><table id="wfTable"></table></div></div>
+      <div class="stack">
+        <div class="form" id="wfForm"></div>
+        <div><h3>Vastgelegde keuzes voor de noemer</h3>
+          <label class="chk"><input type="checkbox" id="wfOpl"> Opleiding telt mee in de netto beschikbare tijd</label>
+          <label class="chk"><input type="checkbox" id="wfReis"> Reistijd telt als benut</label>
+          <div class="tablewrap" style="margin-top:8px"><table id="wfVar"></table></div>
+          <p class="note">Dezelfde monteur, dezelfde uren: alleen de keuze verschilt. Leg de keuze één keer vast op de KPI-kaart en rapporteer de waterval erbij.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Functiegroepen · werkelijk/BE</h2>
+    <div class="tablewrap"><table id="grpTable"></table></div>
+    <p class="note">Beschikbaar = FTE × <span id="urenTxt"></span> uur (na verlof en feestdagen). Declarabel = beschikbaar × (1 − verzuim) × bezettingsgraad. Kostprijs per beschikbaar uur, inclusief sociale lasten.</p>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h2>Waar gaan de uren naartoe?</h2><div class="chart" id="hrsChart"></div></div>
+    <div class="card form" id="uGlobal"></div>
+  </div>
+</section>
+
+<!-- 04 PROJECTEN -->
+<section class="view" id="v-projecten">
+  <h1>Laag 2 · Projectportfolio en margeverloop</h1>
+  <p class="lede">Per project: de DCM bij voorcalculatie, de prognose bij gereedkomen en het verschil daartussen (margeverloop). Onderhanden werk laat zien hoeveel verdiend werk nog niet is gefactureerd. Selecteer een project om de prognose bij te stellen, zoals in een projectreview. <span class="badge-ex">fictieve projecten</span></p>
+  <div class="grid" id="pTiles" style="grid-template-columns:repeat(6,minmax(0,1fr))"></div>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 320px;margin-top:16px" id="pGrid">
+    <div class="stack">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Lopende projecten</h2>
+          <div class="row"><select id="fType" aria-label="Filter projecttype" style="width:auto"></select><select id="fReg" aria-label="Filter regio" style="width:auto"></select><select id="fPL" aria-label="Filter projectleider" style="width:auto"></select><input type="search" id="fPQ" placeholder="Zoek project" aria-label="Zoek project" style="width:160px"></div></div>
+        <div class="tablewrap scrolly"><table id="pTable"></table></div>
+        <p class="note">Margeverloop = prognose DCM bij gereedkomen − DCM bij voorcalculatie. Budget op / gereed: werkelijke kosten als % van het budget naast het gereed-percentage; loopt het budget meer dan 5 punten voor, dan is de prognose waarschijnlijk te optimistisch. Klik op een kolomkop om te sorteren.</p>
+      </div>
+      <div class="card"><h2>Voortgang tegenover margeverloop</h2><div class="chart" id="pScatter"></div><p class="note">Bolgrootte = opdrachtwaarde. Projecten links onder vragen de meeste aandacht: vroeg in de uitvoering en al marge kwijt.</p></div>
+      <div class="card"><h2 id="dcmTitle">DCM-brug</h2><div class="chart" id="dcmBridge"></div><p class="note">Van DCM bij voorcalculatie naar de prognose bij gereedkomen, voor het geselecteerde project. Zo verklaart de projectleider de afwijking in de projectreview.</p></div>
+      <div class="card">
+        <h2>Waarom de DCM schommelt: één voorbeeldproject</h2>
+        <div class="chart" id="simChart"></div>
+        <div class="field" style="max-width:360px"><label for="simU"><span>Prognose bijgesteld in</span><output id="simUo"></output></label><input type="range" id="simU" min="4" max="10" step="1"></div>
+        <p class="note" id="simTxt"></p>
+        <p class="note">De schommeling komt niet door het herstelwerk zelf, maar door wanneer het zichtbaar wordt. Bij voortgang op basis van kosten telt herstelwerk als voortgang en wordt omzet te vroeg genomen; de correctie valt later in één maand.</p>
+      </div>
+      <div class="card">
+        <h2>Mooi model, maar zover zijn we nog niet</h2>
+        <p class="note" style="margin-top:-6px">Een groeipad voor dit onderwerp. Niveau 1 kan morgen, in Excel.</p>
+        <div class="grid g3">
+          <div><h3>Niveau 1 · Afspraken</h3><ul class="clean"><li>Herstel- en terugkom-uren op het project schrijven, met een eigen code</li><li>Per projecttype vastleggen of herstel doorbelastbaar is</li><li>Maandelijks een prognose per project met nog te maken kosten, inclusief een risicopost voor herstel</li></ul></div>
+          <div><h3>Niveau 2 · Verklaren</h3><ul class="clean"><li>Voortgang fysiek bepalen, of herstel-uren uit de voortgang op kosten filteren</li><li>DCM-brug per project in de projectreview, met herstel apart van efficiency</li><li>Prognosestabiliteit meten (PRO-09)</li></ul></div>
+          <div><h3>Niveau 3 · Automatiseren</h3><ul class="clean"><li>Herstelcodes en projecttypes automatisch uit urenregistratie en projectadministratie</li><li>Signaal bij projecten waar budgetuitputting voorloopt op gereed</li><li>Prognose-historie per project bewaard, zodat schommelingen zichtbaar zijn</li></ul></div>
+        </div>
+      </div>
+      <div class="card"><h2>Projectreview per projectleider</h2><div class="tablewrap"><table id="plTableR"></table></div></div>
+    </div>
+    <div class="stack"><div class="card form" id="pCard"></div></div>
+  </div>
+</section>
+
+<!-- 05 LICENTIES -->
+<section class="view" id="v-licenties">
+  <h1>Laag 2 · Abonnementen en licenties</h1>
+  <p class="lede">Bij IT-dienstverlening komt naast de uren een tweede motor: terugkerende omzet uit beheer en abonnementen, en de doorverkoop van licenties. De licentiebalans laat zien wat is ingekocht, wat is toegewezen en wat is gefactureerd. <span class="badge-ex">fictieve waarden</span></p>
+  <div class="grid g4" id="lTiles"></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h2>Brug terugkerende omzet (MRR, per maand)</h2><div class="chart" id="mrrBridge"></div><div class="form" id="mrrForm" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px"></div></div>
+    <div class="card"><h2>Licentiebalans per product</h2><div class="chart" id="licChart"></div><p class="note">Groen = gefactureerd; oranje = toegewezen maar niet gefactureerd; rood = ingekocht maar niet in gebruik.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Licenties · werkelijk</h2>
+    <div class="tablewrap"><table id="licTable"></table></div>
+    <p class="note">Prijzen per eenheid per maand. Doorbelastingslek = (ingekocht − gefactureerd) × inkoopprijs × 12.</p>
+  </div>
+</section>
+
+<!-- 06 P&L -->
+<section class="view" id="v-pl">
+  <h1>Laag 2 · Margestaffel en afwijkingsanalyse</h1>
+  <p class="lede">Van productie via DCM (directe bijdragemarge, eigenaar projectleiding) en TCM (totale bijdragemarge, eigenaar regio) naar EBITDA, werkelijk/Best Estimate tegenover begroting en vorig jaar. De staffel loopt van productie via brutomarge (na materiaal en uitbesteed werk) en DCM (na directe personeelskosten) naar TCM en EBITDA. De brug verklaart het verschil met de begroting in bezetting, tarief, personeelskosten, inleen, materiaal en de bijstelling van projectprognoses. <span class="badge-ex">fictieve waarden</span></p>
+  <div class="grid g4" id="plTiles"></div>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 320px;margin-top:16px" id="plGrid">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Management P&amp;L (× € 1.000)</h2><div class="row"><button class="btn" id="setBudget">Leg vast als begroting</button><button class="btn" id="resetAll">Herstel voorbeeldwaarden</button></div></div>
+      <div class="tablewrap"><table id="pltable"></table></div>
+    </div>
+    <div class="card form" id="costForm"></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>DCM en TCM per regio</h2>
+    <div class="tablewrap"><table id="regTable"></table></div>
+    <p class="note">Demo-verdeling: productie en indirecte kosten van de uitvoering naar rato van de verdiende omzet per regio; het margeverloop per regio komt rechtstreeks uit de projecten.</p>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Brug EBITDA: begroting → werkelijk/BE</h2>
+    <div class="chart" id="ebBridge"></div>
+    <div class="tablewrap"><table id="varTable"></table></div>
+    <p class="note">Bezettingseffect = (werkelijke − begrote declarabele uren) × begroot tarief. Tariefeffect = (werkelijk − begroot tarief) × werkelijke declarabele uren. Personeelskosten = verschil in loonkosten van uitvoerend personeel (FTE en kostprijs per uur). De effecten tellen exact op tot het verschil in EBITDA.</p>
+  </div>
+</section>
+
+<!-- SEGMENTEN -->
+<section class="view" id="v-segmenten">
+  <h1>Laag 2 · Gesegmenteerde P&amp;L</h1>
+  <p class="lede">Dezelfde margestaffel per segment: activiteit × markt. Tot en met TCM worden kosten toegewezen waar ze ontstaan; de overhead wordt verdeeld met een sleutel die je zelf kiest. Stuur per segment bij voorkeur op TCM; de EBITDA per segment hangt af van de sleutel. <span class="badge-ex">fictieve verdeling</span></p>
+  <div class="grid g4" id="segTiles"></div>
+  <div class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Margestaffel per segment</h2>
+      <div class="row"><div class="seg" id="segSeg"></div><label class="note" for="ohKey">Overhead verdelen op</label><select id="ohKey" style="width:auto"></select></div></div>
+    <div class="tablewrap"><table id="segTable"></table></div>
+    <p class="note">Toewijzing in de demo: opbrengsten en directe kosten naar het aandeel van elk segment in uren en materiaal; margeverloop alleen naar projectactiviteiten; indirecte kosten van de uitvoering op FTE direct; overhead (staf, huisvesting, IT, overig) op de gekozen sleutel. Het totaal sluit altijd op de EBITDA van het model.</p>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Effect van de verdeelsleutel</h2>
+    <p class="note" style="margin-top:-6px">Segmenten met veel personeel en weinig omzet per FTE (zoals service) dragen bij een FTE-sleutel meer overhead dan bij een omzetsleutel; materiaalintensieve segmenten juist minder. Leg de sleutel vast vóór de discussie over resultaten.</p>
+    <div class="tablewrap"><table id="keyTable"></table></div>
+  </div>
+</section>
+
+<!-- 07 KPI -->
+<section class="view" id="v-kpis">
+  <h1>Laag 3 · KPI's en prestaties</h1>
+  <p class="lede">Kies een kernset van 10 tot 15 stuur-KPI's. De bibliotheek bevat de generieke KPI's uit de kern en de branche-KPI's voor projectorganisaties<span id="kpiItTxt"></span>.</p>
+  <div class="card">
+    <div class="demo-banner" role="note"><b>Demo – fictieve data</b><span>Alle cijfers op dit dashboard zijn verzonnen voorbeeldwaarden van een fictieve organisatie. Het zijn geen echte bedrijfscijfers.</span></div>
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Dashboard kernset · werkelijk/BE tegenover begroting</h2><span id="coreCount"></span></div>
+    <div class="grid kpigrid" id="dash" style="margin-top:12px"></div>
+    <p class="note">Groen: op of beter dan begroting. Oranje: tot 5% slechter. Rood: meer dan 5% slechter. Richting → : ±2% en ±5%.</p>
+  </div>
+  <details class="card" style="margin-top:16px" id="kdCard"><summary><h2 style="display:inline;margin:0">Demodata klant, operations en commercie</h2> <span class="note">· werkelijk/BE en begroting aanpassen</span></summary>
+    <p class="note">Fictieve waarden voor KPI's die niet uit de drivers volgen. In de praktijk komen ze uit urenregistratie, CRM, servicedesk en projectadministratie.</p>
+    <div class="tablewrap"><table id="kdTable"></table></div>
+  </details>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 360px;margin-top:16px" id="kpiGrid">
+    <div class="card">
+      <div class="row" style="margin-bottom:12px"><div class="seg" id="kpiSeg"></div><input type="search" id="kpiQ" placeholder="Zoek op code of naam" style="max-width:220px" aria-label="Zoek KPI"></div>
+      <div class="tablewrap scrolly"><table id="kpiTable"></table></div>
+    </div>
+    <div class="card" id="kpiCard"></div>
+  </div>
+</section>
+
+<!-- 08 STURING -->
+<section class="view" id="v-sturing">
+  <h1>Laag 4 · Sturing en actielijst</h1>
+  <p class="lede">Wat gaan we doen? Elk overleg eindigt met besluiten: eigenaar, deadline en verwacht financieel effect. De opvolging is een vast agendapunt van het volgende overleg.</p>
+  <div class="grid g4" id="aTiles"></div>
+  <div class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Actielijst</h2><div class="row"><button class="btn" id="aCopy">Kopieer als CSV</button><button class="btn" id="aReset">Herstel voorbeeldacties</button></div></div>
+    <div class="tablewrap" style="margin-top:8px"><table id="aTable"></table></div>
+    <form id="aForm" class="row" style="margin-top:12px;align-items:flex-end">
+      <div class="field" style="flex:2 1 220px"><label for="aB">Besluit of actie</label><input type="text" id="aB" required></div>
+      <div class="field" style="flex:1 1 160px"><label for="aG">Overleg</label><select id="aG"></select></div>
+      <div class="field" style="flex:1 1 140px"><label for="aE">Eigenaar</label><input type="text" id="aE" required></div>
+      <div class="field" style="flex:1 1 130px"><label for="aD">Deadline</label><input type="date" id="aD" required></div>
+      <div class="field" style="flex:1 1 120px"><label for="aF">Effect (€/jaar)</label><input type="number" id="aF" step="1000"></div>
+      <button class="btn pri" type="submit">Voeg toe</button>
+    </form>
+    <p class="note" id="aMsg"></p>
+  </div>
+  <div class="card" style="margin-top:16px"><h2>Stuurmomenten</h2><div class="tablewrap"><table id="steerTable"></table></div></div>
+</section>
+
+<!-- 09 ORGANISATIE -->
+<section class="view" id="v-organisatie">
+  <h1>Organisatie en besluitvorming</h1>
+  <p class="lede">Rollen, bevoegdheden en verantwoordelijkheden in de control-cyclus. Bedragen en toewijzingen zijn sjablonen, in te richten per organisatie.</p>
+  <div class="grid g2">
+    <div class="card"><h2>Rollen in finance</h2><div id="rolesFin" class="stack" style="gap:10px"></div></div>
+    <div class="card"><h2>Rollen in de organisatie</h2><div id="rolesBus" class="stack" style="gap:10px"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Bevoegdhedenmatrix</h2>
+    <p class="note" style="margin-top:-6px">Bedrag tot en met welk niveau mag besluiten. Leeg = niet bevoegd.</p>
+    <div class="tablewrap"><table id="doa"></table></div>
+    <div class="row" style="margin-top:12px;align-items:flex-end">
+      <div class="field" style="flex:1 1 220px"><label for="doaT">Toets een besluit: type</label><select id="doaT"></select></div>
+      <div class="field" style="flex:1 1 160px"><label for="doaA">Bedrag (€)</label><input type="number" id="doaA" value="400000" step="5000"></div>
+      <div id="doaRes" style="flex:2 1 260px"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><h2>RACI per kernproces</h2><p class="note" style="margin-top:-6px">Klik op een cel om te wisselen tussen R, A, C, I en leeg.</p><div class="tablewrap"><table id="raci"></table></div></div>
+</section>
+
+<!-- 10 CYCLUS -->
+<section class="view" id="v-cyclus">
+  <h1>Stuurcyclus en rapportages</h1>
+  <p class="lede">Het ritme van projectsturing: wekelijks capaciteit, maandelijks per project en per bedrijf, per kwartaal de portefeuille.</p>
+  <div class="card form" id="cycForm" style="grid-template-columns:repeat(3,minmax(0,1fr));align-items:end"></div>
+  <div class="card" style="margin-top:16px"><h2>Kalender <span id="calYear"></span></h2><div class="tablewrap"><table id="cal" class="cal"></table></div></div>
+  <h2 style="margin:22px 0 12px">Rapportages</h2>
+  <div class="grid g3" id="reports"></div>
+</section>
+
+<!-- 11 DATAMODEL -->
+<section class="view" id="v-datamodel">
+  <h1>Datamodel (ERP-onafhankelijk)</h1>
+  <p class="lede">Eén bron per gegeven en mapping in plaats van maatwerk. De rekeningen van het eigen pakket worden gemapt op een standaard rekeningschema voor projectorganisaties.</p>
+  <div class="grid g2">
+    <div class="card"><h2>Standaard rekeningschema</h2><div class="tablewrap scrolly"><table id="coa"></table></div></div>
+    <div class="card"><h2>Dimensies</h2><div class="tablewrap"><table id="dims"></table></div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Mappingtabel eigen pakket → model</h2><div class="row"><button class="btn" id="mCopy">Kopieer als CSV</button><button class="btn" id="mReset">Herstel voorbeeld</button></div></div>
+    <p class="note">Bewerk de cellen direct, of plak rijen uit Excel (rekening, omschrijving, modelrekening).</p>
+    <div class="tablewrap"><table id="mapTable"></table></div>
+    <div class="row" style="margin-top:10px;align-items:flex-end">
+      <div class="field" style="flex:1 1 400px"><label for="mPaste">Plak rijen uit Excel of CSV</label><textarea id="mPaste" rows="3"></textarea></div>
+      <button class="btn" id="mImport">Voeg geplakte rijen toe</button>
+    </div>
+    <p class="note" id="mMsg"></p>
+  </div>
+  <div class="card" style="margin-top:16px"><h2>Bronsystemen en koppelingen</h2><div class="tablewrap"><table id="srcTable"></table></div></div>
+</section>
+
+<!-- 12 ROADMAP -->
+<section class="view" id="v-roadmap">
+  <h1>Verbeterroadmap</h1>
+  <p class="lede">De acties hieronder komen uit wat je per tabblad bij <i>Vastleggen</i> als niet of deels op orde hebt beoordeeld. Begin met de nulmeting: verbeteren start bij de laagste laag die nog niet op orde is.</p>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 340px" id="scanGrid">
+    <div class="card"><h2>Nulmeting (volwassenheidsscan)</h2><div id="scan" class="stack" style="gap:12px"></div></div>
+    <div class="card" id="scanRes"></div>
+  </div>
+  <div class="card" style="display:none" style="margin:16px 0"><div class="row" style="justify-content:space-between"><b id="progTxt"></b><span class="note" id="progSub"></span></div><div class="bar" style="margin-top:8px"><i id="progBar"></i></div></div>
+  <div class="grid g3" id="roadmapCols" style="display:none"></div>
+  <div id="rmRoad"></div>
+</section>
+
+<!-- A BEGRIPPEN -->
+<section class="view" id="v-begrippen">
+  <h1>Begrippen</h1>
+  <p class="lede">Eén definitie per begrip.</p>
+  <input type="search" id="glQ" placeholder="Zoek begrip" aria-label="Zoek begrip" style="max-width:300px;margin-bottom:12px">
+  <div class="card"><dl class="gloss" id="gloss"></dl></div>
+</section>
+</main>
+</div>
+<script>
+(function(){
+const clone=o=>JSON.parse(JSON.stringify(o));
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+const nf0=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
+const nf1=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:1,maximumFractionDigits:1});
+const nf2=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const eur=v=>(v<0?'−':'')+'€ '+nf0.format(Math.abs(Math.round(v)));
+const keur=v=>nf0.format(Math.round(v/1000));
+const meur=v=>(v<0?'−':'')+'€ '+nf2.format(Math.abs(v)/1e6)+' mln';
+const sgn=(v,f)=>(v>0?'+':v<0?'−':'')+f(Math.abs(v));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function tile(lbl,val,sub,cls){return `<div class="card tile"><div class="lbl">${lbl}</div><div class="val ${cls||''}">${val}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`}
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- BRANCHES ---------- */
+// groep: [key, naam, type (dekl/abo/staf), fte, bezetting %, tarief €/u, kostprijs €/u]
+const BR={
+ inst:{l:'Installatietechniek',kort:'Installatie',org:'installatiebedrijf',desc:'Fictief installatiebedrijf · ca. 150 medewerkers · 60 lopende projecten',
+  groups:[['wm','Monteurs werktuigbouwkundig','dekl',45,86,66,38],['em','Monteurs elektrotechnisch','dekl',40,86,68,39],['sm','Servicemonteurs','dekl',20,80,78,41],['pl','Projectleiders en werkvoorbereiders','dekl',18,70,92,52],['en','Engineering en calculatie','dekl',10,55,98,55],['st','Staf en directie','staf',17,0,0,48]],
+  inleen:25000,tarInleen:64,kostInleen:48,matF:0.95,opslag:18,faal:1.5,matU:0,matTar:0,matKost:0,
+  huisv:450000,wagen:1100000,itk:350000,overig:500000,afschr:600000,capex:700000,
+  types:[['Aanneming',0.6],['Regie',0.2],['Service en onderhoud',0.2]],size:[50000,1500000],calc:[8,16],nproj:60,
+  names:['Nieuwbouw basisschool','Renovatie zorgcentrum','Verduurzaming kantoorpand','Warmtepompen appartementen','Klimaatinstallatie laboratorium','Elektra distributiecentrum','Sprinklerinstallatie bedrijfshal','Nieuwbouw sporthal','Ventilatie woonblok','Installaties gemeentehuis','Zonnepanelen bedrijventerrein','Onderhoudscontract scholen','Laadinfra parkeergarage','Koelinstallatie supermarkt','Gebouwbeheersysteem ziekenhuis'],
+  clients:['Onderwijsstichting','Zorginstelling','Woningcorporatie','Gemeente','Projectontwikkelaar','Logistiek bedrijf','Retailketen','Industrie'],
+  wie:'monteurs'},
+ bouw:{l:'Bouw',kort:'Bouw',org:'bouwbedrijf',desc:'Fictief bouwbedrijf · ca. 120 medewerkers · 60 lopende projecten',
+  groups:[['bv','Timmerlieden en bouwvakkers','dekl',55,85,60,37],['uv','Uitvoerders','dekl',12,80,75,50],['pl','Projectleiders en werkvoorbereiders','dekl',14,70,85,54],['ca','Calculatie en engineering','dekl',8,55,88,55],['st','Staf en directie','staf',18,0,0,48]],
+  inleen:15000,tarInleen:58,kostInleen:45,matF:3.2,opslag:11,faal:1.2,matU:0,matTar:0,matKost:0,
+  huisv:350000,wagen:600000,itk:250000,overig:400000,afschr:450000,capex:500000,
+  types:[['Aanneming',0.85],['Regie',0.15]],size:[300000,6000000],calc:[5,10],nproj:60,
+  names:['Nieuwbouw 24 woningen','Transformatie kantoor naar wonen','Renovatie flat','Nieuwbouw bedrijfshal','Uitbreiding school','Nieuwbouw zorgappartementen','Verbouwing winkelcentrum','Nieuwbouw kinderopvang','Renovatie monumentaal pand','Nieuwbouw appartementencomplex','Verduurzaming rijwoningen'],
+  clients:['Woningcorporatie','Projectontwikkelaar','Gemeente','Zorginstelling','Onderwijsstichting','Belegger','Particuliere opdrachtgever'],
+  wie:'bouwvakkers'},
+ infra:{l:'Infra',kort:'Infra',org:'infrabedrijf',desc:'Fictief infrabedrijf · ca. 140 medewerkers · 60 lopende projecten',
+  groups:[['mg','Machinisten en grondwerkers','dekl',65,84,62,39],['uv','Uitvoerders','dekl',15,80,78,52],['pl','Projectleiders en werkvoorbereiders','dekl',16,70,88,55],['en','Engineering','dekl',14,60,92,56],['st','Staf en directie','staf',22,0,0,48]],
+  inleen:20000,tarInleen:60,kostInleen:47,matF:1.6,opslag:9,faal:1.0,matU:38000,matTar:125,matKost:2400000,
+  huisv:300000,wagen:500000,itk:250000,overig:350000,afschr:1600000,capex:2000000,
+  types:[['Aanneming',0.8],['Regie',0.2]],size:[200000,8000000],calc:[6,12],nproj:60,
+  names:['Reconstructie kruispunt','Rioolvervanging woonwijk','Aanleg fietspad','Herinrichting centrum','Bouwrijp maken nieuwbouwwijk','Dijkversterking','Aanleg rotonde','Groot onderhoud provinciale weg','Vervanging kademuur','Aanleg glasvezeltracé','Klimaatadaptatie wijk'],
+  clients:['Gemeente','Provincie','Waterschap','Netbeheerder','Projectontwikkelaar','Rijksdienst'],
+  wie:'machinisten en grondwerkers'},
+ it:{l:'IT-dienstverlening',kort:'IT',org:'IT-dienstverlener',desc:'Fictieve IT-dienstverlener · ca. 80 medewerkers · 35 projecten · ruim 6.000 licenties',
+  groups:[['co','Consultants','dekl',22,75,125,62],['eg','Engineers projecten','dekl',18,78,105,55],['pm','Projectmanagers','dekl',8,65,120,65],['bh','Beheer en servicedesk','abo',20,0,0,50],['st','Sales, staf en directie','staf',12,0,0,55]],
+  inleen:6000,tarInleen:105,kostInleen:85,matF:0,opslag:0,faal:0.5,matU:0,matTar:0,matKost:0,
+  huisv:300000,wagen:250000,itk:200000,overig:150000,afschr:250000,capex:300000,
+  types:[['Vaste prijs',0.4],['Regie',0.6]],size:[20000,600000],calc:[15,30],nproj:35,
+  names:['Migratie naar cloudomgeving','Implementatie werkplekbeheer','Netwerkvernieuwing','Koppeling ERP en webshop','Beveiligingsscan en opvolging','Uitrol nieuwe telefonie','Datamigratie archief','Implementatie dashboarding','Inrichting back-up en herstel','Vervanging servers'],
+  clients:['Accountantskantoor','Zorginstelling','Gemeente','Logistiek bedrijf','Groothandel','Onderwijsstichting','Advocatenkantoor'],
+  wie:'consultants en engineers'}
+};
+const REG=['Noord','Midden','Oost','West'];
+const PLS=['A. Jansen','M. de Boer','S. Visser','R. Smit','L. Meijer','K. Mulder'];
+const PLACES=['Amersfoort','Zwolle','Utrecht','Apeldoorn','Ede','Nijmegen','Deventer','Hilversum','Almere','Arnhem','Den Bosch','Tilburg','Breda','Eindhoven','Gouda','Leiden','Haarlem','Alkmaar'];
+const LIC_DEF=[['Kantoorsuite',2200,2120,2080,10.5,12.9],['Beveiliging werkplek',1800,1760,1740,3.2,4.5],['Back-up cloud',1100,1050,980,2.0,3.0],['CRM-platform',420,380,380,55,64],['Ontwerpsoftware',180,150,140,160,175],['Telefonie',900,870,860,6.0,8.5]];
+
+function makeDEF(k){const b=BR[k];
+ const P={uren:1600,verzuim:5.5,inleen:b.inleen,tarInleen:b.tarInleen,kostInleen:b.kostInleen,matF:b.matF,opslag:b.opslag,matPrijs:0,faal:b.faal,matU:b.matU,matTar:b.matTar,matKost:b.matKost,
+  huisv:b.huisv,wagen:b.wagen,itk:b.itk,overig:b.overig,afschr:b.afschr,capex:b.capex,dso:45,dsoLY:48,ohw:15,ohwLY:16,vooruit:6,vooruitLY:6,
+  groups:b.groups.map(g=>({k:g[0],l:g[1],type:g[2],fte:g[3],bez:g[4],tar:g[5],kost:g[6]})),
+  mrrBegin:210000,mrrNieuw:42000,mrrUitbr:28000,mrrKrimp:9000,mrrOpz:16000,hosting:250000,
+  lic:LIC_DEF.map(l=>({n:l[0],ink:l[1],toe:l[2],fac:l[2],pi:l[4],pv:l[5]})),
+  kd:{progStab:0.5,urenTijd:95,optijd:85,score:7.6,juist:97,tijd:95,achter:8,afb:0.3,fcVol:94,fcEbitda:92,gv:k==='infra'?14e6:k==='it'?3e6:6e6,intake:0,wv:0,hit:30,margePf:0,contract:22,ohwOud:15,sla:95,licEigen:1400,renew:0,verzuimNorm:5.5}};
+ if(k!=='it'){P.lic=[];P.mrrBegin=P.mrrNieuw=P.mrrUitbr=P.mrrKrimp=P.mrrOpz=P.hosting=0}
+ const REIS={sm:30,wm:12,em:12,bv:6,mg:6,uv:8,pl:4,en:3,ca:3,pm:3,co:5,eg:6};P.groups.forEach(g=>g.reis=REIS[g.k]??5);
+ Object.assign(P,{contract:2080,opl:40,overleg:80,nftr:6,eff:95,oplIn:false,reisBenut:true,doorb:{'Regie':50}});
+ P.lease=k==='inst'?{n:2400,huur:38,afschr:260,nieuw:400,kost:3900}:{n:0,huur:0,afschr:0,nieuw:0,kost:0};
+ P.ohKey='omzet';
+ return P}
+function mkAct(k,D){const A=clone(D);
+ A.verzuim=6.8;A.nftr=7.5;A.eff=92;A.overleg=95;if(k==='inst'){A.lease.n=2330;A.lease.nieuw=340}A.inleen=Math.round(D.inleen*1.28);A.matPrijs=k==='it'?0:2;A.faal=D.faal+0.4;A.ohw=19;A.dso=43;
+ A.groups.forEach((g,i)=>{if(g.type==='dekl'&&i<2)g.bez-=3;if(g.type==='dekl'&&i===0)g.tar+=1;if(g.type!=='staf')g.kost+=0.5});
+ if(k==='it'){A.mrrNieuw=34000;A.mrrOpz=21000;A.lic=LIC_DEF.map(l=>({n:l[0],ink:l[1],toe:l[2],fac:l[3],pi:l[4],pv:l[5]}));A.lic[4].pi=168}
+ Object.assign(A.kd,{progStab:1.4,urenTijd:88,optijd:78,score:7.3,juist:95.5,tijd:91,achter:11,afb:0.5,fcVol:91,fcEbitda:88,hit:26,ohwOud:22,sla:92.5});
+ return A}
+function mkLY(k,D){const L=clone(D);L.groups.forEach(g=>{g.tar=Math.round(g.tar*0.965);g.kost=Math.round(g.kost*0.955);if(g.type==='dekl')g.bez+=1;g.fte=Math.round(g.fte*0.95)});L.verzuim=6.1;L.inleen=Math.round(D.inleen*1.1);L.dso=D.dsoLY;L.ohw=D.ohwLY;L.vooruit=D.vooruitLY;
+ if(k==='it'){L.mrrBegin=175000;L.mrrNieuw=38000;L.mrrUitbr=22000;L.mrrKrimp=8000;L.mrrOpz=17000}return L}
+
+/* ---------- PROJECTEN (deterministisch per branche) ---------- */
+function genProjects(k){const b=BR[k],R=rng(k.length*7919+13);const out=[];
+ const pick=a=>a[Math.floor(R()*a.length)];
+ for(let i=0;i<b.nproj;i++){
+  let t=R(),acc=0,type=b.types[0][0];for(const [tn,p] of b.types){acc+=p;if(t<=acc){type=tn;break}}
+  const lo=Math.log(b.size[0]),hi=Math.log(b.size[1]);let som=Math.exp(lo+(hi-lo)*Math.pow(R(),1.6));som=Math.round(som/5000)*5000;
+  if(type==='Service en onderhoud')som=Math.round(som*0.35/5000)*5000+20000;
+  const calc=+(b.calc[0]+(b.calc[1]-b.calc[0])*R()).toFixed(1);
+  let fade=(R()+R()+R()-1.5)*3.2-0.3;if(R()<0.08)fade-=5+R()*5;if(type==='Regie')fade*=0.4;fade=+fade.toFixed(1);
+  const vg=Math.round(5+R()*90);
+  const mwU=+(R()*12).toFixed(1),mwO=+(mwU*(0.45+R()*0.55)).toFixed(1);
+  const cpiN=0.9+R()*0.2,fact=0.78+R()*0.35;const w1=0.3+R(),w2=0.2+R()*0.6,w3=0.1+R()*0.5,ws=w1+w2+w3;
+  out.push({id:'P'+String(i+101),naam:pick(b.names),plaats:pick(PLACES),client:pick(b.clients),type,pl:PLS[i%PLS.length],reg:REG[Math.floor(R()*REG.length)],wU:+(w1/ws).toFixed(3),wM:+(w2/ws).toFixed(3),wO:+(w3/ws).toFixed(3),som,calc,prog:+(calc+fade).toFixed(1),vg,mwU,mwO,cpiN:+cpiN.toFixed(3),fact:+fact.toFixed(3)})}
+ return out}
+function projRows(list,ovr,mode){return list.map(p0=>{const p=Object.assign({},p0,(mode==='act'&&ovr[p0.id])||{});
+  const rev=p.som*(1+p.mwO/100), prog=mode==='bud'?p.calc:mode==='ly'?p.calc+(p.prog-p.calc)*0.5:p.prog;
+  const eac=rev*(1-prog/100), bud=rev*(1-p.calc/100);
+  const earned=rev*p.vg/100, cost=eac*p.vg/100/p.cpiN, ev=bud*p.vg/100;
+  const fadeE=(prog-p.calc)/100*rev, fadeRec=fadeE*p.vg/100;
+  const fact=earned*p.fact, ohw=earned-fact;
+  const budU=bud?cost/bud*100:0, ntmk=Math.max(0,eac-cost), mwEff=-p.som*(p.mwU-p.mwO)/100*(1-p.calc/100), restF=fadeE-mwEff;
+  return Object.assign(p,{rev,progU:prog,eac,bud,earned,cost,cpi:cost?ev/cost:1,budU,ntmk,gap:budU-p.vg,fadeE,fadeRec,fadePP:prog-p.calc,ohw,fact,mwPct:p.mwU?p.mwO/p.mwU*100:100,rest:rev-earned,dcmCalc:rev*p.calc/100,dcmProg:rev*prog/100,brug:(()=>{const hs=-rev*Math.max(0,(p.cpiN-0.9)/0.2)*0.015*(mode==='bud'?0:1);return [mwEff,hs,restF*p.wU-hs,restF*p.wM,restF*p.wO]})()})})}
+
+/* ---------- STATE ---------- */
+let BRK=store.get('po_br','inst');if(!BR[BRK])BRK='inst';window.__BRK=BRK;
+let PROJ,DEF,S,BUD,LY,OVR;
+function load(){PROJ=genProjects(BRK);DEF=makeDEF(BRK);
+ S=Object.assign(mkAct(BRK,DEF),store.get('po_s_'+BRK,{}));BUD=Object.assign(clone(DEF),store.get('po_b_'+BRK,{}));LY=mkLY(BRK,DEF);OVR=store.get('po_o_'+BRK,{});}
+const save=()=>{store.set('po_s_'+BRK,S);store.set('po_o_'+BRK,OVR)};
+load();
+
+/* ---------- MODEL ---------- */
+function wfCalc(P,G){const rows=G.filter(x=>x.g.type==='dekl').map(x=>{const g=x.g,f=g.fte,c=f*P.contract,b=x.b,verlof=c-b,ver=x.ver,opl=Math.min(f*P.opl,x.ind),ovl=Math.min(f*P.overleg,x.ind-opl),leeg=Math.max(0,x.ind-opl-ovl),benut=x.d,nf=benut*P.nftr/100,reis=(benut-nf)*g.reis/100,werk=benut-nf-reis,kc=x.kt/c;
+  return {g,f,c,verlof,ver,opl,ovl,leeg,benut,nf,reis,werk,norm:werk*P.eff/100,kc,kt:x.kt}});
+ const T={g:{l:'Totaal uitvoerend',k:'_t'},kt:0};['f','c','verlof','ver','opl','ovl','leeg','benut','nf','reis','werk','norm'].forEach(k=>T[k]=rows.reduce((s,x)=>s+x[k],0));T.kt=rows.reduce((s,x)=>s+x.kt,0);T.kc=T.kt/T.c;
+ const kpi=x=>{const aanw=x.c-x.verlof-x.ver,netto=P.oplIn?aanw:aanw-x.opl,ben=P.reisBenut?x.benut:x.benut-x.reis;return{beschik:netto/x.c*100,benut:ben/netto*100,effect:(x.benut-x.nf)/x.benut*100,eff:P.eff,reis:x.reis/x.benut*100,prodC:x.werk/x.c*100,netto}};
+ rows.forEach(x=>x.k=kpi(x));T.k=kpi(T);return{rows,T,kpi}}
+function calc(P,mode){const r={};let decl=0,beschik=0,omzetU=0,kostDirect=0,kostTotD=0,abo=0,staf=0,fteD=0,fte=0,pers=0;
+ r.g=P.groups.map(g=>{const b=g.fte*P.uren,ver=b*P.verzuim/100,d=g.type==='dekl'?(b-ver)*g.bez/100:0,kt=b*g.kost;
+  fte+=g.fte;pers+=kt;
+  if(g.type==='dekl'){decl+=d;beschik+=b;omzetU+=d*g.tar;kostDirect+=d*g.kost;kostTotD+=kt;fteD+=g.fte}else if(g.type==='abo')abo+=kt;else staf+=kt;
+  return {g,b,ver,d,ind:g.type==='dekl'?b-ver-d:0,omzet:d*g.tar,kt}});
+ r.wf=wfCalc(P,r.g);r.decl=decl;r.beschik=beschik;r.verzuimU=beschik*P.verzuim/100;r.fte=fte;r.fteD=fteD;r.pers=pers;
+ r.omzetU=omzetU;r.kostDirect=kostDirect;r.kostTotD=kostTotD;r.indirectPers=kostTotD-kostDirect;r.staf=staf;r.aboPers=abo;
+ r.inleenOmzet=P.inleen*P.tarInleen;r.inleenKost=P.inleen*P.kostInleen;
+ r.urenOmzet=omzetU+r.inleenOmzet;r.tarAvg=(decl+P.inleen)?r.urenOmzet/(decl+P.inleen):0;
+ const base=r.urenOmzet;r.matKost=P.matF*base*(1+P.matPrijs/100);r.matOmzet=P.matF*base*(1+P.opslag/100);
+ r.mtOmzet=P.matU*P.matTar;r.mtKost=P.matKost;
+ r.aboOmzet=(P.mrrBegin+(P.mrrBegin+P.mrrNieuw+P.mrrUitbr-P.mrrKrimp-P.mrrOpz))/2*12;r.mrrEind=P.mrrBegin+P.mrrNieuw+P.mrrUitbr-P.mrrKrimp-P.mrrOpz;
+ r.aboKost=r.aboPers+P.hosting;
+ r.licOmzet=P.lic.reduce((s,l)=>s+l.fac*l.pv*12,0);r.licKost=P.lic.reduce((s,l)=>s+l.ink*l.pi*12,0);
+ r.prows=projRows(PROJ,OVR,mode||'act');r.fade=r.prows.reduce((s,p)=>s+p.fadeRec,0);
+ const Ls=P.lease||{n:0,huur:0,afschr:0,nieuw:0,kost:0};r.leaseOmzet=Ls.n*Ls.huur*12;r.leaseAfschr=Ls.n*Ls.afschr;r.leaseAct=Ls.nieuw*Ls.kost;
+ r.productie=r.urenOmzet+r.matOmzet+r.mtOmzet+r.aboOmzet+r.licOmzet+r.leaseOmzet;
+ r.faal=r.productie*P.faal/100;
+ r.uitbesteed=r.matKost+r.licKost+P.hosting+r.leaseAct;r.gm=r.productie-r.uitbesteed+r.leaseAct;
+ {const types=[...new Set(PROJ.map(x=>x.type))],tot=r.prows.reduce((s,x)=>s+x.rev,0)||1;const nb=types.reduce((s,t)=>s+r.prows.filter(x=>x.type===t).reduce((a,x)=>a+x.rev,0)/tot*(1-((P.doorb||{})[t]||0)/100),0);r.nbShare=nb;r.faalNB=Math.min(r.indirectPers*0.6,r.wf.T.nf*r.wf.T.kc*nb);r.indirectPers-=r.faalNB}
+ r.dirPers=r.kostDirect+r.inleenKost+r.aboPers;r.ovDirect=r.faal+r.mtKost+r.leaseAfschr-r.fade+r.faalNB;
+ r.bruto=r.gm-r.dirPers-r.ovDirect;r.hosting=P.hosting;
+ r.uitvInd=r.indirectPers+P.wagen;r.tcm=r.bruto-r.uitvInd;r.alg=P.huisv+P.itk+P.overig;r.wagenK=P.wagen;
+ r.opex=r.indirectPers+r.wagenK+r.staf+r.alg;
+ r.ebitda=r.bruto-r.opex;r.ebit=r.ebitda-P.afschr;
+ const d=r.productie/365;r.ohwE=d*P.ohw;r.deb=d*P.dso;r.vooruitE=d*P.vooruit;r.wk=r.ohwE+r.deb-r.vooruitE;
+ r.wkLY=d*(P.ohwLY+P.dsoLY-P.vooruitLY);r.dWK=r.wk-r.wkLY;r.cash=r.ebitda-r.dWK;
+ r.bez=beschik?decl/(beschik-r.verzuimU)*100:0;r.tarAvg=(decl+P.inleen)?r.urenOmzet/(decl+P.inleen):0;r.inleenRatio=(decl+P.inleen)?P.inleen/(decl+P.inleen)*100:0;
+ r.P=P;return r}
+
+/* ---------- ROUTING ---------- */
+const views=['overzicht','basis','uren','projecten','licenties','pl','segmenten','kpis','sturing','organisatie','cyclus','datamodel','roadmap','begrippen'];
+function route(){let h=location.hash.replace('#','');if(h==='licenties'&&BRK!=='it')h='projecten';const v=views.includes(h)?h:'overzicht';
+ views.forEach(x=>$('#v-'+x).classList.toggle('on',x===v));$$('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));window.scrollTo(0,0)}
+window.addEventListener('hashchange',route);
+
+/* ---------- BRANCHE ---------- */
+function renderBr(){
+ $('#brSeg').innerHTML=Object.entries(BR).map(([k,b])=>`<button class="${k===BRK?'on':''}" data-k="${k}">${b.l}</button>`).join('');
+ $$('#brSeg button').forEach(b=>b.onclick=()=>{BRK=b.dataset.k;window.__BRK=BRK;store.set('po_br',BRK);load();fullRender();window.RM&&RM.refresh()});
+ const b=BR[BRK];$('#brDesc').textContent=b.desc;
+ $('#navLic').style.display=BRK==='it'?'':'none';$('#licBalCard').style.display=BRK==='it'?'':'none';
+ $('#sideNote').textContent='ERP-onafhankelijk en instelbaar per organisatie. '+b.desc+'. Alle namen en cijfers zijn fictief.';
+ $('#ovLede').textContent=`Een ${b.org} stuurt op een paar grote stromen: hoeveel uren declarabel worden en tegen welk tarief, of projecten de marge halen die bij de opdracht is gecalculeerd, en hoe snel verdiend werk wordt gefactureerd en betaald.${BRK==='it'?' Daarbij komen terugkerende omzet uit abonnementen en de marge op doorverkochte licenties.':''} Dit framework maakt die stromen meetbaar en stuurbaar in vier lagen.`;
+ $('#kpiItTxt').textContent=BRK==='it'?', aangevuld met de KPI\'s voor abonnementen en licenties':'';
+}
+
+/* ---------- 01 OVERZICHT ---------- */
+const layers=[
+ {n:1,name:'Financiële basis',q:'Klopt het?',owner:'Financial control',tab:'basis',rows:[['Urenregistratie','Alle uren wekelijks geschreven en goedgekeurd, op project en activiteit'],['Onderhanden werk','Waardering naar voortgang; verwachte verliezen direct nemen'],['Cut-off inkoop','Nog te ontvangen facturen onderaanneming en materiaal'],['Meer- en minderwerk','Vastgelegd met opdrachtbevestiging vóór uitvoering'],['Reconciliatie','Projectadministratie ↔ grootboek, termijnstaten ↔ debiteuren']]},
+ {n:2,name:'Business drivers',q:'Waarom?',owner:'Business control met bedrijfsleiding en projectleiding',tab:'uren',rows:[['Capaciteit','FTE, bezettingsgraad, verzuim'],['Tarief','Gerealiseerd uurtarief, tariefrealisatie'],['Projectuitvoering','Prognose bij gereedkomen, nog te maken kosten, margeverloop, budgetuitputting t.o.v. gereed'],['Meer- en minderwerk','Vastlegging en facturatie'],['Inkoop','Materiaal, onderaanneming, inleen'],['Orderportefeuille','Orderinstroom, werkvoorraad, scoringskans'],['Cash','Termijnschema, onderhanden werk, DSO']]},
+ {n:3,name:'KPI\'s en prestaties',q:'Presteren we?',owner:'Business control (KPI-set), lijn (prestatie)',tab:'kpis',rows:[['Uren en capaciteit','Bezettingsgraad, uurtarief, inleenratio'],['Projectresultaat','DCM, TCM, margeverloop, overschrijdingen'],['Onderhanden werk','Nog te factureren, ouderdom'],['Commercie','Werkvoorraad, scoringskans'],['Financieel','EBITDA, kasstroom, DSO']]},
+ {n:4,name:'Sturing',q:'Wat gaan we doen?',owner:'Directie en bedrijfsleiding',tab:'sturing',rows:[['Wekelijks','Capaciteitsoverleg: inzet personeel en inleen'],['Maandelijks','Projectreview per projectleider; business review MT'],['Per aanvraag','Besluit wel of niet inschrijven, margenorm'],['Per kwartaal','Portefeuillereview: segmenten en opdrachtgevers']]}];
+let curLayer=1;
+function renderLayers(){
+ $('#layers').innerHTML=[3,2,1,0].map(i=>{const l=layers[i];return `<button class="layer${i===curLayer?' on':''}" data-i="${i}"><span class="no">L${l.n}</span><span><b>${l.name}</b><p>“${l.q}”</p></span><span class="pill p-mut">${l.owner.split(/[,(]/)[0].trim()}</span></button>`}).join('');
+ const l=layers[curLayer];
+ $('#layerDetail').innerHTML=`<h2>Laag ${l.n} · ${l.name}</h2><p class="note" style="margin-top:-6px">Vraag: <b>${l.q}</b> · Eigenaar: ${l.owner}</p><table>${l.rows.map(r=>`<tr><td style="width:36%"><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('')}</table><p style="margin:10px 0 0"><a href="#${l.tab}">Naar het tabblad van deze laag →</a></p>`;
+ $$('.layer').forEach(b=>b.onclick=()=>{curLayer=+b.dataset.i;renderLayers()})}
+$('#principles').innerHTML=[['Eén waarheid','elk cijfer één definitie en één bron.'],['Eerst verklaren, dan sturen','een afwijking herleiden tot bezetting, tarief, kostprijs, margeverloop of procesprestatie.'],['Resultaten gescheiden houden','calculatie- en uitvoeringsresultaat apart.'],['Proportioneel','diepgang en ritme passend bij de omvang.'],['Van inzicht naar actie','elke review eindigt met besluiten en eigenaren.']].map(p=>`<li><b>${p[0]}:</b> ${p[1]}</li>`).join('');
+const CHAL={inst:['Marges lekken weg tijdens de uitvoering','Uren worden niet tijdig of op het verkeerde project geschreven','Meerwerk uitgevoerd maar niet vastgelegd of gefactureerd','Schaarste aan monteurs en afhankelijkheid van inleen','Materiaalprijzen stijgen na de calculatie','Servicecontracten dragen te weinig bij aan de dekking'],
+ bouw:['Margeverloop op grote projecten pas zichtbaar bij gereedkomen','Onderaanneming en materiaal duurder dan gecalculeerd','Meerwerk zonder opdrachtbevestiging','Termijnstaten lopen achter op de voortgang','Retenties en garantieverplichtingen binden cash','Schaarste aan uitvoerders en vakmensen'],
+ infra:['Scherpe aanbestedingen en calculatierisico','Bezetting van materieel','Indexatie bij lange looptijden','Weersinvloeden op planning en productie','Afhankelijkheid van publieke opdrachtgevers','Faalkosten en herstelwerk'],
+ it:['Licentiekosten stijgen zonder doorbelasting','Licenties ingekocht maar niet gebruikt of gefactureerd','Verschuiving van projectomzet naar abonnementen','Opzeggingen en verlengingen te laat in beeld','Bezetting van schaarse specialisten','Vaste-prijsprojecten die uitlopen']};
+function renderChallenges(){const L=CHAL[BRK],s=store.get('po_chal_'+BRK,{0:1,1:1,2:1});
+ $('#challenges').innerHTML=L.map((c,i)=>`<label class="chk"><input type="checkbox" data-i="${i}"${s[i]?' checked':''}> ${c}</label>`).join('');
+ $$('#challenges input').forEach(el=>el.onchange=()=>{const s=store.get('po_chal_'+BRK,{0:1,1:1,2:1});s[el.dataset.i]=el.checked?1:0;store.set('po_chal_'+BRK,s)})}
+function renderStrat(){const f=[['missie','Missie en ambitie'],['speerpunten','Strategische speerpunten'],['outlook','Meerjarige outlook: omzet, capaciteit, marge']];const s=store.get('po_strat_'+BRK,{});
+ $('#strat').innerHTML='<h2 style="margin:0">Strategische context</h2>'+f.map(x=>`<div class="field"><label for="st_${x[0]}">${x[1]}</label><textarea id="st_${x[0]}" rows="2">${esc(s[x[0]]||'')}</textarea></div>`).join('');
+ f.forEach(x=>$('#st_'+x[0]).oninput=e=>{const s=store.get('po_strat_'+BRK,{});s[x[0]]=e.target.value;store.set('po_strat_'+BRK,s)})}
+
+/* ---------- 02 BASIS ---------- */
+const closeSteps=()=>[['Uren van de maand afgesloten en goedgekeurd (afwezigheid niet dubbel met gewerkte uren, benutting > 100% verklaard)',1],['Nog te ontvangen facturen onderaanneming en materiaal',2],['Voortgang per project vastgesteld door projectleiding',2],['Onderhanden werk gewaardeerd, verliesvoorzieningen bepaald',3],['Meerwerk gecontroleerd op opdrachtbevestiging',3],['Termijnstaten en debiteuren afgestemd',3],...(BRK==='it'?[['Licentiebalans en abonnementsomzet afgestemd',3]]:[]),['Mapping grootboek → management P&L gecontroleerd',4],['Review en vrijgave door financial control',5]];
+function getBasis(){const cs=closeSteps();const b=Object.assign({wd:5,steps:cs.map(s=>({wd:s[1],st:0})),ohwDiff:42000},store.get('po_basis_'+BRK,{}));if(b.steps.length!==cs.length)b.steps=cs.map(s=>({wd:s[1],st:0}));return b}
+const setBasis=b=>store.set('po_basis_'+BRK,b);
+function renderPoc(){const s=Object.assign({meth:{},drempel:20},store.get('po_poc_'+BRK,{}));const types=[...new Set(PROJ.map(p=>p.type))];
+ $('#pocBox').innerHTML='<table><thead><tr><th>Projecttype</th><th>Methode voortgang</th></tr></thead><tbody>'+types.map(t=>`<tr><td>${t}</td><td><select class="pocM" data-t="${t}" aria-label="Methode ${t}">${['Kosten (budgetuitputting)','Uren','Fysieke voortgang (gereed-percentage)','Termijnen of mijlpalen'].map(o=>`<option${(s.meth[t]||'Fysieke voortgang (gereed-percentage)')===o?' selected':''}>${o}</option>`).join('')}</select></td></tr>`).join('')+'</tbody></table>'+
+ `<div class="field" style="margin-top:8px"><label for="pocDr">Resultaat nemen vanaf gereed-percentage</label><input type="number" id="pocDr" min="0" max="100" value="${s.drempel}" style="width:90px"></div>
+ <ul class="clean"><li>Verwachte verliezen worden direct en volledig genomen, ongeacht de voortgang.</li><li>De projectleider stelt maandelijks de prognose bij gereedkomen op (werkelijke kosten + nog te maken kosten).</li><li>Business control toetst de prognose en de uitgangspunten; finance bepaalt het resultaat niet zelf.</li><li>Meerwerk telt pas mee in de opbrengst na schriftelijke opdracht.</li></ul>
+ <p class="note">${Object.values(s.meth).some(m=>m.startsWith('Kosten'))?'Let op: bij voortgang op basis van kosten is budgetuitputting altijd gelijk aan gereed; een kostenoverschrijding wordt dan pas zichtbaar via de prognose.':'Een onafhankelijke voortgangsmeting maakt het verschil tussen budgetuitputting en gereed zichtbaar (PRO-04).'}</p>`;
+ $$('.pocM').forEach(el=>el.onchange=()=>{const s2=Object.assign({meth:{},drempel:20},store.get('po_poc_'+BRK,{}));s2.meth[el.dataset.t]=el.value;store.set('po_poc_'+BRK,s2);renderPoc()});
+ $('#pocDr').onchange=e=>{const s2=Object.assign({meth:{},drempel:20},store.get('po_poc_'+BRK,{}));s2.drempel=+e.target.value;store.set('po_poc_'+BRK,s2)}}
+function renderBasis(r){const b=getBasis(),cs=closeSteps();$('#wdTarget').value=b.wd;
+ $('#closeTable').innerHTML='<thead><tr><th>Stap</th><th class="n">Werkdag</th><th>Status</th></tr></thead><tbody>'+cs.map((s,i)=>`<tr><td>${s[0]}</td><td class="n"><input type="number" min="1" max="15" class="wdIn" data-i="${i}" value="${b.steps[i].wd}" style="width:60px" aria-label="Werkdag"></td><td><button class="btn stBtn" data-i="${i}">${b.steps[i].st?'<span class="pill p-good">Gereed</span>':'<span class="pill p-mut">Open</span>'}</button></td></tr>`).join('')+'</tbody>';
+ $$('.wdIn').forEach(el=>el.onchange=()=>{const b=getBasis();b.steps[+el.dataset.i].wd=+el.value;setBasis(b);update()});
+ $$('.stBtn').forEach(el=>el.onclick=()=>{const b=getBasis();b.steps[+el.dataset.i].st^=1;setBasis(b);update()});
+ const tot=r.beschik,ver=r.verzuimU,d=r.decl,ind=tot-ver-d,pct=v=>nf1.format(v/tot*100)+'%';
+ $('#urenBal').innerHTML=`<thead><tr><th>Uren uitvoerend personeel</th><th class="n">Uren</th><th class="n">Aandeel</th></tr></thead><tbody><tr><td>Beschikbaar (na verlof en feestdagen)</td><td class="n">${nf0.format(tot)}</td><td class="n">100,0%</td></tr><tr class="ind"><td>Verzuim</td><td class="n">${nf0.format(ver)}</td><td class="n">${pct(ver)}</td></tr><tr class="ind"><td>Declarabel op projecten</td><td class="n">${nf0.format(d)}</td><td class="n">${pct(d)}</td></tr><tr class="ind"><td>Indirect (leegloop, opleiding, overleg)</td><td class="n">${nf0.format(ind)}</td><td class="n">${pct(ind)}</td></tr><tr class="sum"><td>Verklaard</td><td class="n">${nf0.format(ver+d+ind)}</td><td class="n"><span class="pill p-good">sluit</span></td></tr><tr><td>Plus inleenuren</td><td class="n">${nf0.format(r.P.inleen)}</td><td></td></tr></tbody>`;
+ const ohwP=r.prows.reduce((s,p)=>s+Math.max(0,p.ohw),0),vooruitP=r.prows.reduce((s,p)=>s+Math.max(0,-p.ohw),0),loss=r.prows.filter(p=>p.progU<0).reduce((s,p)=>s+(-p.progU/100*p.rev)*(1-p.vg/100),0);
+ $('#ohwRec').innerHTML=`<thead><tr><th>Onderdeel</th><th class="n">€</th></tr></thead><tbody><tr><td>Nog te factureren (projectadministratie)</td><td class="n">${eur(ohwP)}</td></tr><tr><td>Vooruitgefactureerd</td><td class="n">${eur(vooruitP)}</td></tr><tr><td>Voorziening verliesprojecten (resterend verlies)</td><td class="n">${eur(loss)}</td></tr><tr><td>Verschil projectadministratie ↔ grootboek</td><td class="n"><input type="number" id="ohwDiff" value="${b.ohwDiff}" step="1000" style="width:110px" aria-label="Verschil"></td></tr><tr><td>Signaal</td><td>${Math.abs(b.ohwDiff)<=ohwP*0.01?'<span class="pill p-good">binnen 1%</span>':'<span class="pill p-warn">verklaren vóór vrijgave</span>'}</td></tr></tbody>`;
+ $('#ohwDiff').onchange=e=>{const b=getBasis();b.ohwDiff=+e.target.value;setBasis(b);update()};
+ if(BRK==='it'){const L=r.P.lic,s=k=>L.reduce((a,l)=>a+l[k],0);$('#licBal').innerHTML=`<tbody><tr><td>Ingekocht bij leveranciers</td><td class="n">${nf0.format(s('ink'))}</td></tr><tr><td>Toegewezen aan klanten</td><td class="n">${nf0.format(s('toe'))}</td></tr><tr><td>Gefactureerd</td><td class="n">${nf0.format(s('fac'))}</td></tr><tr class="sum"><td>Niet gefactureerd (ingekocht − gefactureerd)</td><td class="n">${nf0.format(s('ink')-s('fac'))}</td></tr></tbody>`}
+ const maxWd=Math.max(...b.steps.map(s=>s.wd)),done=b.steps.filter(s=>s.st).length;
+ $('#bTiles').innerHTML=tile('Afsluiting gepland op',`werkdag ${maxWd}`,`doel werkdag ${b.wd} (KWA-06)`,maxWd>b.wd?'neg':'pos')+tile('Afsluitstappen gereed',`${done} van ${cs.length}`,'')+tile('Uren tijdig geschreven',nf1.format(S.kd.urenTijd)+'%',`doel ${nf1.format(BUD.kd.urenTijd)}% (UUR-05)`,S.kd.urenTijd<BUD.kd.urenTijd?'neg':'')+tile('Nog te factureren',`${S.ohw} dagen`,`${eur(r.ohwE)} (OHW-01)`,S.ohw>BUD.ohw?'neg':'')}
+$('#wdTarget').onchange=e=>{const b=getBasis();b.wd=+e.target.value;setBasis(b);update()};
+
+/* ---------- 03 UREN ---------- */
+let wfSel='_t';
+function renderWF(r,b){const W0=r.wf,list=[W0.T,...W0.rows];const x=list.find(z=>z.g.k===wfSel)||W0.T;const xb=(b.wf.rows.find(z=>z.g.k===x.g.k))||b.wf.T;
+ $('#wfSel').innerHTML=list.map(z=>`<option value="${z.g.k}"${z.g.k===x.g.k?' selected':''}>${z.g.l}</option>`).join('');
+ const steps=[['Contracturen',x.c,'tot'],['Verlof, feestdagen en roostervrij',-x.verlof],['Verzuim',-x.ver],['Opleiding',-x.opl],['Wachten, overleg en overige indirecte tijd',-x.ovl],['Geen werk beschikbaar',-x.leeg],['Benut (werk- en reistijd)',x.benut,'tot'],['Niet in één keer goed',-x.nf],['Reistijd',-x.reis],['Werktijd op opdracht',x.werk,'tot']];
+ const W=760,rowH=26,lw=270,H=steps.length*rowH+30;const mx=x.c;const sx=v=>v/mx*(W-lw-175);let run=0,s='';
+ steps.forEach((st,i)=>{const y=i*rowH+4;let a,bb;if(st[2]==='tot'){a=0;bb=st[1];run=st[1]}else{a=run+st[1];bb=run;run=a}
+  const col=st[2]==='tot'?'var(--cool)':'var(--warn)';s+=`<rect x="${lw+sx(a)}" y="${y}" width="${Math.max(1,sx(bb-a))}" height="${rowH-8}" fill="${col}" opacity="${st[2]==='tot'?1:.8}"/><text x="0" y="${y+13}" style="fill:var(--ink)${st[2]==='tot'?';font-weight:600':''}">${st[0]}</text><text class="vl" x="${lw+sx(Math.max(a,bb))+5}" y="${y+13}">${nf0.format(Math.abs(st[1]))} u · ${eur(Math.abs(st[1])*x.kc)}</text>`});
+ $('#wfChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Urenwaterval">${s}</svg>`;
+ const lost=x.verlof+x.ver+x.opl+x.ovl+x.leeg+x.nf+x.reis;
+ $('#wfTable').innerHTML='<thead><tr><th>Trede</th><th class="n">Uren</th><th class="n">% contract</th><th class="n">Kosten (kostprijs)</th><th class="n">Δ begroting k€</th></tr></thead><tbody>'+[['Verlof, feestdagen en roostervrij','verlof'],['Verzuim','ver'],['Opleiding','opl'],['Wachten, overleg en overige indirecte tijd','ovl'],['Geen werk beschikbaar (leegloop)','leeg'],['Niet in één keer goed (herstel, terugkomen, niet thuis, geannuleerd)','nf'],['Reistijd','reis'],['Werktijd op opdracht','werk']].map(([l,k])=>{const c=x[k]*x.kc,cb=xb[k]*xb.kc;return `<tr class="${k==='werk'?'sum':'ind'}"><td>${l}</td><td class="n">${nf0.format(x[k])}</td><td class="n">${nf1.format(x[k]/x.c*100)}%</td><td class="n">${eur(c)}</td><td class="n ${k==='werk'?'':(c>cb+500?'neg':c<cb-500?'pos':'')}">${sgn(c-cb,keur)}</td></tr>`}).join('')+`<tr class="sum"><td>Loonkosten totaal (kostprijs per contractuur ${'€ '+nf2.format(x.kc)})</td><td class="n">${nf0.format(x.c)}</td><td class="n">100%</td><td class="n">${eur(x.kt)}</td><td></td></tr></tbody>`;
+ const k=x.k;$('#wfTiles').innerHTML=tile('Beschikbaarheid',nf1.format(k.beschik)+'%','netto beschikbaar / contracturen (UUR-09)')+tile('Benutting',nf1.format(k.benut)+'%',`begroting ${nf1.format(xb.k.benut)}% (UUR-01)`,k.benut<xb.k.benut?'neg':'')+tile('Effectiviteit',nf1.format(k.effect)+'%','in één keer goed (UUR-10)',k.effect<xb.k.effect?'neg':'')+tile('Efficiency',nf0.format(S.eff)+'%','normtijd / werktijd (UUR-11)',S.eff<BUD.eff?'neg':'');
+ // varianten
+ const v=(oi,rb)=>{const P2=Object.assign({},S,{oplIn:oi,reisBenut:rb});return W0.kpi.call(null,x)&&(()=>{const aanw=x.c-x.verlof-x.ver,netto=oi?aanw:aanw-x.opl,ben=rb?x.benut:x.benut-x.reis;return ben/netto*100})()};
+ $('#wfVar').innerHTML='<thead><tr><th>Keuze</th><th class="n">Benutting</th></tr></thead><tbody>'+[[false,true,'Opleiding uit · reistijd benut'],[false,false,'Opleiding uit · reistijd niet'],[true,true,'Opleiding in · reistijd benut'],[true,false,'Opleiding in · reistijd niet']].map(([o,rb,l])=>`<tr class="${S.oplIn===o&&S.reisBenut===rb?'selv':''}"><td>${l}</td><td class="n">${nf1.format(v(o,rb))}%</td></tr>`).join('')+`<tr><td colspan="2" class="note">Productiviteit op contracturen (werktijd / contracturen): ${nf1.format(k.prodC)}%, bij elke keuze gelijk.</td></tr></tbody>`;
+ $('#wfOpl').checked=S.oplIn;$('#wfReis').checked=S.reisBenut;
+ const wd=[['opl','Opleiding (uur per FTE per jaar)',0,200,5,v=>nf0.format(v)],['overleg','Wachten, overleg, overig indirect (uur per FTE)',0,300,5,v=>nf0.format(v)],['nftr','Niet in één keer goed (% van benut)',0,20,0.5,v=>nf1.format(v)+'%'],['eff','Efficiency: normtijd / werktijd (%)',60,120,1,v=>nf0.format(v)+'%']];
+ if(!$('#wfForm').dataset.b){$('#wfForm').innerHTML=wd.map(d=>sl(d,'w_')).join('')+'<p class="note">Reistijd per functiegroep stel je in de tabel hieronder in. Leegloop is het restant van de indirecte uren en volgt uit de bezettingsdriver per functiegroep.</p>';wd.forEach(d=>$('#w_'+d[0]).oninput=e=>{S[d[0]]=+e.target.value;save();update()});$('#wfForm').dataset.b=1}
+ wd.forEach(d=>{const el=$('#w_'+d[0]);if(el){el.value=S[d[0]];$('#o_w_'+d[0]).textContent=d[5](S[d[0]])}});
+}
+function renderUren(r,b){renderWF(r,b);
+ const rows=r.g.map((x,i)=>{const g=x.g,bg=b.g[i];if(g.type==='staf'||g.type==='abo')return `<tr><td><b>${g.l}</b><br><span class="note">${g.type==='abo'?'kosten abonnementen':'indirect'}</span></td><td class="n"><input type="number" class="gIn" data-i="${i}" data-f="fte" value="${g.fte}" style="width:64px" aria-label="FTE"></td><td colspan="3" class="note">niet declarabel</td><td class="n"><input type="number" class="gIn" data-i="${i}" data-f="kost" value="${g.kost}" step="0.5" style="width:70px" aria-label="Kostprijs"></td><td></td><td class="n">–</td></tr>`;
+  const st=g.bez>=bg.g.bez?'p-good':g.bez>=bg.g.bez-3?'p-warn':'p-bad';
+  return `<tr><td><b>${g.l}</b></td><td class="n"><input type="number" class="gIn" data-i="${i}" data-f="fte" value="${g.fte}" style="width:64px" aria-label="FTE ${g.l}"></td>
+   <td style="min-width:150px"><div class="field"><label for="gb_${i}"><span class="pill ${st}">${g.bez}%</span><span class="note">begr. ${bg.g.bez}%</span></label><input type="range" id="gb_${i}" class="gIn" data-i="${i}" data-f="bez" min="40" max="100" value="${g.bez}"></div></td>
+   <td class="n">${nf0.format(x.d)}</td><td class="n"><input type="number" class="gIn" data-i="${i}" data-f="tar" value="${g.tar}" step="0.5" style="width:70px" aria-label="Tarief"><br><span class="note">begr. ${bg.g.tar}</span></td>
+   <td class="n"><input type="number" class="gIn" data-i="${i}" data-f="kost" value="${g.kost}" step="0.5" style="width:70px" aria-label="Kostprijs"><br><span class="note">begr. ${bg.g.kost}</span></td>
+   <td class="n"><input type="number" class="gIn" data-i="${i}" data-f="reis" value="${g.reis}" step="1" style="width:56px" aria-label="Reistijd %"></td><td class="n ${x.omzet-x.kt>=0?'pos':'neg'}">${sgn(x.omzet-x.kt,keur)}</td></tr>`}).join('');
+ $('#grpTable').innerHTML=`<thead><tr><th>Functiegroep</th><th class="n">FTE</th><th>Bezettingsgraad</th><th class="n">Declarabele uren</th><th class="n">Tarief €/u</th><th class="n">Kostprijs €/u</th><th class="n">Reistijd %</th><th class="n">Dekking k€</th></tr></thead><tbody>${rows}<tr class="sum"><td>Totaal uitvoerend</td><td class="n">${nf0.format(r.fteD)}</td><td><span class="pill ${r.bez>=b.bez?'p-good':'p-warn'}">${nf1.format(r.bez)}%</span></td><td class="n">${nf0.format(r.decl)}</td><td class="n">${nf1.format(r.omzetU/r.decl)}</td><td></td><td></td><td class="n">${sgn(r.omzetU-r.kostTotD,keur)}</td></tr></tbody>`;
+ $$('.gIn').forEach(el=>{const h=()=>{const v=+el.value;if(!isFinite(v))return;S.groups[+el.dataset.i][el.dataset.f]=v;save();update()};if(el.type==='range')el.oninput=h;else el.onchange=h});
+ $('#urenTxt').textContent=nf0.format(S.uren);
+ $('#uTiles').innerHTML=tile('Bezetting (declarabel / aanwezig)',nf1.format(r.bez)+'%',`begroting ${nf1.format(b.bez)}%`,r.bez<b.bez?'neg':'pos')+tile('Gerealiseerd uurtarief','€ '+nf2.format(r.tarAvg),`begroting € ${nf2.format(b.tarAvg)} (UUR-03)`)+tile('Inleenratio',nf1.format(r.inleenRatio)+'%',`begroting ${nf1.format(b.inleenRatio)}% (UUR-07)`,r.inleenRatio>b.inleenRatio+2?'neg':'')+tile('Verzuim',nf1.format(S.verzuim)+'%',`begroting ${nf1.format(BUD.verzuim)}% (UUR-06)`,S.verzuim>BUD.verzuim?'neg':'');
+ // grafiek urenverdeling
+ const G=r.g.filter(x=>x.g.type==='dekl'),W=760,rowH=34,lw=230,H=G.length*rowH+40;const mx=Math.max(...G.map(x=>x.b));const sx=v=>v/mx*(W-lw-20);
+ let s='';G.forEach((x,i)=>{const y=i*rowH+6;let acc=lw;[[x.d,'var(--good)','declarabel'],[x.ind,'var(--warn)','indirect'],[x.ver,'var(--bad)','verzuim']].forEach(([v,c,n])=>{const w=sx(v);s+=`<rect x="${acc}" y="${y}" width="${w}" height="${rowH-12}" fill="${c}" opacity=".85"><title>${n}: ${nf0.format(v)} uur</title></rect>`;acc+=w});
+  s+=`<text x="0" y="${y+15}" style="fill:var(--ink)">${x.g.l}</text><text class="vl" x="${acc+4}" y="${y+15}">${x.g.bez}%</text>`;
+  const bg=b.g.find(z=>z.g.k===x.g.k);if(bg){const bx=lw+sx(bg.d);s+=`<line x1="${bx}" x2="${bx}" y1="${y-2}" y2="${y+rowH-8}" stroke="var(--ink)" stroke-width="2"/>`}});
+ s+=`<rect x="${lw}" y="${H-14}" width="10" height="10" fill="var(--good)"/><text x="${lw+14}" y="${H-5}">declarabel</text><rect x="${lw+100}" y="${H-14}" width="10" height="10" fill="var(--warn)"/><text x="${lw+114}" y="${H-5}">indirect</text><rect x="${lw+180}" y="${H-14}" width="10" height="10" fill="var(--bad)"/><text x="${lw+194}" y="${H-5}">verzuim</text><line x1="${lw+260}" x2="${lw+260}" y1="${H-15}" y2="${H-3}" stroke="var(--ink)" stroke-width="2"/><text x="${lw+266}" y="${H-5}">begrote declarabele uren</text>`;
+ $('#hrsChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Urenverdeling per functiegroep">${s}</svg>`;
+}
+const uDefs=()=>[['verzuim','Ziekteverzuim (%)',2,12,0.1,v=>nf1.format(v)+'%'],['inleen','Inleenuren (jaar)',0,80000,500,v=>nf0.format(v)],['tarInleen','Tarief inleen (€/u)',30,160,1,v=>'€ '+nf0.format(v)],['kostInleen','Kosten inleen (€/u)',25,140,1,v=>'€ '+nf0.format(v)],
+ ...(BRK!=='it'?[['opslag','Opslag materiaal en onderaanneming (%)',0,30,0.5,v=>nf1.format(v)+'%'],['matPrijs','Prijsstijging inkoop na calculatie (%)',-5,10,0.5,v=>sgn(v,x=>nf1.format(x))+'%']]:[]),
+ ...(BRK==='infra'?[['matU','Materieeluren (jaar)',10000,60000,500,v=>nf0.format(v)],['matTar','Materieeltarief (€/u)',60,200,1,v=>'€ '+nf0.format(v)]]:[]),['faal','Faalkosten (% productie)',0,5,0.1,v=>nf1.format(v)+'%']];
+function sl(d,pre){const [k,l,mn,mx,st]=d;return `<div class="field"><label for="${pre}${k}"><span>${l}</span><output id="o_${pre}${k}"></output></label><input type="range" id="${pre}${k}" min="${mn}" max="${mx}" step="${st}" value="${S[k]}"></div>`}
+function buildUGlobal(){const D=uDefs();$('#uGlobal').innerHTML='<h2 style="margin:0">Overige drivers</h2>'+D.map(d=>sl(d,'u_')).join('');D.forEach(d=>$('#u_'+d[0]).oninput=e=>{S[d[0]]=+e.target.value;save();update()})}
+function syncU(){uDefs().forEach(d=>{const el=$('#u_'+d[0]);if(el){el.value=S[d[0]];$('#o_u_'+d[0]).textContent=d[5](S[d[0]])}})}
+
+/* ---------- 04 PROJECTEN ---------- */
+let curP=null,fType='',fPL='',fReg='',fPQ='',pSort='fadeE',pDir=1;
+function renderProjects(r,b){const rows=r.prows;if(!curP)curP=rows.slice().sort((a,b)=>a.fadeE-b.fadeE)[0].id;
+ const T=rows.reduce((a,p)=>({rev:a.rev+p.rev,calcE:a.calcE+p.rev*p.calc/100,progE:a.progE+p.rev*p.progU/100,fade:a.fade+p.fadeE,ohw:a.ohw+p.ohw,rest:a.rest+p.rest}),{rev:0,calcE:0,progE:0,fade:0,ohw:0,rest:0});
+ const over=rows.filter(p=>p.fadePP<-2).length;
+ $('#pTiles').innerHTML=tile('Lopende projecten',`${rows.length}`,`opdrachtwaarde ${meur(T.rev)}`)+tile('Marge bij opdracht',nf1.format(T.calcE/T.rev*100)+'%',meur(T.calcE))+tile('Prognose bij gereedkomen',nf1.format(T.progE/T.rev*100)+'%',meur(T.progE),T.progE<T.calcE?'neg':'')+tile('Margeverloop',meur(T.fade),'prognose − opdracht (PRO-02)',T.fade<0?'neg':'pos')+tile('Projecten met overschrijding',`${over}`,`margeverloop < −2 pp (PRO-03)`,over?'neg':'')+tile('Onderhanden werk',meur(T.ohw),'verdiend − gefactureerd');
+ $('#fType').innerHTML='<option value="">Alle typen</option>'+[...new Set(PROJ.map(p=>p.type))].map(t=>`<option${t===fType?' selected':''}>${t}</option>`).join('');
+ $('#fReg').innerHTML='<option value="">Alle regio\'s</option>'+REG.map(t=>`<option${t===fReg?' selected':''}>${t}</option>`).join('');
+ $('#fPL').innerHTML='<option value="">Alle projectleiders</option>'+PLS.map(t=>`<option${t===fPL?' selected':''}>${t}</option>`).join('');
+ let list=rows.filter(p=>(!fType||p.type===fType)&&(!fPL||p.pl===fPL)&&(!fReg||p.reg===fReg)&&(!fPQ||(p.naam+' '+p.plaats+' '+p.client+' '+p.id).toLowerCase().includes(fPQ)));
+ const key=p=>({naam:p.plaats+p.naam,rev:p.rev,vg:p.vg,calc:p.calc,prog:p.progU,fadeE:p.fadeE,gap:p.gap,ohw:p.ohw})[pSort];list.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:0)*pDir);
+ const th=(k,l,n)=>`<th class="${n?'n':''}"><button class="sortbtn" data-k="${k}">${l}${pSort===k?(pDir<0?' ↓':' ↑'):''}</button></th>`;
+ $('#pTable').innerHTML=`<thead><tr>${th('naam','Project')}<th>Type · PL · regio</th>${th('rev','Opdracht k€',1)}${th('vg','Voortg.',1)}${th('calc','Opdracht',1)}${th('prog','Prognose',1)}${th('fadeE','Verloop k€',1)}${th('gap','Budget op / gereed',1)}${th('ohw','OHW k€',1)}</tr></thead><tbody>`+
+  list.map(p=>`<tr class="click${p.id===curP?' sel':''}" data-id="${p.id}"><td><b>${esc(p.naam)}</b><br><span class="note">${p.id} · ${esc(p.client)}, ${p.plaats}</span></td><td class="note">${p.type}<br>${p.pl} · ${p.reg}</td><td class="n">${keur(p.rev)}</td><td class="n">${p.vg}%</td><td class="n">${nf1.format(p.calc)}%</td><td class="n">${nf1.format(p.progU)}%</td><td class="n"><span class="pill ${p.fadePP>=0?'p-good':p.fadePP>=-2?'p-warn':'p-bad'}">${sgn(p.fadeE,keur)}</span></td><td class="n"><span class="${p.gap>5?'neg':''}">${nf0.format(p.budU)}% / ${p.vg}%</span></td><td class="n">${sgn(p.ohw,keur)}</td></tr>`).join('')+`</tbody>`;
+ $$('#pTable tr.click').forEach(t=>t.onclick=()=>{curP=t.dataset.id;update()});
+ $$('#pTable .sortbtn').forEach(bt=>bt.onclick=()=>{const k=bt.dataset.k;if(pSort===k)pDir=-pDir;else{pSort=k;pDir=k==='naam'?1:(k==='fadeE'?1:-1)}update()});
+ // scatter
+ {const W=760,H=300,pl=54,pb=40,pt=14,pr=16;const ys=rows.map(p=>p.fadePP);const y0=Math.floor(Math.min(...ys,-4)-1),y1=Math.ceil(Math.max(...ys,2)+1);
+  const sx=v=>pl+v/100*(W-pl-pr),sy=v=>pt+(1-(v-y0)/(y1-y0))*(H-pt-pb);const mxR=Math.max(...rows.map(p=>p.rev));const col={'Aanneming':'#1E3A5F','Regie':'#2A9D8F','Service en onderhoud':'#D08A1D','Vaste prijs':'#1E3A5F'};
+  let s=`<rect x="${pl}" y="${sy(-2)}" width="${(W-pl-pr)/2}" height="${sy(y0)-sy(-2)}" fill="var(--bad-soft)" opacity=".6"/>`;
+  for(let v=0;v<=100;v+=20)s+=`<line x1="${sx(v)}" x2="${sx(v)}" y1="${pt}" y2="${H-pb}" stroke="var(--line)"/><text x="${sx(v)}" y="${H-pb+16}" text-anchor="middle">${v}%</text>`;
+  for(let v=Math.ceil(y0/2)*2;v<=y1;v+=2)s+=`<line x1="${pl}" x2="${W-pr}" y1="${sy(v)}" y2="${sy(v)}" stroke="${v===0?'var(--muted)':'var(--line)'}"/><text x="${pl-6}" y="${sy(v)+4}" text-anchor="end">${v>0?'+':''}${v} pp</text>`;
+  s+=`<text x="${(W+pl)/2}" y="${H-4}" text-anchor="middle">voortgang</text>`;
+  rows.forEach(p=>{const rr=3+Math.sqrt(p.rev/mxR)*14;s+=`<circle class="pt" data-id="${p.id}" cx="${sx(p.vg)}" cy="${sy(p.fadePP)}" r="${rr}" fill="${col[p.type]||'#1E3A5F'}" fill-opacity="${p.id===curP?1:.65}" stroke="${p.id===curP?'var(--ink)':'var(--panel)'}" stroke-width="${p.id===curP?2.5:1}"><title>${esc(p.naam)} (${p.id}): ${sgn(p.fadePP,x=>nf1.format(x))} pp bij ${p.vg}%</title></circle>`});
+  $('#pScatter').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Voortgang en margeverloop">${s}</svg><div class="row" style="margin-top:6px">${[...new Set(PROJ.map(p=>p.type))].map(t=>`<span class="note"><span class="dot" style="background:${col[t]}"></span>${t}</span>`).join('')}</div>`;
+  $$('#pScatter .pt').forEach(c=>{c.style.cursor='pointer';c.onclick=()=>{curP=c.dataset.id;update()}})}
+ // per projectleider
+ $('#plTableR').innerHTML='<thead><tr><th>Projectleider</th><th class="n">Projecten</th><th class="n">Opdracht k€</th><th class="n">Verloop k€</th><th class="n">Overschr.</th><th class="n">OHW k€</th><th class="n">Meerwerk vastgelegd</th></tr></thead><tbody>'+PLS.map(n=>{const ps=rows.filter(p=>p.pl===n);const a=ps.reduce((s,p)=>({rev:s.rev+p.rev,f:s.f+p.fadeE,o:s.o+p.ohw,mu:s.mu+p.som*p.mwU/100,mo:s.mo+p.som*p.mwO/100}),{rev:0,f:0,o:0,mu:0,mo:0});return `<tr class="click" data-pl="${n}"><td><b>${n}</b></td><td class="n">${ps.length}</td><td class="n">${keur(a.rev)}</td><td class="n ${a.f<0?'neg':'pos'}">${sgn(a.f,keur)}</td><td class="n">${ps.filter(p=>p.fadePP<-2).length}</td><td class="n">${sgn(a.o,keur)}</td><td class="n">${a.mu?nf0.format(a.mo/a.mu*100):'–'}%</td></tr>`}).join('')+'</tbody>';
+ $$('#plTableR tr.click').forEach(t=>t.onclick=()=>{fPL=fPL===t.dataset.pl?'':t.dataset.pl;update();$('#pTable').scrollIntoView({behavior:'smooth',block:'nearest'})});
+ // projectkaart
+ const p=rows.find(x=>x.id===curP)||rows[0],o=OVR[p.id]||{};
+ $('#pCard').innerHTML=`<h2 style="margin:0">${esc(p.naam)}</h2><p class="note" style="margin:0">${p.id} · ${esc(p.client)}, ${p.plaats} · ${p.type} · ${p.pl} · regio ${p.reg}</p>
+  <div class="grid g2" style="gap:8px"><div class="tile"><div class="lbl">Opdracht incl. meerwerk</div><div class="val" style="font-size:18px">${meur(p.rev)}</div></div><div class="tile"><div class="lbl">Prognose kosten bij gereedkomen</div><div class="val" style="font-size:18px">${meur(p.eac)}</div></div>
+  <div class="tile"><div class="lbl">DCM voorcalculatie → prognose</div><div class="val" style="font-size:18px">${nf1.format(p.calc)}% → <span class="${p.fadePP<0?'neg':'pos'}">${nf1.format(p.progU)}%</span></div></div><div class="tile"><div class="lbl">Margeverloop</div><div class="val ${p.fadeE<0?'neg':'pos'}" style="font-size:18px">${sgn(p.fadeE,eur)}</div></div></div>
+  <h3 style="margin:4px 0 -4px">Projectreview: bijstellen</h3>
+  <div class="field"><label for="pp_prog"><span>Prognose DCM bij gereedkomen (%)</span><output>${nf1.format(p.progU)}%</output></label><input type="range" id="pp_prog" min="-20" max="${Math.max(35,p.calc+10)}" step="0.1" value="${p.progU}"></div>
+  <div class="field"><label for="pp_vg"><span>Voortgang (%)</span><output>${p.vg}%</output></label><input type="range" id="pp_vg" min="0" max="100" value="${p.vg}"></div>
+  <div class="field"><label for="pp_mwO"><span>Meerwerk opgedragen (% van opdracht)</span><output>${nf1.format(p.mwO)}% van ${nf1.format(p.mwU)}% uitgevoerd</output></label><input type="range" id="pp_mwO" min="0" max="${Math.max(p.mwU,1)}" step="0.1" value="${p.mwO}"></div>
+  <table class="kv"><tr><th>Verdiend (naar voortgang)</th><td>${eur(p.earned)}</td></tr><tr><th>Gefactureerd</th><td>${eur(p.fact)}</td></tr><tr><th>Onderhanden werk</th><td>${sgn(p.ohw,eur)} ${p.ohw>0?'nog te factureren':'vooruitgefactureerd'}</td></tr><tr><th>Werkelijke kosten tot nu</th><td>${eur(p.cost)}</td></tr><tr><th>Nog te maken kosten (NTMK)</th><td>${eur(p.ntmk)}</td></tr><tr><th>Budget op / gereed</th><td>${nf0.format(p.budU)}% / ${p.vg}% ${p.gap>5?'<span class="pill p-bad">budget loopt voor</span>':''}</td></tr><tr><th>Meerwerk nog niet opgedragen</th><td>${eur(p.som*(p.mwU-p.mwO)/100)}</td></tr></table>
+  ${o.prog!=null||o.vg!=null||o.mwO!=null?'<button class="btn" id="pp_reset">Herstel dit project</button>':''}`;
+ {const lab=BRK==='it'?['Meerwerk niet opgedragen','Herstel en terugkomen','Uren (efficiency)','Inhuur','Overig']:['Meerwerk niet opgedragen','Herstel en terugkomen','Uren (efficiency)','Materiaal','Onderaanneming'];
+  drawBridge($('#dcmBridge'),[['DCM voorcalculatie',p.dcmCalc,'tot'],...p.brug.map((v,i)=>[lab[i],v,'d']),['DCM prognose',p.dcmProg,'tot']],'DCM-brug project');
+  $('#dcmTitle').textContent=`DCM-brug: ${p.naam} (${p.id})`;}
+ [['prog','pp_prog'],['vg','pp_vg'],['mwO','pp_mwO']].forEach(([f,id])=>$('#'+id).onchange=e=>{OVR[p.id]=Object.assign(OVR[p.id]||{},{[f]:+e.target.value});save();update()});
+ const rb=$('#pp_reset');if(rb)rb.onclick=()=>{delete OVR[p.id];save();update()};
+}
+$('#fType').onchange=e=>{fType=e.target.value;update()};
+let simU=8;
+function renderSim(){const N=10,Rev=1000000,Bud=850000,extra=[0,0,0,12000,12000,12000,12000,12000,0,0];const plan=Bud/N;
+ const run=(meth,U)=>{let cc=0,rc=0;const out=[];for(let t=1;t<=N;t++){const c=plan+extra[t-1];cc+=c;const eac=t>=U?Bud+60000:Bud;const prog=meth==='fys'?t/N:Math.min(1,cc/eac);const rcum=prog*Rev;const mr=rcum-rc;rc=rcum;out.push({t,rev:mr,cost:c,res:mr-c,pct:mr?(mr-c)/mr*100:0})}return out};
+ const A=run('kost',simU),B=run('kost',4),C=run('fys',0);
+ const W=760,H=280,pl=50,pb=34,pt=14,pr=16;const all=[...A,...B,...C].map(x=>x.pct);const y0=Math.floor(Math.min(...all,0)/5)*5,y1=Math.ceil(Math.max(...all,20)/5)*5;
+ const sx=t=>pl+(t-1)/(N-1)*(W-pl-pr),sy=v=>pt+(1-(v-y0)/(y1-y0))*(H-pt-pb);let s='';
+ const st=(y1-y0)>60?20:10;for(let v=Math.ceil(y0/st)*st;v<=y1;v+=st)s+=`<line x1="${pl}" x2="${W-pr}" y1="${sy(v)}" y2="${sy(v)}" stroke="${v===0?'var(--muted)':'var(--line)'}"/><text x="${pl-6}" y="${sy(v)+4}" text-anchor="end">${v}%</text>`;
+ for(let t=1;t<=N;t++)s+=`<text x="${sx(t)}" y="${H-pb+16}" text-anchor="middle">m${t}</text>`;
+ s+=`<rect x="${sx(4)}" y="${pt}" width="${sx(8)-sx(4)}" height="${H-pt-pb}" fill="var(--warn-soft)" opacity=".5"/><text x="${(sx(4)+sx(8))/2}" y="${H-pb-8}" text-anchor="middle" style="fill:var(--warn)">herstelwerk m4–m8</text>`;
+ const line=(D,col,dash,lbl)=>{const pts=D.map(x=>`${sx(x.t)},${sy(x.pct)}`).join(' ');const last=D[N-1];return `<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2.5" ${dash?'stroke-dasharray="6 4"':''}/>`+D.map(x=>`<circle cx="${sx(x.t)}" cy="${sy(x.pct)}" r="3" fill="${col}"/>`).join('')};
+ s+=line(C,'var(--good)',false,'fysieke voortgang')+line(B,'var(--cool)',true,'kosten, direct bijgesteld')+line(A,'var(--bad)',false,`kosten, bijgesteld m${simU}`);
+ $('#simChart').innerHTML=`<div class="legend" style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;margin-bottom:6px"><span><b style="color:var(--good)">━</b> Fysieke voortgang</span><span><b style="color:var(--cool)">╍</b> Voortgang op kosten, direct bijgesteld (maand 4)</span><span><b style="color:var(--bad)">━</b> Voortgang op kosten, bijgesteld in maand ${simU}</span></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="DCM per maand in drie situaties">${s}</svg>`;
+ const worst=A.reduce((m,x)=>x.res<m.res?x:m,A[0]);const cum=A.reduce((s,x)=>s+x.res,0);
+ $('#simTxt').innerHTML=`Vaste prijs € 1,0 mln, gecalculeerde kosten € 850.000 (DCM 15%). In maand 4 tot en met 8 komt € 60.000 herstelwerk bij. Eindresultaat is in alle drie de situaties gelijk: ${eur(cum)} (${nf1.format(cum/Rev*100)}%). Bij voortgang op kosten en bijstelling in maand ${simU} valt in maand ${worst.t} een DCM van ${eur(worst.res)} (${sgn(worst.pct,x=>nf1.format(x))}% van de omzet in die maand); tot dan zag het project er beter uit dan het was.`;
+ $('#simU').value=simU;$('#simUo').textContent='maand '+simU}
+$('#simU').oninput=e=>{simU=+e.target.value;renderSim()};
+function renderDoorb(){const types=[...new Set(PROJ.map(p=>p.type))];
+ $('#doorbBox').innerHTML='<table><thead><tr><th>Projecttype</th><th class="n">Herstel doorbelastbaar</th></tr></thead><tbody>'+types.map(t=>`<tr><td>${t}</td><td class="n"><input type="number" class="dbIn" data-t="${t}" min="0" max="100" step="5" value="${(S.doorb||{})[t]||0}" style="width:70px" aria-label="Doorbelastbaar ${t}"> %</td></tr>`).join('')+'</tbody></table>';
+ $$('.dbIn').forEach(el=>el.onchange=()=>{S.doorb=Object.assign({},S.doorb||{},{[el.dataset.t]:+el.value});save();update()})}$('#wfSel').onchange=e=>{wfSel=e.target.value;update()};$('#wfOpl').onchange=e=>{S.oplIn=e.target.checked;save();update()};$('#wfReis').onchange=e=>{S.reisBenut=e.target.checked;save();update()};$('#fReg').onchange=e=>{fReg=e.target.value;update()};$('#fPL').onchange=e=>{fPL=e.target.value;update()};$('#fPQ').oninput=e=>{fPQ=e.target.value.toLowerCase();update()};
+
+/* ---------- 05 LICENTIES ---------- */
+function drawBridge(el,steps,aria){
+ let run=0;const bars=steps.map(s=>{let a,b;if(s[2]==='tot'){a=0;b=s[1];run=s[1]}else{a=run;b=run+s[1];run=b}return{lbl:s[0],v:s[1],a,b,t:s[2]}});
+ const W=760,H=260,pl=70,pb=44,pt=22;const vals=bars.flatMap(x=>x.t==='tot'?[x.b]:[x.a,x.b]);const lo=Math.min(...vals),hi=Math.max(...vals),span=Math.max(hi-lo,Math.abs(hi)*0.04,1);
+ const mx=hi+span*0.35,mn=lo-span*0.6;bars.forEach(b=>{if(b.t==='tot')b.a=mn});
+ const y=v=>pt+(H-pt-pb)*(1-(v-mn)/(mx-mn)),bw=(W-pl-10)/bars.length;
+ let g='';for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4;g+=`<line x1="${pl}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${Math.abs(v)>=1e6?meur(v):'€ '+nf0.format(Math.round(v/1000))+'k'}</text>`}
+ const rects=bars.map((b,i)=>{const x=pl+i*bw+bw*0.14,w=bw*0.72,top=y(Math.max(b.a,b.b)),hh=Math.max(1.5,Math.abs(y(b.a)-y(b.b)));const col=b.t==='tot'?'var(--cool)':(b.v>=0?'var(--good)':'var(--bad)');
+  const lab=b.t==='tot'?(Math.abs(b.v)>=1e6?meur(b.v):'€ '+nf0.format(Math.round(b.v/1000))+'k'):sgn(b.v,x=>'€ '+nf0.format(Math.round(x/1000))+'k');
+  const conn=i<bars.length-1?`<line x1="${x+w}" x2="${x+bw}" y1="${y(b.b)}" y2="${y(b.b)}" stroke="var(--muted)" stroke-dasharray="3 3"/>`:'';
+  const words=b.lbl.split(' ');const l1=words.slice(0,Math.ceil(words.length/2)).join(' '),l2=words.slice(Math.ceil(words.length/2)).join(' ');
+  return `<rect x="${x}" y="${top}" width="${w}" height="${hh}" fill="${col}" rx="2"/><text class="vl" x="${x+w/2}" y="${top-6}" text-anchor="middle">${lab}</text><text x="${x+w/2}" y="${H-pb+15}" text-anchor="middle">${l1}</text><text x="${x+w/2}" y="${H-pb+28}" text-anchor="middle">${l2}</text>${conn}`}).join('');
+ el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${aria}">${g}${rects}</svg>`}
+const mrrDefs=[['mrrBegin','Begin-MRR'],['mrrNieuw','Nieuw'],['mrrUitbr','Uitbreiding'],['mrrKrimp','Krimp'],['mrrOpz','Opzegging'],['hosting','Hosting en tooling (jaar)']];
+function renderLic(r,b){if(BRK!=='it')return;const P=S;
+ $('#mrrForm').innerHTML=mrrDefs.map(d=>`<div class="field"><label for="m_${d[0]}">${d[1]} (€)</label><input type="number" id="m_${d[0]}" value="${P[d[0]]}" step="1000"></div>`).join('');
+ mrrDefs.forEach(d=>$('#m_'+d[0]).onchange=e=>{S[d[0]]=+e.target.value;save();update()});
+ drawBridge($('#mrrBridge'),[['Begin-MRR',P.mrrBegin,'tot'],['Nieuw',P.mrrNieuw,'d'],['Uitbreiding',P.mrrUitbr,'d'],['Krimp',-P.mrrKrimp,'d'],['Opzegging',-P.mrrOpz,'d'],['Eind-MRR',r.mrrEind,'tot']],'MRR-brug');
+ $('#licTable').innerHTML='<thead><tr><th>Product</th><th class="n">Ingekocht</th><th class="n">Toegewezen</th><th class="n">Gefactureerd</th><th class="n">Inkoop €/mnd</th><th class="n">Verkoop €/mnd</th><th class="n">Marge</th><th class="n">Lek €/jaar</th></tr></thead><tbody>'+P.lic.map((l,i)=>{const m=(l.pv-l.pi)/l.pv*100,lek=(l.ink-l.fac)*l.pi*12;return `<tr><td><b>${l.n}</b></td>${['ink','toe','fac','pi','pv'].map(f=>`<td class="n"><input type="number" class="lIn" data-i="${i}" data-f="${f}" value="${l[f]}" step="${f[0]==='p'?0.1:1}" style="width:80px" aria-label="${l.n} ${f}"></td>`).join('')}<td class="n"><span class="pill ${m<0?'p-bad':m<12?'p-warn':'p-good'}">${nf1.format(m)}%</span></td><td class="n ${lek>0?'neg':''}">${eur(lek)}</td></tr>`}).join('')+'</tbody>';
+ $$('.lIn').forEach(el=>el.onchange=()=>{S.lic[+el.dataset.i][el.dataset.f]=+el.value;save();update()});
+ const W=760,rowH=32,lw=170,H=P.lic.length*rowH+10;const mx=Math.max(...P.lic.map(l=>l.ink));const sx=v=>v/mx*(W-lw-60);
+ let s='';P.lic.forEach((l,i)=>{const y=i*rowH+4;let x=lw;[[l.fac,'var(--good)'],[l.toe-l.fac,'var(--warn)'],[l.ink-l.toe,'var(--bad)']].forEach(([v,c])=>{const w=sx(Math.max(0,v));s+=`<rect x="${x}" y="${y}" width="${w}" height="${rowH-10}" fill="${c}" opacity=".85"/>`;x+=w});s+=`<text x="0" y="${y+15}" style="fill:var(--ink)">${l.n}</text><text class="vl" x="${x+4}" y="${y+15}">${nf0.format(l.ink)}</text>`});
+ $('#licChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Licentiebalans">${s}</svg>`;
+ const lm=r.licOmzet?(r.licOmzet-r.licKost)/r.licOmzet*100:0,lek=P.lic.reduce((a,l)=>a+(l.ink-l.fac)*l.pi*12,0),nrr=(P.mrrBegin+P.mrrUitbr-P.mrrKrimp-P.mrrOpz)/P.mrrBegin*100;
+ $('#lTiles').innerHTML=tile('ARR (eind-MRR × 12)',meur(r.mrrEind*12),`begroting ${meur(b.mrrEind*12)} (ABO-01)`,r.mrrEind<b.mrrEind?'neg':'pos')+tile('Netto omzetbehoud',nf1.format(nrr)+'%','ABO-02',nrr<100?'neg':'pos')+tile('Licentiemarge',nf1.format(lm)+'%',`omzet ${meur(r.licOmzet)} (LIC-01)`,lm<8?'neg':'')+tile('Niet-doorbelaste licenties',eur(lek),'per jaar (LIC-03)',lek>0?'neg':'');
+}
+
+/* ---------- 06 P&L ---------- */
+const costDefs=[['huisv','Huisvesting'],['wagen','Wagenpark en materieel klein'],['itk','IT-kosten (beheer)'],['overig','Overige algemene kosten'],['afschr','Afschrijvingen'],['capex','Investeringen (CAPEX)']];
+function buildCost(){$('#costForm').innerHTML='<h2 style="margin:0">Kosten en werkkapitaal</h2>'+costDefs.map(d=>`<div class="field"><label for="c_${d[0]}">${d[1]} (€)</label><input type="number" id="c_${d[0]}" step="10000"></div>`).join('')+
+ [['ohw','Nog te factureren (dagen)'],['dso','DSO (dagen)'],['vooruit','Vooruitgefactureerd (dagen)']].map(d=>`<div class="field"><label for="c_${d[0]}">${d[1]}</label><input type="number" id="c_${d[0]}" step="1"></div>`).join('')+'<p class="note">Werkkapitaal = nog te factureren + debiteuren − vooruitgefactureerd, in dagen productie. Mutatie ten opzichte van vorig jaar bepaalt de kasstroom.</p>';
+ [...costDefs.map(d=>d[0]),'ohw','dso','vooruit'].forEach(k=>$('#c_'+k).onchange=e=>{S[k]=+e.target.value;save();update()})}
+function syncCost(){[...costDefs.map(d=>d[0]),'ohw','dso','vooruit'].forEach(k=>{const el=$('#c_'+k);if(el&&document.activeElement!==el)el.value=S[k]})}
+function renderPL(a,b,l){const it=BRK==='it',inf=BRK==='infra',lse=BRK==='inst';
+ const lines=[['Opbrengst uren (eigen personeel)','omzetU'],['Opbrengst inleen','inleenOmzet'],...(it?[['Abonnementen en beheer','aboOmzet'],['Licenties (doorverkoop)','licOmzet']]:[['Materiaal en onderaanneming (doorbelast)','matOmzet']]),...(inf?[['Materieelinzet','mtOmzet']]:[]),...(lse?[['Verhuur en lease','leaseOmzet']]:[]),['Productie','productie','sum'],
+  ...(it?[['Inkoop licenties','licKost','',-1],['Hosting en uitbesteed werk','hosting','',-1]]:[['Materiaal en onderaanneming','matKost','',-1]]),...(lse?[['Plaatsing verhuurinstallaties','leaseAct','',-1],['Activering verhuurinstallaties','leaseAct']]:[]),['Brutomarge','gm','sum'],
+  ['Directe uren eigen personeel','kostDirect','',-1],['Inleen','inleenKost','',-1],...(it?[['Beheer en servicedesk','aboPers','',-1]]:[]),['Faalkosten (materiaal en garantie)','faal','',-1],['Herstel en terugkomen, niet doorbelastbaar','faalNB','',-1],...(inf?[['Materieel (excl. afschrijving)','mtKost','',-1]]:[]),...(lse?[['Afschrijving verhuurinstallaties','leaseAfschr','',-1]]:[]),['Bijstelling prognoses lopende projecten','fade'],
+  ['DCM – directe bijdragemarge','bruto','sum'],['Indirecte uren uitvoerend personeel','indirectPers','',-1],['Wagenpark en gereedschap uitvoering','wagenK','',-1],['TCM – totale bijdragemarge','tcm','sum'],['Staf en directie','staf','',-1],['Huisvesting, IT en overige kosten','alg','',-1],['EBITDA','ebitda','sum'],['Afschrijvingen','_af','',-1],['EBIT','ebit','sum'],['Mutatie werkkapitaal','dWK','',-1],['Kasstroom uit operatie','cash','sum'],['Investeringen (incl. verhuurinstallaties)','_cx','',-1]];
+ const get=(r,k)=>k==='_af'?r.P.afschr:k==='_cx'?r.P.capex+r.leaseAct:r[k];
+ const dc=(x,cs)=>{const good=cs===-1?x<0:x>0;return `<td class="n ${Math.abs(x)<500?'':(good?'pos':'neg')}">${sgn(x,keur)}</td>`};
+ $('#pltable').innerHTML='<thead><tr><th></th><th class="n">Werkelijk/BE</th><th class="n">Begroting</th><th class="n">Δ begroting</th><th class="n">Vorig jaar</th><th class="n">Δ VJ</th></tr></thead><tbody>'+lines.map(([lb,k,cls,cs])=>{const va=get(a,k),vb=get(b,k),vl=get(l,k),sg=cs===-1?-1:1;return `<tr class="${cls==='sum'?'sum':'ind'}"><td>${lb}</td><td class="n">${keur(sg*va)}</td><td class="n">${keur(sg*vb)}</td>${dc(va-vb,cs)}<td class="n">${keur(sg*vl)}</td>${dc(va-vl,cs)}</tr>`}).join('')+'</tbody>';
+ $('#plTiles').innerHTML=tile('Productie',meur(a.productie),`<span class="${a.productie>=b.productie?'pos':'neg'}">${sgn(a.productie-b.productie,eur)}</span> vs begroting`)+tile('DCM',nf1.format(a.bruto/a.productie*100)+'%',`${meur(a.bruto)} · begroting ${nf1.format(b.bruto/b.productie*100)}% (PRO-01)`,a.bruto/a.productie<b.bruto/b.productie?'neg':'')+tile('TCM',nf1.format(a.tcm/a.productie*100)+'%',`${meur(a.tcm)} · begroting ${nf1.format(b.tcm/b.productie*100)}% (PRO-08)`,a.tcm<b.tcm?'neg':'')+tile('EBITDA',meur(a.ebitda),`<span class="${a.ebitda>=b.ebitda?'pos':'neg'}">${sgn(a.ebitda-b.ebitda,eur)}</span> vs begroting`);
+ // brug
+ const gEff=a.g.map((x,i)=>{const y=b.g[i];return y?{vol:(x.d-y.d)*y.g.tar,tar:(x.g.tar-y.g.tar)*x.d,pers:x.g.type==='dekl'?-(x.kt-y.kt):0}:{vol:0,tar:0,pers:0}});
+ const E=[['Bezetting en volume',gEff.reduce((s,e)=>s+e.vol,0)],['Tarief',gEff.reduce((s,e)=>s+e.tar,0)],['Personeelskosten uitvoerend',gEff.reduce((s,e)=>s+e.pers,0)+(a.faalNB-b.faalNB)],['Inleen',(a.inleenOmzet-a.inleenKost)-(b.inleenOmzet-b.inleenKost)],
+  ...(it?[['Abonnementen en licenties',(a.aboOmzet-a.aboKost+a.licOmzet-a.licKost)-(b.aboOmzet-b.aboKost+b.licOmzet-b.licKost)]]:[['Materiaal en onderaanneming',(a.matOmzet-a.matKost)-(b.matOmzet-b.matKost)]]),...(inf?[['Materieel',(a.mtOmzet-a.mtKost)-(b.mtOmzet-b.mtKost)]]:[]),...(lse?[['Verhuur en lease',(a.leaseOmzet-a.leaseAfschr)-(b.leaseOmzet-b.leaseAfschr)]]:[]),
+  ['Faalkosten',-(a.faal-b.faal)],['Herstel niet doorbelastbaar',-(a.faalNB-b.faalNB)],['Margeverloop projecten',a.fade-b.fade],['Wagenpark, staf en overige kosten',-((a.wagenK+a.staf+a.alg)-(b.wagenK+b.staf+b.alg))]];
+ const sumE=E.reduce((s,e)=>s+e[1],0),diff=a.ebitda-b.ebitda;
+ {const regs=REG.map(g=>{const ps=a.prows.filter(p=>p.reg===g),pb=b.prows.filter(p=>p.reg===g);const tot=a.prows.reduce((s,p)=>s+p.earned,0),sh=ps.reduce((s,p)=>s+p.earned,0)/tot;const fa=ps.reduce((s,p)=>s+p.fadeRec,0),ft=a.fade;const dcm=(a.bruto-ft)*sh+fa,tcm=dcm-a.uitvInd*sh;const shb=pb.reduce((s,p)=>s+p.earned,0)/b.prows.reduce((s,p)=>s+p.earned,0),dcmb=b.bruto*shb,tcmb=dcmb-b.uitvInd*shb;return{g,n:ps.length,prod:a.productie*sh,dcm,tcm,dcmb,tcmb}});
+   $('#regTable').innerHTML='<thead><tr><th>Regio</th><th class="n">Projecten</th><th class="n">Productie k€</th><th class="n">DCM k€</th><th class="n">DCM %</th><th class="n">Δ begr. k€</th><th class="n">TCM k€</th><th class="n">TCM %</th><th class="n">Δ begr. k€</th></tr></thead><tbody>'+regs.map(x=>`<tr><td><b>${x.g}</b></td><td class="n">${x.n}</td><td class="n">${keur(x.prod)}</td><td class="n">${keur(x.dcm)}</td><td class="n">${nf1.format(x.dcm/x.prod*100)}%</td><td class="n ${x.dcm>=x.dcmb?'pos':'neg'}">${sgn(x.dcm-x.dcmb,keur)}</td><td class="n">${keur(x.tcm)}</td><td class="n">${nf1.format(x.tcm/x.prod*100)}%</td><td class="n ${x.tcm>=x.tcmb?'pos':'neg'}">${sgn(x.tcm-x.tcmb,keur)}</td></tr>`).join('')+'</tbody>';}
+ drawBridge($('#ebBridge'),[['Begroting',b.ebitda,'tot'],...E.map(e=>[e[0],e[1],'d']),['Werkelijk/BE',a.ebitda,'tot']],'Brug EBITDA');
+ $('#varTable').innerHTML='<thead><tr><th>Effect</th><th class="n">k€</th></tr></thead><tbody>'+E.map(e=>`<tr class="ind"><td>${e[0]}</td><td class="n ${e[1]>=0?'pos':'neg'}">${sgn(e[1],keur)}</td></tr>`).join('')+`<tr class="sum"><td>Δ EBITDA ${Math.abs(sumE-diff)<1?'<span class="pill p-good">sluit</span>':'<span class="pill p-bad">verschil</span>'}</td><td class="n">${sgn(diff,keur)}</td></tr></tbody>`;
+}
+$('#setBudget').onclick=()=>{BUD=clone(S);store.set('po_b_'+BRK,BUD);update()};
+function resetAll(){S=mkAct(BRK,DEF);BUD=clone(DEF);OVR={};save();store.set('po_b_'+BRK,BUD);buildUGlobal();update();renderKd()}
+$('#resetAll').onclick=resetAll;
+
+/* ---------- SEGMENTEN ---------- */
+// cel: [activiteit, markt, u (uren/omzet-aandeel), m (materiaal-aandeel), extra]
+const SEG={
+ inst:{acts:['Projecten','Service en onderhoud','Verhuur en lease'],mkts:['Particulier','Zakelijk','Via corporatie/VvE'],cells:[['Projecten','Particulier',.10,.10],['Projecten','Zakelijk',.28,.38],['Projecten','Via corporatie/VvE',.20,.27],['Service en onderhoud','Particulier',.18,.10],['Service en onderhoud','Zakelijk',.10,.07],['Service en onderhoud','Via corporatie/VvE',.11,.06],['Verhuur en lease','Particulier',.03,.02,'lease']],proj:['Projecten']},
+ bouw:{acts:['Nieuwbouw','Renovatie en onderhoud'],mkts:['Publiek','Privaat','Corporatie'],cells:[['Nieuwbouw','Publiek',.15,.17],['Nieuwbouw','Privaat',.25,.30],['Nieuwbouw','Corporatie',.20,.23],['Renovatie en onderhoud','Publiek',.12,.09],['Renovatie en onderhoud','Privaat',.10,.08],['Renovatie en onderhoud','Corporatie',.18,.13]],proj:['Nieuwbouw','Renovatie en onderhoud']},
+ infra:{acts:['Aanneming','Regie en onderhoud'],mkts:['Publiek','Privaat'],cells:[['Aanneming','Publiek',.55,.60],['Aanneming','Privaat',.15,.17],['Regie en onderhoud','Publiek',.22,.17],['Regie en onderhoud','Privaat',.08,.06]],proj:['Aanneming']},
+ it:{acts:['Projecten','Beheer en abonnementen','Licenties'],mkts:['MKB','Publiek en zorg'],cells:[['Projecten','MKB',.30,0],['Projecten','Publiek en zorg',.25,0],['Beheer en abonnementen','MKB',.20,0,'abo',.6],['Beheer en abonnementen','Publiek en zorg',.25,0,'abo',.4],['Licenties','MKB',0,0,'lic',.65],['Licenties','Publiek en zorg',0,0,'lic',.35]],proj:['Projecten']}};
+const PREM={inst:{m:{'Particulier':[.08,.30],'Zakelijk':[0,0],'Via corporatie/VvE':[-.06,-.25]},a:{'Service en onderhoud':[.06,.2]}},
+ bouw:{m:{'Publiek':[-.03,-.15],'Privaat':[.02,.1],'Corporatie':[-.02,-.05]},a:{'Renovatie en onderhoud':[.05,.15]}},
+ infra:{m:{'Publiek':[-.02,-.1],'Privaat':[.04,.15]},a:{'Regie en onderhoud':[.05,.1]}},
+ it:{m:{'MKB':[.04,0],'Publiek en zorg':[-.04,0]},a:{}}};
+const OHKEYS={omzet:'Omzet (productie)',fte:'FTE direct',mix:'Gemengd: 50% omzet, 50% FTE direct',geen:'Niet verdelen'};
+let segView='matrix';
+function segCalc(r,key){const D=SEG[BRK],PR=PREM[BRK];const projU=D.cells.filter(c=>D.proj.includes(c[0])).reduce((s,c)=>s+c[2],0);
+ const fac=(c,i)=>(1+((PR.m[c[1]]||[0,0])[i]))*(1+((PR.a[c[0]]||[0,0])[i]));const su=D.cells.reduce((s,c)=>s+c[2]*fac(c,0),0)||1,sm=D.cells.reduce((s,c)=>s+c[3]*fac(c,1),0)||1;
+ const cells=D.cells.map(c=>{const [act,mkt,u,m,x,xs]=c;const isP=D.proj.includes(act);
+  const o={act,mkt,u,f:u};o.prod=r.urenOmzet*u*fac(c,0)/su+r.matKost*m+(r.matOmzet-r.matKost)*m*fac(c,1)/sm+r.mtOmzet*u+(x==='abo'?r.aboOmzet*xs:0)+(x==='lic'?r.licOmzet*xs:0)+(x==='lease'?r.leaseOmzet:0);
+  o.uitb=r.matKost*m+(x==='lic'?(r.licKost)*xs:0)+(x==='abo'?r.hosting*xs:0)+(x==='lease'?r.leaseAct:0);o.act2=x==='lease'?r.leaseAct:0;
+  o.gm=o.prod-o.uitb+o.act2;
+  o.pers=(r.kostDirect+r.inleenKost)*u+(x==='abo'?r.aboPers*xs:0);
+  o.ov=r.faal*(o.prod/r.productie)+r.faalNB*u+r.mtKost*u+(x==='lease'?r.leaseAfschr:0)-(isP?r.fade*u/projU:0);
+  o.dcm=o.gm-o.pers-o.ov;o.fteD=r.fteD*u+(x==='abo'?r.g.filter(z=>z.g.type==='abo').reduce((s,z)=>s+z.g.fte,0)*xs:0);return o});
+ const fteT=cells.reduce((s,c)=>s+c.fteD,0);
+ cells.forEach(c=>{c.ind=r.uitvInd*(fteT?c.fteD/fteT:0);c.tcm=c.dcm-c.ind;
+  const so=c.prod/r.productie,sf=fteT?c.fteD/fteT:0;c.sh={omzet:so,fte:sf,mix:(so+sf)/2,geen:0}[key];c.oh=(r.staf+r.alg)*c.sh;c.ebitda=c.tcm-c.oh;c.so=so;c.sf=sf});
+ return cells}
+function renderSeg(r,b){const D=SEG[BRK],key=S.ohKey||'omzet';
+ $('#ohKey').innerHTML=Object.entries(OHKEYS).map(([k,l])=>`<option value="${k}"${k===key?' selected':''}>${l}</option>`).join('');
+ $('#segSeg').innerHTML=[['matrix','Activiteit × markt'],['act','Per activiteit'],['mkt','Per markt']].map(([k,l])=>`<button class="${k===segView?'on':''}" data-k="${k}">${l}</button>`).join('');
+ $$('#segSeg button').forEach(bt=>bt.onclick=()=>{segView=bt.dataset.k;update()});
+ let cells=segCalc(r,key);const sumF=['prod','uitb','act2','gm','pers','ov','dcm','ind','tcm','oh','ebitda','fteD','so','sf'];
+ const agg=(arr,lbl)=>{const o={act:lbl,mkt:''};sumF.forEach(f=>o[f]=arr.reduce((s,c)=>s+c[f],0));return o};
+ let cols,groups;if(segView==='act'){cols=D.acts.map(a=>agg(cells.filter(c=>c.act===a),a));groups=null}else if(segView==='mkt'){cols=D.mkts.map(m=>agg(cells.filter(c=>c.mkt===m),m));groups=null}else{cols=cells;groups=D.acts.map(a=>[a,cells.filter(c=>c.act===a).length])}
+ const tot=agg(cells,'Totaal');const unalloc=key==='geen'?r.staf+r.alg:0;
+ const rows=[['Productie','prod'],['Materiaal, onderaanneming en uitbesteed','uitb',-1],...(BRK==='inst'?[['Activering verhuur','act2']]:[]),['Brutomarge','gm','sum'],['%','gm','pct'],['Directe personeelskosten (incl. inleen)','pers',-1],['Overige directe kosten (incl. afschrijving verhuur, margeverloop)','ov',-1],['DCM','dcm','sum'],['%','dcm','pct'],['Indirecte kosten uitvoering','ind',-1],['TCM','tcm','sum'],['%','tcm','pct'],['Toegerekende overhead','oh',-1],['EBITDA'+(key==='geen'?' (vóór overhead)':''),'ebitda','sum'],['%','ebitda','pct']];
+ const cell=(c,k,t)=>t==='pct'?`<td class="n note">${c.prod?nf1.format(c[k]/c.prod*100)+'%':'–'}</td>`:`<td class="n ${(t==='sum'&&c[k]<0)?'neg':''}">${keur((t===-1?-1:1)*c[k])}</td>`;
+ const head=groups?`<tr><th></th>${groups.map(([g,n])=>`<th colspan="${n}" style="text-align:center;border-bottom:2px solid var(--cool)">${g}</th>`).join('')}<th></th></tr><tr><th>× € 1.000</th>${cols.map(c=>`<th class="n">${c.mkt}</th>`).join('')}<th class="n">Totaal</th></tr>`:`<tr><th>× € 1.000</th>${cols.map(c=>`<th class="n">${c.act}</th>`).join('')}<th class="n">Totaal</th></tr>`;
+ $('#segTable').innerHTML=`<thead>${head}</thead><tbody>`+rows.map(([lb,k,t])=>`<tr class="${t==='sum'?'sum':t==='pct'?'':'ind'}"><td${t==='pct'?' class="note" style="padding-left:26px"':''}>${lb}</td>${cols.map(c=>cell(c,k,t)).join('')}${cell(tot,k,t)}</tr>`).join('')+
+  (key==='geen'?`<tr><td>Niet toegerekende overhead</td>${cols.map(()=>'<td></td>').join('')}<td class="n">${keur(-unalloc)}</td></tr>`:'')+
+  `<tr class="sum"><td>Controle: EBITDA totaal model</td>${cols.map(()=>'<td></td>').join('')}<td class="n">${keur(r.ebitda)} ${Math.abs(tot.ebitda-unalloc-r.ebitda)<1?'<span class="pill p-good">sluit</span>':'<span class="pill p-bad">verschil</span>'}</td></tr></tbody>`;
+ // sleuteltabel
+ const cb=segCalc(r,'omzet'),cf=segCalc(r,'fte');
+ $('#keyTable').innerHTML='<thead><tr><th>Segment</th><th class="n">FTE direct</th><th class="n">Aandeel FTE</th><th class="n">Aandeel omzet</th><th class="n">EBITDA sleutel omzet k€</th><th class="n">EBITDA sleutel FTE k€</th><th class="n">Verschil k€</th></tr></thead><tbody>'+cells.map((c,i)=>{const d=cf[i].ebitda-cb[i].ebitda;return `<tr><td><b>${c.act}</b> · ${c.mkt}</td><td class="n">${nf1.format(c.fteD)}</td><td class="n">${nf1.format(c.sf*100)}%</td><td class="n">${nf1.format(c.so*100)}%</td><td class="n ${cb[i].ebitda<0?'neg':''}">${keur(cb[i].ebitda)}</td><td class="n ${cf[i].ebitda<0?'neg':''}">${keur(cf[i].ebitda)}</td><td class="n ${Math.abs(d)>50000?(d<0?'neg':'pos'):''}">${sgn(d,keur)}</td></tr>`}).join('')+'</tbody>';
+ // tegels
+ const best=cells.slice().sort((x,y)=>y.tcm/y.prod-x.tcm/x.prod)[0],worst=cells.slice().sort((x,y)=>x.tcm/x.prod-y.tcm/y.prod)[0];const neg=cells.filter(c=>c.ebitda<0).length;
+ $('#segTiles').innerHTML=tile('Segmenten',`${cells.length}`,`${D.acts.length} activiteiten × ${D.mkts.length} markten`)+tile('Hoogste TCM-marge',nf1.format(best.tcm/best.prod*100)+'%',`${best.act} · ${best.mkt}`,'pos')+tile('Laagste TCM-marge',nf1.format(worst.tcm/worst.prod*100)+'%',`${worst.act} · ${worst.mkt}`,worst.tcm<0?'neg':'')+tile('Segmenten met negatieve EBITDA',key==='geen'?'–':`${neg}`,key==='geen'?'overhead niet verdeeld':`sleutel: ${OHKEYS[key].toLowerCase()}`,neg&&key!=='geen'?'neg':'');
+}
+$('#ohKey').onchange=e=>{S.ohKey=e.target.value;save();update()};
+
+/* ---------- 07 KPI ---------- */
+const PERSP={FIN:'Financieel',COM:'Commercie',OPS:'Operationeel',KOS:'Kosten',KWA:'Kwaliteit van sturing',UUR:'Uren en capaciteit',PRO:'Projectresultaat',OHW:'Onderhanden werk',ABO:'Abonnementen',LIC:'Licenties'};
+const KPIS=[
+['FIN-07','OPEX','Indirecte uren + staf + algemene kosten','€','↓','Maand','Finance'],['FIN-08','EBITDA','Projectresultaat − OPEX','€','↑','Maand','Directie'],['FIN-09','EBITDA-marge','FIN-08 / productie','%','↑','Maand','Directie'],['FIN-10','CAPEX vs plan','Werkelijke / geplande investeringen','%','→','Maand','Finance'],['FIN-11','Kasstroom uit operatie','EBITDA ± mutatie werkkapitaal','€','↑','Maand','Finance'],['FIN-12','Rendement op geïnvesteerd vermogen','EBIT / geïnvesteerd vermogen','%','↑','Kwartaal','Directie'],
+['COM-07','Klanttevredenheid','Score uit klantonderzoek','score','↑','Kwartaal','Commercie'],['OPS-01','Juistheid facturen','Facturen zonder correctie / totaal','%','↑','Maand','Finance'],['OPS-03','Facturen binnen termijn','Termijnfacturen verstuurd binnen afspraak / totaal','%','↑','Maand','Finance'],['OPS-05','DSO','Debiteuren / productie × dagen','dagen','↓','Maand','Finance'],['OPS-06','Achterstallige debiteuren','Debiteuren > 60 dagen / totaal','%','↓','Maand','Finance'],['OPS-07','Afboeking oninbaar','Afgeboekte vorderingen / productie','%','↓','Kwartaal','Finance'],
+['KOS-04','Personeelskosten per FTE','Personeelskosten / FTE','€/FTE','↓','Kwartaal','Finance / HR'],['KOS-05','Inhuurratio (kosten)','Kosten inleen / (personeelskosten + inleen)','%','↓','Kwartaal','Finance'],['KWA-01','Forecastnauwkeurigheid productie','1 − gewogen absolute afwijking forecast vs werkelijk','%','↑','Maand','BC'],['KWA-02','Forecastnauwkeurigheid EBITDA','1 − |BE − werkelijk| / werkelijk','%','↑','Kwartaal','BC'],['KWA-06','Tijdigheid afsluiting','Werkdag waarop de maand is afgesloten','werkdag','↓','Maand','Financial control'],
+['UUR-01','Benutting (bezettingsgraad)','Benutte uren (werk- en reistijd) / netto beschikbare tijd; noemer en reistijd volgens vastgelegde keuze','%','↑','Week','Bedrijfsleiding'],['UUR-09','Beschikbaarheid','Netto beschikbare tijd / contracturen','%','↑','Maand','HR / directie'],['UUR-10','Effectiviteit (in één keer goed)','(Benutte uren − uren niet in één keer goed) / benutte uren','%','↑','Week','Bedrijfsleiding'],['UUR-11','Efficiency','Normtijd / werkelijke werktijd','%','↑','Maand','Planning'],['UUR-12','Reistijdaandeel','Reistijd / benutte uren','%','↓','Maand','Planning'],['UUR-02','Declarabiliteit uitvoerend kernteam','Declarabele uren / (beschikbaar − verzuim), grootste functiegroep','%','↑','Maand','Bedrijfsleiding'],['UUR-03','Gerealiseerd uurtarief','Opbrengst uren / declarabele uren','€/uur','↑','Maand','Commercie'],['UUR-04','Tariefrealisatie','Gerealiseerd uurtarief / lijsttarief','%','↑','Maand','Commercie'],['UUR-05','Tijdigheid urenregistratie','Uren geschreven en goedgekeurd binnen de week / totaal','%','↑','Week','Projectleiding'],['UUR-06','Ziekteverzuim','Verzuimuren / beschikbare uren','%','↓','Maand','HR'],['UUR-07','Inleenratio','Inleenuren / totaal productieve uren','%','→','Maand','Bedrijfsleiding'],['UUR-08','Productie per FTE','Productie / FTE','€/FTE','↑','Kwartaal','Directie'],
+['PRO-01','DCM-marge','DCM (productie − directe projectkosten) / productie','%','↑','Maand','Projectleiding'],['PRO-02','Margeverloop','Prognose DCM bij gereedkomen − DCM bij voorcalculatie','€','→','Maand','Projectleiding'],['PRO-03','Projecten met overschrijding','Projecten met margeverloop < −2 pp / lopende projecten','%','↓','Maand','Bedrijfsleiding'],['PRO-04','Budgetuitputting t.o.v. gereed','Budgetuitputting % − gereed-percentage (gewogen)','pp','↓','Maand','Projectleiding'],['PRO-05','Meerwerkvastlegging','Opgedragen meerwerk / uitgevoerd meerwerk','%','↑','Maand','Projectleiding'],['PRO-06','Faalkosten','Faalkosten / productie','%','↓','Kwartaal','Kwaliteit'],['PRO-09','Prognosestabiliteit','Gemiddelde absolute maandelijkse wijziging van de prognose-DCM per project','pp','↓','Maand','Business control'],['PRO-08','TCM-marge','TCM (DCM − indirecte kosten uitvoering) / productie','%','↑','Maand','Bedrijfsleiding'],['PRO-07','Opleveringen op tijd','Op tijd opgeleverd / opgeleverd','%','↑','Kwartaal','Bedrijfsleiding'],
+['OHW-01','Nog te factureren','Verdiend, niet gefactureerd / productie per dag','dagen','↓','Maand','Finance'],['OHW-02','Vooruitgefactureerd','Gefactureerd maar nog niet verdiend','€','↑','Maand','Finance'],['OHW-03','Ouderdom onderhanden werk','Nog te factureren ouder dan 60 dagen / totaal','%','↓','Maand','Finance'],['OHW-04','Werkkapitaal','Nog te factureren + debiteuren − vooruitgefactureerd','€','↓','Maand','Finance'],
+['COM-11','Orderinstroom','Waarde nieuw verkregen opdrachten (jaar)','€','↑','Maand','Commercie'],['COM-12','Werkvoorraad','Nog uit te voeren orderwaarde / maandproductie','maanden','→','Maand','Directie'],['COM-13','Scoringskans','Gewonnen / ingediende offertes (waarde)','%','↑','Kwartaal','Commercie'],['COM-14','Marge in portefeuille','Gecalculeerde marge in werkvoorraad / werkvoorraad','%','↑','Maand','Commercie'],['COM-15','Contractdekking service','Omzet servicecontracten / totale productie','%','↑','Kwartaal','Commercie'],
+['ABO-01','Terugkerende omzet (ARR)','Eind-MRR × 12','€','↑','Maand','Commercie'],['ABO-02','Netto omzetbehoud','(Begin-MRR + uitbreiding − krimp − opzegging) / begin-MRR','%','↑','Kwartaal','Commercie'],['ABO-03','Bruto opzeggingen','Opgezegde MRR / begin-MRR','%','↓','Maand','Klantmanagement'],['ABO-04','Aandeel terugkerende omzet','Abonnementsomzet / productie','%','↑','Kwartaal','Directie'],['ABO-05','Abonnementsmarge','(Abonnementsomzet − beheerkosten) / abonnementsomzet','%','↑','Maand','Operations'],
+['LIC-01','Licentiemarge','(Doorbelast − ingekocht) / doorbelast','%','↑','Maand','Inkoop'],['LIC-02','Licentiebezetting','Toegewezen / ingekochte licenties','%','↑','Maand','Operations'],['LIC-03','Niet-doorbelaste licenties','(Ingekocht − gefactureerd) × inkoopprijs × 12','€','↓','Maand','Finance'],['LIC-04','Licentiekosten eigen gebruik per FTE','Licentiekosten eigen organisatie / FTE','€/FTE','↓','Kwartaal','IT'],['LIC-05','Verlengingen binnen 90 dagen','Waarde aflopende contracten en licenties','€','→','Maand','Klantmanagement'],['OPS-12','SLA-nakoming','Tickets binnen SLA / totaal','%','↑','Week','Servicedesk']];
+const isIT=c=>/^(ABO|LIC)|OPS-12/.test(c);
+const kpiList=()=>KPIS.filter(k=>(BRK==='it'||!isIT(k[0]))&&(BRK==='inst'||k[0]!=='COM-15'));
+const KDEF={inst:['UUR-01','PRO-01','PRO-02','OHW-01','FIN-08','UUR-03','UUR-05','PRO-03','PRO-05','COM-12','FIN-11','OPS-05','UUR-07','COM-13','KWA-02'],
+ it:['ABO-01','ABO-02','LIC-01','UUR-01','FIN-08','LIC-02','LIC-03','PRO-02','UUR-03','OPS-12','FIN-11','ABO-03','LIC-05','OPS-05']};KDEF.inst[14]='PRO-08';KDEF.bouw=KDEF.inst.slice();KDEF.infra=KDEF.inst.slice();
+const KPRIO={'UUR-01':1,'UUR-10':2,'UUR-09':3,'PRO-01':1,'PRO-02':1,'OHW-01':1,'FIN-08':1,'UUR-03':2,'UUR-05':2,'PRO-03':2,'PRO-05':2,'COM-12':2,'FIN-11':2,'OPS-05':2,'UUR-07':3,'COM-13':3,'KWA-02':3,'PRO-08':2,'PRO-09':2,'ABO-01':1,'ABO-02':1,'LIC-01':1,'LIC-02':2,'LIC-03':2,'OPS-12':2,'ABO-03':3,'LIC-05':3};
+const getCore=()=>store.get('po_core_'+BRK,KDEF[BRK]);
+const pAgg=r=>r.prows.reduce((a,p)=>({rev:a.rev+p.rev,fade:a.fade+p.fadeE,ev:a.ev+p.rev*(1-p.calc/100)*p.vg/100,cost:a.cost+p.cost,mu:a.mu+p.som*p.mwU/100,mo:a.mo+p.som*p.mwO/100,vooruit:a.vooruit+Math.max(0,-p.ohw),over:a.over+(p.fadePP<-2?1:0),n:a.n+1}),{rev:0,fade:0,ev:0,cost:0,mu:0,mo:0,vooruit:0,over:0,n:0});
+const KV={'FIN-07':r=>r.opex,'FIN-08':r=>r.ebitda,'FIN-09':r=>r.ebitda/r.productie*100,'FIN-10':(r,b)=>r.P.capex/b.P.capex*100,'FIN-11':r=>r.cash,'FIN-12':r=>r.ebit/r.P.kd.gv*100,
+ 'COM-07':r=>r.P.kd.score,'OPS-01':r=>r.P.kd.juist,'OPS-03':r=>r.P.kd.tijd,'OPS-05':r=>r.P.dso,'OPS-06':r=>r.P.kd.achter,'OPS-07':r=>r.P.kd.afb,'KOS-04':r=>r.pers/r.fte,'KOS-05':r=>r.inleenKost/(r.pers+r.inleenKost)*100,'KWA-01':r=>r.P.kd.fcVol,'KWA-02':r=>r.P.kd.fcEbitda,'KWA-06':()=>Math.max(...getBasis().steps.map(s=>s.wd)),
+ 'UUR-01':r=>r.wf.T.k.benut,'UUR-09':r=>r.wf.T.k.beschik,'UUR-10':r=>r.wf.T.k.effect,'UUR-11':r=>r.P.eff,'UUR-12':r=>r.wf.T.k.reis,'UUR-02':r=>{const x=r.g[0];return x.d/(x.b-x.ver)*100},'UUR-03':r=>r.tarAvg,'UUR-04':(r,b)=>r.tarAvg/(b.tarAvg*1.05)*100,'UUR-05':r=>r.P.kd.urenTijd,'UUR-06':r=>r.P.verzuim,'UUR-07':r=>r.inleenRatio,'UUR-08':r=>r.productie/r.fte,
+ 'PRO-01':r=>r.bruto/r.productie*100,'PRO-02':r=>pAgg(r).fade,'PRO-03':r=>{const a=pAgg(r);return a.over/a.n*100},'PRO-04':r=>{const t=r.prows.reduce((a,p)=>({c:a.c+p.cost,e:a.e+p.bud*p.vg/100,b:a.b+p.bud}),{c:0,e:0,b:0});return (t.c-t.e)/t.b*100},'PRO-08':r=>r.tcm/r.productie*100,'PRO-09':r=>r.P.kd.progStab,'PRO-05':r=>{const a=pAgg(r);return a.mu?a.mo/a.mu*100:100},'PRO-06':r=>r.P.faal,'PRO-07':r=>r.P.kd.optijd,
+ 'OHW-01':r=>r.P.ohw,'OHW-02':r=>pAgg(r).vooruit,'OHW-03':r=>r.P.kd.ohwOud,'OHW-04':r=>r.wk,
+ 'COM-11':r=>r.P.kd.intake||r.productie*1.05,'COM-12':r=>(r.P.kd.wv||r.productie*0.75)/(r.productie/12),'COM-13':r=>r.P.kd.hit,'COM-14':r=>r.P.kd.margePf||pAgg(r).rev&&r.prows.reduce((s,p)=>s+p.rest*p.progU/100,0)/r.prows.reduce((s,p)=>s+p.rest,0)*100,'COM-15':r=>r.P.kd.contract,
+ 'ABO-01':r=>r.mrrEind*12,'ABO-02':r=>(r.P.mrrBegin+r.P.mrrUitbr-r.P.mrrKrimp-r.P.mrrOpz)/r.P.mrrBegin*100,'ABO-03':r=>r.P.mrrOpz/r.P.mrrBegin*100,'ABO-04':r=>r.aboOmzet/r.productie*100,'ABO-05':r=>(r.aboOmzet-r.aboKost)/r.aboOmzet*100,
+ 'LIC-01':r=>(r.licOmzet-r.licKost)/r.licOmzet*100,'LIC-02':r=>r.P.lic.reduce((s,l)=>s+l.toe,0)/r.P.lic.reduce((s,l)=>s+l.ink,0)*100,'LIC-03':r=>r.P.lic.reduce((s,l)=>s+(l.ink-l.fac)*l.pi*12,0),'LIC-04':r=>r.P.kd.licEigen,'LIC-05':r=>r.P.kd.renew||r.mrrEind*2.2,'OPS-12':r=>r.P.kd.sla};
+function kfmt(u,v){if(v==null||!isFinite(v))return '–';if(u==='€')return Math.abs(v)>=1e6?meur(v):eur(v);if(u==='€/FTE')return eur(v);if(u==='€/uur')return '€ '+nf2.format(v);if(u==='%')return nf1.format(v)+'%';if(u==='score'||u==='maanden')return nf1.format(v)+(u==='maanden'?' mnd':'');if(u==='index')return nf2.format(v);if(u==='pp')return sgn(v,x=>nf1.format(x))+' pp';if(u==='dagen')return nf0.format(v)+' d';if(u==='werkdag')return 'WD '+nf0.format(v);return nf0.format(v)}
+function rag(k,v,b){if(v==null||b==null||!isFinite(v)||!isFinite(b))return '';const dir=k[4],ref=Math.abs(b)||1;
+ if(k[0]==='PRO-02'){const rev=pAgg(calc(S)).rev,p=v/rev*100;return p>=0?'good':p>=-1?'warn':'bad'}
+ if(dir==='→'){const p=Math.abs(v-b)/ref*100;return p<=2?'good':p<=5?'warn':'bad'}const d=dir==='↓'?b-v:v-b;return d>=0?'good':d>=-0.05*ref?'warn':'bad'}
+let kpiF='Alle',kpiSel='UUR-01';
+function renderDash(r,b){const core=getCore().filter(c=>kpiList().some(k=>k[0]===c));
+ $('#coreCount').innerHTML=`<span class="pill ${core.length>=10&&core.length<=15?'p-good':'p-warn'}">${core.length} kern-KPI's</span>`;
+ $('#dash').innerHTML=core.map(c=>{const k=KPIS.find(x=>x[0]===c),f=KV[c],v=f?f(r,b):null,bv=f?f(b,b):null,st=f?rag(k,v,bv):'';return `<button class="kpitile ${st}" data-c="${c}"><span class="kc">${c}${KPRIO[c]?' · prio '+KPRIO[c]:''}</span><span class="kn">${k[1]}</span><span class="kv">${kfmt(k[3],v)}</span><span class="kb">begroting ${kfmt(k[3],bv)}</span></button>`}).join('');
+ $$('.kpitile').forEach(t=>t.onclick=()=>{kpiSel=t.dataset.c;renderKpis()});
+ const R=core.map(c=>{const k=KPIS.find(x=>x[0]===c),f=KV[c];return f?rag(k,f(r,b),f(b,b)):''});return{good:R.filter(x=>x==='good').length,warn:R.filter(x=>x==='warn').length,bad:R.filter(x=>x==='bad').length,n:core.length}}
+const KCARD={'UUR-01':{def:'Aandeel van de netto beschikbare tijd dat aan werk en reizen voor opdrachten wordt besteed',dims:'Functiegroep, activiteit, regio, periode',src:'Urenregistratie (werk- en reistijd per opdracht), roosters, verlof- en verzuimregistratie',sig:'Norm per functiegroep; oranje tot 3 %-punt onder norm, rood daaronder',let:'Leg vast of opleiding in de netto beschikbare tijd zit en of reistijd als benut telt; die keuzes verschuiven de uitkomst met enkele procentpunten zonder dat er iets verandert. Toon de hele urenwaterval naast het percentage.'},
+ 'PRO-02':{def:'Hoeveel de verwachte marge bij gereedkomen afwijkt van de marge bij opdracht',dims:'Project, projecttype, projectleider, opdrachtgever',src:'Projectadministratie (begroting, werkelijke kosten, prognose)',sig:'Groen ≥ 0; oranje tot −1% van de opdrachtwaarde; rood daaronder',let:'Een prognose die maandenlang niet wordt bijgesteld is zelf een signaal'},
+ 'OHW-01':{def:'Hoeveel dagen productie verdiend is maar nog niet gefactureerd',dims:'Project, projectleider, opdrachtgever',src:'Projectadministratie, facturatie',sig:'Per organisatie vast te stellen op basis van termijnschema\'s',let:'Samen met DSO lezen: samen tonen ze hoe lang geld vastzit'}};
+function renderKpis(){const cats=['Alle','Kernset',...Object.keys(PERSP).filter(p=>kpiList().some(k=>k[0].startsWith(p)))];
+ $('#kpiSeg').innerHTML=cats.map(c=>`<button class="${c===kpiF?'on':''}" data-c="${c}">${c}</button>`).join('');$$('#kpiSeg button').forEach(b=>b.onclick=()=>{kpiF=b.dataset.c;renderKpis()});
+ const q=$('#kpiQ').value.toLowerCase(),core=getCore();const list=kpiList().filter(k=>(kpiF==='Alle'||(kpiF==='Kernset'?core.includes(k[0]):k[0].startsWith(kpiF)))&&(k[0]+' '+k[1]).toLowerCase().includes(q));
+ $('#kpiTable').innerHTML='<thead><tr><th>Kern</th><th>Code</th><th>KPI</th><th>Eenheid</th><th>Richting</th><th>Frequentie</th><th>Eigenaar</th></tr></thead><tbody>'+list.map(k=>`<tr class="click${k[0]===kpiSel?' sel':''}" data-c="${k[0]}"><td><input type="checkbox" class="coreChk" data-c="${k[0]}"${core.includes(k[0])?' checked':''} aria-label="Kern-KPI ${k[0]}"></td><td class="n" style="text-align:left">${k[0]}</td><td><b>${k[1]}</b></td><td>${k[3]}</td><td>${k[4]}</td><td>${k[5]}</td><td class="note">${k[6]}</td></tr>`).join('')+'</tbody>';
+ $$('#kpiTable tr.click').forEach(t=>t.onclick=e=>{if(e.target.classList.contains('coreChk'))return;kpiSel=t.dataset.c;renderKpis()});
+ $$('.coreChk').forEach(el=>el.onchange=()=>{let c=getCore();c=el.checked?[...c,el.dataset.c]:c.filter(x=>x!==el.dataset.c);store.set('po_core_'+BRK,c);update()});
+ let k=kpiList().find(x=>x[0]===kpiSel)||kpiList()[0];kpiSel=k[0];const cd=KCARD[k[0]]||{},r=calc(S),b=calc(BUD,'bud'),f=KV[k[0]];
+ const rows=[['Code en naam',`${k[0]} · ${k[1]}`],['Perspectief',PERSP[k[0].slice(0,3)]],['Definitie',cd.def||k[2]],['Formule',k[2]],['Eenheid / richting',`${k[3]} · ${k[4]==='↑'?'hoger is beter':k[4]==='↓'?'lager is beter':'zo dicht mogelijk bij norm'}`],['Dimensies',cd.dims||'Project, functiegroep, vestiging, periode'],['Scenario\'s','Werkelijk vs begroting, vs vorig jaar, vs Best Estimate'],['Frequentie / eigenaar',`${k[5]} · ${k[6]}`],['Databron',cd.src||'Projectadministratie, urenregistratie, financieel pakket'],['Norm / signaalwaarden',cd.sig||(k[4]==='→'?'Groen ±2%; oranje ±2–5%; rood > ±5%':'Groen op of beter dan begroting; oranje tot 5% slechter; rood daaronder')],['Type',core.includes(k[0])?'Kern-KPI (stuur)':'Verdieping (signaal)']];if(cd.let)rows.push(['Let op',cd.let]);
+ $('#kpiCard').innerHTML=`<h2>KPI-kaart</h2><div class="tile" style="margin-bottom:10px"><div class="lbl">Demo: werkelijk/BE</div><div class="val">${kfmt(k[3],f?f(r,b):null)}</div><div class="sub">begroting ${kfmt(k[3],f?f(b,b):null)}</div></div><table class="kv">${rows.map(x=>`<tr><th>${x[0]}</th><td>${x[1]}</td></tr>`).join('')}</table>`}
+$('#kpiQ').oninput=renderKpis;
+const KD=[['progStab','Prognosestabiliteit: gem. wijziging prognose-DCM per maand (pp)','PRO-09',0.1],['urenTijd','Uren tijdig geschreven en goedgekeurd (%)','UUR-05',0.5],['optijd','Opleveringen op tijd (%)','PRO-07',1],['score','Klanttevredenheid (rapportcijfer)','COM-07',0.1],['juist','Juistheid facturen (%)','OPS-01',0.1],['tijd','Termijnfacturen binnen afspraak (%)','OPS-03',0.5],['achter','Debiteuren > 60 dagen (%)','OPS-06',0.5],['afb','Afboeking oninbaar (%)','OPS-07',0.1],['ohwOud','Nog te factureren > 60 dagen (%)','OHW-03',1],['hit','Scoringskans offertes (%)','COM-13',1],['fcVol','Forecastnauwkeurigheid productie (%)','KWA-01',0.5],['fcEbitda','Forecastnauwkeurigheid EBITDA (%)','KWA-02',0.5],['gv','Geïnvesteerd vermogen (€)','FIN-12',100000]];
+const KDx={inst:[['contract','Contractdekking service (%)','COM-15',0.5]],it:[['sla','Tickets binnen SLA (%)','OPS-12',0.5],['licEigen','Licentiekosten eigen gebruik per FTE (€)','LIC-04',10]]};
+function renderKd(){const L=[...KD,...(KDx[BRK]||[])];
+ $('#kdTable').innerHTML='<thead><tr><th>Gegeven</th><th>KPI</th><th class="n">Werkelijk/BE</th><th class="n">Begroting</th></tr></thead><tbody>'+L.map(k=>`<tr><td>${k[1]}</td><td class="note">${k[2]}</td><td class="n"><input type="number" class="kdIn" data-k="${k[0]}" data-s="a" step="${k[3]}" value="${S.kd[k[0]]}" style="width:120px" aria-label="${k[1]} werkelijk"></td><td class="n"><input type="number" class="kdIn" data-k="${k[0]}" data-s="b" step="${k[3]}" value="${BUD.kd[k[0]]}" style="width:120px" aria-label="${k[1]} begroting"></td></tr>`).join('')+'</tbody>';
+ $$('.kdIn').forEach(el=>el.onchange=()=>{const v=+el.value;if(!isFinite(v))return;if(el.dataset.s==='a'){S.kd[el.dataset.k]=v;save()}else{BUD.kd[el.dataset.k]=v;store.set('po_b_'+BRK,BUD)}update();renderKpis()})}
+
+/* ---------- 08 STURING ---------- */
+const STEER=[['Capaciteitsoverleg','Wekelijks','Inzet personeel over projecten, inleen in- of afbouwen','UUR-01, UUR-07, UUR-05'],['Projectreview per projectleider','Maandelijks','Prognose bijstellen, meerwerk claimen, risico\'s en kansen','PRO-02, PRO-04, PRO-05, OHW-01'],['Calculatie- en inschrijvingsbesluit','Per aanvraag','Wel of niet inschrijven, margenorm, risico-opslag','COM-13, COM-14'],['Business review MT','Maandelijks','Bezetting, portefeuille, cash, actielijst','FIN-08, FIN-11, COM-12'],['Portefeuillereview','Per kwartaal','Segmenten, opdrachtgevers en projecttypes','PRO-01, COM-13'],...(BRK==='it'?[['Verlengings- en licentieoverleg','Maandelijks','Verlengingen, prijsindexatie, opschonen ongebruikte licenties','LIC-03, LIC-05, ABO-03']]:[])];
+const addDays=d=>{const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10)};
+const DEMOACT={inst:[['Meerwerk op drie projecten met verloop < −2 pp alsnog laten opdragen','Projectreview per projectleider','Projectleiders',14,90000,1],['Inleen elektrotechniek afbouwen; eigen monteurs herplannen','Capaciteitsoverleg','Bedrijfsleider',21,120000,0],['Materiaalprijzen in offertes met prijsgeldigheid van 30 dagen','Calculatie- en inschrijvingsbesluit','Hoofd calculatie',30,150000,0],['Termijnstaten maandelijks vóór werkdag 3 versturen','Business review MT','Finance',-4,0,0],['Verzuimaanpak met teamleiders uitvoering','Business review MT','HR',45,80000,0]],
+ bouw:[['Prognose bij gereedkomen op de vijf grootste projecten herijken','Projectreview per projectleider','Projectleiders',14,0,1],['Onderaannemers vastleggen met vaste prijs vóór start','Calculatie- en inschrijvingsbesluit','Inkoper',30,200000,0],['Meerwerk alleen na schriftelijke opdracht uitvoeren','Projectreview per projectleider','Uitvoerders',7,150000,0],['Retenties en garantieposten in kaart brengen','Business review MT','Finance',-3,0,0]],
+ infra:[['Bezetting materieel per week rapporteren en ongebruikt materieel afstoten','Capaciteitsoverleg','Materieeldienst',30,180000,0],['Indexatieclausules in lopende contracten benutten','Projectreview per projectleider','Projectleiders',21,140000,1],['Inschrijven alleen bij margenorm ≥ 7%','Calculatie- en inschrijvingsbesluit','Directie',10,0,0],['Faalkostenregistratie per project invoeren','Business review MT','Kwaliteit',-5,60000,0]],
+ it:[['Ongebruikte licenties opzeggen bij verlenging','Verlengings- en licentieoverleg','Licentiebeheerder',21,45000,1],['Licenties toegewezen maar niet gefactureerd alsnog doorbelasten','Verlengings- en licentieoverleg','Finance',14,30000,0],['Prijsindexatie abonnementen per 1 januari doorvoeren','Business review MT','Commercie',40,90000,0],['Vaste-prijsprojecten met CPI < 0,95 escaleren','Projectreview per projectleider','Delivery manager',-3,0,0]]};
+const demoActions=()=>DEMOACT[BRK].map(a=>({b:a[0],g:a[1],e:a[2],d:addDays(a[3]),f:a[4],s:a[5]}));
+const getActs=()=>store.get('po_acts_'+BRK,null)||demoActions();const aSt=['Open','Loopt','Gereed'];
+function renderActs(){const A=getActs(),today=new Date().toISOString().slice(0,10);
+ $('#aG').innerHTML=STEER.map(s=>`<option>${s[0]}</option>`).join('');
+ $('#steerTable').innerHTML='<thead><tr><th>Overleg</th><th>Ritme</th><th>Typische besluiten</th><th>KPI\'s</th></tr></thead><tbody>'+STEER.map(s=>`<tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td><td class="note">${s[3]}</td></tr>`).join('')+'</tbody>';
+ $('#aTable').innerHTML='<thead><tr><th>Besluit of actie</th><th>Overleg</th><th>Eigenaar</th><th>Deadline</th><th class="n">Effect €/jaar</th><th>Status</th><th></th></tr></thead><tbody>'+A.map((a,i)=>{const late=a.s<2&&a.d<today;return `<tr class="${a.s===2?'done':''}"><td>${esc(a.b)}</td><td class="note">${esc(a.g)}</td><td>${esc(a.e)}</td><td>${a.d.split('-').reverse().join('-')} ${late?'<span class="pill p-bad">te laat</span>':''}</td><td class="n">${a.f?eur(a.f):'–'}</td><td><select class="aS" data-i="${i}" aria-label="Status">${aSt.map((o,j)=>`<option value="${j}"${j===a.s?' selected':''}>${o}</option>`).join('')}</select></td><td><button class="btn aDel" data-i="${i}">Verwijder</button></td></tr>`}).join('')+'</tbody>';
+ $$('.aS').forEach(el=>el.onchange=()=>{const A=getActs();A[+el.dataset.i].s=+el.value;store.set('po_acts_'+BRK,A);renderActs()});
+ $$('.aDel').forEach(el=>el.onclick=()=>{const A=getActs();A.splice(+el.dataset.i,1);store.set('po_acts_'+BRK,A);renderActs()});
+ const open=A.filter(a=>a.s<2),late=open.filter(a=>a.d<today);
+ $('#aTiles').innerHTML=tile('Open acties',`${open.length}`,`${A.length-open.length} gereed`)+tile('Te laat',`${late.length}`,'agendapunt volgende review',late.length?'neg':'pos')+tile('Verwacht effect open acties',eur(open.reduce((s,a)=>s+(+a.f||0),0)),'per jaar')+tile('Gerealiseerd effect',eur(A.filter(a=>a.s===2).reduce((s,a)=>s+(+a.f||0),0)),'acties gereed')}
+$('#aForm').onsubmit=e=>{e.preventDefault();const A=getActs();A.push({b:$('#aB').value,g:$('#aG').value,e:$('#aE').value,d:$('#aD').value,f:+$('#aF').value||0,s:0});store.set('po_acts_'+BRK,A);$('#aForm').reset();$('#aMsg').textContent='Actie toegevoegd.';renderActs()};
+$('#aReset').onclick=()=>{store.set('po_acts_'+BRK,demoActions());renderActs()};
+const copyText=(t,el)=>{try{navigator.clipboard.writeText(t).then(()=>{el.textContent='Gekopieerd naar het klembord.'},()=>{el.textContent='Kopiëren is geweigerd door de browser.'})}catch(e){el.textContent='Kopiëren is niet beschikbaar in deze weergave.'}};
+$('#aCopy').onclick=()=>copyText('Besluit;Overleg;Eigenaar;Deadline;Effect;Status\n'+getActs().map(a=>[a.b,a.g,a.e,a.d,a.f,aSt[a.s]].join(';')).join('\n'),$('#aMsg'));
+
+/* ---------- 09 ORGANISATIE ---------- */
+function renderOrg(){
+ $('#rolesFin').innerHTML=[['Financial control','Laag 1: afsluiting, onderhanden werk, reconciliaties, interne beheersing.'],['Business control','Challenger van de projectleiding: toetst prognoses en bewaakt de uitgangspunten voor resultaatneming, maakt de afwijkingsanalyse en forecast, beheert de KPI-set. Bepaalt het projectresultaat niet zelf.'],['Directie','Laag 4: besluiten, portefeuillekeuzes, begroting.']].map(r=>`<div><h3>${r[0]}</h3><p class="note" style="margin:0">${r[1]}</p></div>`).join('');
+ const bus=BRK==='it'?[['Delivery en projectmanagement','Eigenaar van de DCM per project: prognoses, meerwerk, verklaring van afwijkingen.'],['Beheer en servicedesk','Abonnementsdiensten, SLA, licentietoewijzing.'],['Sales en accountmanagement','Offertes, verlengingen, prijsindexatie; eigenaar calculatieresultaat en terugkerende omzet.'],['Resourcemanagement','Planning en bezetting van consultants en engineers.']]:[['Bedrijfsleiding of regiomanagement','Eigenaar van de TCM per regio: capaciteit, bezetting, inleen en indirecte kosten van de uitvoering.'],['Projectleiding','Eigenaar van de DCM per project: voortgang, prognose bij gereedkomen, meerwerk; verklaart afwijkingen ten opzichte van de voorcalculatie.'],['Calculatie en commercie','Offertes en inschrijvingen; eigenaar calculatieresultaat.'],['Werkvoorbereiding en inkoop','Materiaal en onderaanneming, prijsafspraken.']];
+ $('#rolesBus').innerHTML=bus.map(r=>`<div><h3>${r[0]}</h3><p class="note" style="margin:0">${r[1]}</p></div>`).join('');
+ renderDoa();renderRaci()}
+const doaTypes=['Offerte of inschrijving (opdrachtwaarde)','Opdracht onderaanneming of inkoop','Meerwerk akkoord richting opdrachtgever','Inleen of inhuur (jaarwaarde)','Investering met businesscase','Afboeking vorderingen of claim schikken','Afwijking van margenorm bij inschrijving'];
+const doaLvls=['Projectleider','Bedrijfsleider','Directie','Raad van commissarissen'];
+const doaDef=[[50000,500000,5000000,'onbeperkt'],[25000,250000,2000000,''],[10000,100000,'onbeperkt',''],[0,100000,500000,''],[0,25000,500000,'onbeperkt'],[0,10000,100000,''],[0,0,'onbeperkt','']];
+const getDoa=()=>store.get('po_doa',doaDef);
+function renderDoa(){const D=getDoa();
+ $('#doa').innerHTML=`<thead><tr><th>Type besluit</th>${doaLvls.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>`+doaTypes.map((t,i)=>`<tr><td>${t}</td>${doaLvls.map((l,j)=>`<td><input type="text" class="doaIn" data-i="${i}" data-j="${j}" value="${D[i][j]===0?'':D[i][j]}" placeholder="–" aria-label="${t} ${l}"></td>`).join('')}</tr>`).join('')+'</tbody>';
+ $$('.doaIn').forEach(el=>el.onchange=()=>{const D=getDoa();const v=el.value.trim().toLowerCase();D[+el.dataset.i][+el.dataset.j]=v===''?'':v==='onbeperkt'?'onbeperkt':(+v.replace(/[^\d]/g,'')||'');store.set('po_doa',D);renderDoa()});
+ $('#doaT').innerHTML=doaTypes.map((t,i)=>`<option value="${i}">${t}</option>`).join('');doaCheck()}
+function doaCheck(){const D=getDoa(),i=+$('#doaT').value,a=+$('#doaA').value||0;const j=D[i].findIndex(v=>v==='onbeperkt'||(v!==''&&+v>=a));$('#doaRes').innerHTML=j<0?'<span class="pill p-bad">Geen niveau bevoegd</span>':`<span class="pill p-good">Besluit door: ${doaLvls[j]}</span>`}
+$('#doaT').onchange=doaCheck;$('#doaA').oninput=doaCheck;
+const raciProc=()=>['Calculatie en inschrijving','Projectprognose bij gereedkomen','Resultaatneming (percentage of completion)','Urenregistratie en goedkeuring','Maandafsluiting en onderhanden werk','Capaciteitsplanning','Begroting en meerjarenplan',...(BRK==='it'?['Licentiebeheer en verlengingen']:[])];
+const raciRoles=()=>BRK==='it'?['Directie','Financial control','Business control','Delivery','Beheer','Sales','Resourcemgmt']:['Directie','Financial control','Business control','Bedrijfsleiding','Projectleiding','Calculatie','Werkvoorb./inkoop'];
+const raciDef=[['A','I','C','C','C','R','C'],['I','C','C','I','A','I','C'],['I','A','C','I','R','',''],['I','C','I','A','R','',''],['I','R','C','C','C','',''],['I','','C','A','R','I','C'],['A','C','R','C','C','C','C'],['I','C','C','I','R','A','']];
+function renderRaci(){const P=raciProc(),Rl=raciRoles();let R=store.get('po_raci2_'+BRK,null);if(!R||R.length!==P.length)R=raciDef.slice(0,P.length).map(r=>r.slice());const cyc=['R','A','C','I',''];
+ $('#raci').innerHTML=`<thead><tr><th>Kernproces</th>${Rl.map(r=>`<th style="text-align:center">${r}</th>`).join('')}</tr></thead><tbody>`+P.map((p,i)=>`<tr><td>${p}</td>${Rl.map((r,j)=>`<td style="text-align:center"><button class="raciBtn r-${R[i][j]||'x'}" data-i="${i}" data-j="${j}" aria-label="${p}, ${r}: ${R[i][j]||'leeg'}">${R[i][j]||'·'}</button></td>`).join('')}</tr>`).join('')+'</tbody>';
+ $$('.raciBtn').forEach(b=>b.onclick=()=>{const v=R[+b.dataset.i][+b.dataset.j]||'';R[+b.dataset.i][+b.dataset.j]=cyc[(cyc.indexOf(v)+1)%cyc.length];store.set('po_raci2_'+BRK,R);renderRaci()})}
+
+/* ---------- 10 CYCLUS ---------- */
+function renderCyc(){const c=Object.assign({mbr:12,week:true,kw:true},store.get('po_cyc_'+BRK,{}));
+ $('#cycForm').innerHTML=`<div class="field"><label for="cMbr">Business review MT</label><select id="cMbr">${[[12,'Maandelijks'],[8,'8× per jaar'],[4,'Per kwartaal']].map(o=>`<option value="${o[0]}"${o[0]===c.mbr?' selected':''}>${o[1]}</option>`).join('')}</select></div><label class="chk"><input type="checkbox" id="cWeek"${c.week?' checked':''}> Wekelijks capaciteitsoverleg</label><label class="chk"><input type="checkbox" id="cKw"${c.kw?' checked':''}> Portefeuillereview per kwartaal</label>`;
+ const sv=o=>{store.set('po_cyc_'+BRK,Object.assign(c,o));renderCyc()};$('#cMbr').onchange=e=>sv({mbr:+e.target.value});$('#cWeek').onchange=e=>sv({week:e.target.checked});$('#cKw').onchange=e=>sv({kw:e.target.checked});
+ const yr=new Date().getFullYear()+1;$('#calYear').textContent=yr;const M=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];const mb={12:[...Array(12).keys()],8:[0,1,2,3,5,7,9,10],4:[0,3,6,9]}[c.mbr];
+ const rows=[['Capaciteitsoverleg',m=>c.week?'•':''],['Urenafsluiting en maandafsluiting',()=>'•'],['Projectreview per projectleider',()=>'•'],['Business review + Best Estimate',m=>mb.includes(m)?'MBR':''],['Portefeuillereview',m=>c.kw&&[0,3,6,9].includes(m)?'PF':''],...(BRK==='it'?[['Verlengingen en licentiebalans',()=>'•']]:[]),['Meerjarenplan',m=>[5,6].includes(m)?'MJP':''],['Begroting volgend jaar',m=>[8,9,10].includes(m)?'BEGR':'']];
+ $('#cal').innerHTML=`<thead><tr><th>Onderdeel</th>${M.map(m=>`<th style="text-align:center">${m}</th>`).join('')}</tr></thead><tbody>`+rows.map(r=>`<tr><td>${r[0]}</td>${M.map((m,i)=>{const v=r[1](i);return `<td style="text-align:center">${v?`<span class="calc ${v==='•'?'':'big'}">${v}</span>`:''}</td>`}).join('')}</tr>`).join('')+'</tbody>';
+ const reps=[['Projectrapportage per projectleider','Voortgang, prognose bij gereedkomen, margeverloop, meerwerk, risico\'s.','Projectleiding, bedrijfsleiding','Maandelijks','PRO-02, PRO-04, PRO-05'],['Capaciteits- en urenrapportage','Bezetting per functiegroep, inleen, verzuim, tijdigheid uren.','Bedrijfsleiding','Wekelijks','UUR-01, UUR-05, UUR-07'],['Onderhanden-werkrapportage','Verdiend vs gefactureerd, ouderdom, verliesvoorzieningen.','Finance, projectleiding','Maandelijks','OHW-01, OHW-03'],['Orderportefeuille en werkvoorraad','Orderinstroom, werkvoorraad in maanden, scoringskans.','Directie, commercie','Maandelijks','COM-11, COM-12, COM-13'],['Business review en management P&L','Productie tot EBITDA, afwijkingsbrug, kernset, actielijst.','Directie / MT',{12:'Maandelijks',8:'8× per jaar',4:'Per kwartaal'}[c.mbr],'FIN-08, PRO-01, FIN-11'],...(BRK==='it'?[['MRR-brug en licentiebalans','Terugkerende omzet, opzeggingen, niet-doorbelaste licenties.','Directie, finance','Maandelijks','ABO-01, ABO-02, LIC-03']]:[])];
+ $('#reports').innerHTML=reps.map(r=>`<div class="card rep"><h3 style="margin:0">${r[0]}</h3><p style="margin:0;font-size:13.5px">${r[1]}</p><dl><dt>Doelgroep</dt><dd>${r[2]}</dd><dt>Frequentie</dt><dd>${r[3]}</dd><dt>KPI's</dt><dd>${r[4]}</dd></dl></div>`).join('')}
+
+/* ---------- 11 DATAMODEL ---------- */
+const COA=()=>[['8000','Omzet aanneming en vaste prijs','Productie'],['8050','Omzet meerwerk','Productie'],['8100','Omzet regie (uren)','Productie'],['8200','Omzet service- en onderhoudscontracten','Productie'],...(BRK==='it'?[['8300','Omzet abonnementen en beheer','Productie'],['8400','Omzet licenties (doorverkoop)','Productie']]:[]),['3000','Mutatie onderhanden werk','Productie'],['7000','Materiaal','Directe projectkosten'],['7100','Onderaanneming','Directe projectkosten'],['7200','Inleen en inhuur','Directe projectkosten'],...(BRK==='infra'?[['7300','Materieel','Directe projectkosten']]:[]),...(BRK==='it'?[['7400','Inkoop licenties','Directe kosten'],['7450','Hosting en tooling','Directe kosten']]:[]),['7900','Faalkosten en garantie','Directe projectkosten'],['4000','Personeelskosten uitvoerend (via uren op projecten)','Directe uren / indirecte uren'],['4100','Personeelskosten staf','Staf en directie'],['4300','Huisvesting','Algemene kosten'],['4400','Wagenpark','Algemene kosten'],['4500','IT','Algemene kosten'],['4800','Overige algemene kosten','Algemene kosten'],['4900','Afschrijvingen','Afschrijvingen'],['1200','Onderhanden projecten (nog te factureren)','Balans – werkkapitaal'],['1210','Vooruitgefactureerd','Balans – werkkapitaal'],['1300','Debiteuren','Balans – werkkapitaal']];
+const DIMS=()=>[['Project','Projectnummer met type, fase en projectleider'],['Projecttype','Aanneming, regie, service'+(BRK==='it'?', vaste prijs':'')],['Opdrachtgever','Naam en type (publiek/privaat)'],['Regio','Werkgebied (in de demo Noord, Midden, Oost, West); basis voor TCM per regio'],['Discipline','Bijv. werktuigbouwkundig, elektrotechnisch, bouwkundig, civiel'],['Functiegroep','Voor uren, tarief en kostprijs'],['Juridische entiteit','BV of combinatie (bijv. bouwcombinatie)'],...(BRK==='it'?[['Klant en dienst','Abonnementen per klant en dienst'],['Leverancier','Voor licenties']]:[])];
+const mapDef=[['80000','Omzet projecten','8000'],['80500','Meerwerk','8050'],['81000','Regie-omzet','8100'],['30000','Mutatie OHW','3000'],['70000','Inkoop materiaal','7000'],['71000','Onderaannemers','7100'],['72000','Uitzendkrachten en ZZP','7200'],['40000','Brutolonen uitvoering','4000'],['41000','Salarissen kantoor','4100'],['44000','Leasekosten bussen','4400'],['45000','Software en licenties','4500'],['46000','Reiskosten','']];
+const getMap=()=>store.get('po_map_'+BRK,mapDef);
+function renderDM(){const C=COA(),cm=Object.fromEntries(C.map(x=>[x[0],x]));
+ $('#coa').innerHTML='<thead><tr><th>Rekening</th><th>Omschrijving</th><th>Regel management P&amp;L</th></tr></thead><tbody>'+C.map(x=>`<tr><td class="n" style="text-align:left">${x[0]}</td><td>${x[1]}</td><td class="note">${x[2]}</td></tr>`).join('')+'</tbody>';
+ $('#dims').innerHTML='<thead><tr><th>Dimensie</th><th>Voorbeelden</th></tr></thead><tbody>'+DIMS().map(d=>`<tr><td><b>${d[0]}</b></td><td>${d[1]}</td></tr>`).join('')+'</tbody>';
+ const M=getMap();$('#mapTable').innerHTML='<thead><tr><th>Rekening eigen pakket</th><th>Omschrijving</th><th>Modelrekening</th><th>P&amp;L-regel</th><th></th></tr></thead><tbody>'+M.map((m,i)=>{const c=cm[m[2]];return `<tr><td><input type="text" class="mIn" data-i="${i}" data-j="0" value="${esc(m[0])}" aria-label="Rekening"></td><td><input type="text" class="mIn" data-i="${i}" data-j="1" value="${esc(m[1])}" aria-label="Omschrijving"></td><td><select class="mSel" data-i="${i}" aria-label="Modelrekening"><option value="">– niet gemapt –</option>${C.map(x=>`<option value="${x[0]}"${x[0]===m[2]?' selected':''}>${x[0]} ${x[1]}</option>`).join('')}</select></td><td>${c?c[2]:'<span class="pill p-warn">ongemapt</span>'}</td><td><button class="btn mDel" data-i="${i}" aria-label="Verwijder rij">×</button></td></tr>`}).join('')+'</tbody>';
+ $$('.mIn').forEach(el=>el.onchange=()=>{const M=getMap();M[+el.dataset.i][+el.dataset.j]=el.value;store.set('po_map_'+BRK,M)});
+ $$('.mSel').forEach(el=>el.onchange=()=>{const M=getMap();M[+el.dataset.i][2]=el.value;store.set('po_map_'+BRK,M);renderDM()});
+ $$('.mDel').forEach(el=>el.onclick=()=>{const M=getMap();M.splice(+el.dataset.i,1);store.set('po_map_'+BRK,M);renderDM()});
+ $('#mMsg').textContent=`${M.length} rekeningen, waarvan ${M.filter(m=>!cm[m[2]]).length} nog niet gemapt.`;
+ $('#srcTable').innerHTML='<thead><tr><th>Bron</th><th>Gegevens</th><th>Laag</th></tr></thead><tbody>'+[['Financieel pakket','Grootboek, debiteuren, crediteuren, activa','1'],['Projectadministratie','Begroting, werkelijke kosten, prognose, voortgang per project','1–2'],['Urenregistratie','Uren per medewerker, project en activiteit','1–2'],['Planning','Capaciteit en inzet per week','2'],['Calculatie en CRM','Offertes, scoringskans, werkvoorraad','2–3'],...(BRK==='it'?[['Servicedesk en abonnementen','Tickets, SLA, abonnementen per klant','2–3'],['Leveranciersportalen licenties','Ingekochte en toegewezen licenties','1–2']]:[]),['BI / rapportage','Dashboard en rapportages uit één datamodel','3–4']].map(s=>`<tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td></tr>`).join('')+'</tbody>'}
+$('#mImport').onclick=()=>{const t=$('#mPaste').value.trim();if(!t){$('#mMsg').textContent='Plak eerst rijen in het tekstvak.';return}const cm=Object.fromEntries(COA().map(x=>[x[0],x]));const M=getMap();let n=0;t.split(/\r?\n/).forEach(line=>{const c=line.split(/\t|;/).map(x=>x.trim());if(c[0]&&!/^rekening/i.test(c[0])){M.push([c[0],c[1]||'',cm[c[2]]?c[2]:'']);n++}});store.set('po_map_'+BRK,M);$('#mPaste').value='';renderDM();$('#mMsg').textContent+=` ${n} rijen toegevoegd.`};
+$('#mCopy').onclick=()=>{const cm=Object.fromEntries(COA().map(x=>[x[0],x]));copyText('Rekening;Omschrijving;Modelrekening;P&L-regel\n'+getMap().map(m=>[m[0],m[1],m[2],cm[m[2]]?cm[m[2]][2]:''].join(';')).join('\n'),$('#mMsg'))};
+$('#mReset').onclick=()=>{store.set('po_map_'+BRK,mapDef);renderDM()};
+
+/* ---------- 12 ROADMAP ---------- */
+const scanCrit=[['Laag 1 · Financiële basis',['Uren en onderhanden werk worden per kwartaal of later bijgewerkt','Maandelijkse afsluiting, onderhanden werk grotendeels handmatig','Uren wekelijks afgesloten; onderhanden werk naar voortgang per project','Projectadministratie en grootboek automatisch afgestemd','Snelle afsluiting met volledige audittrail per project']],
+ ['Laag 2 · Business drivers',['Projectresultaat pas bekend bij gereedkomen','Prognoses per project, niet consequent bijgesteld','Maandelijkse projectreview en standaard afwijkingsanalyse','Rolling forecast op bezetting, portefeuille en prognoses','Scenario\'s sturen inschrijvingsbeleid en capaciteit']],
+ ['Laag 3 · KPI\'s',['Geen vaste KPI\'s of definities','Bezetting en omzet in losse overzichten','Kernset met KPI-kaarten en normen per functiegroep','Dashboard automatisch gevuld uit uren en projectadministratie','KPI\'s gekoppeld aan doelen van projectleiders en teams']],
+ ['Laag 4 · Sturing',['Overleg zonder vaste agenda of actielijst','Vaste MT-overleggen, besluiten niet vastgelegd','Projectreview en business review met actielijst','Acties met verwacht financieel effect, gekoppeld aan Best Estimate','Gesloten cyclus: effect van besluiten wordt gemeten']]];
+window.__scanCrit=scanCrit;function renderScan(){const sc=store.get('po_scan_'+BRK,[2,1,1,1]);
+ $('#scan').innerHTML=scanCrit.map((s,i)=>`<div><div class="row" style="justify-content:space-between"><h3 style="margin:0">${s[0]}</h3><div class="seg">${[1,2,3,4,5].map(v=>`<button class="${v===sc[i]?'on':''}" data-i="${i}" data-v="${v}" aria-label="${s[0]} score ${v}">${v}</button>`).join('')}</div></div><p class="note" style="margin:4px 0 0">${sc[i]}: ${s[1][sc[i]-1]}</p><div class="bar" style="margin-top:6px"><i style="width:${sc[i]*20}%;background:${sc[i]>=3?'var(--good)':sc[i]===2?'var(--warn)':'var(--bad)'}"></i></div></div>`).join('');
+ $$('#scan .seg button').forEach(b=>b.onclick=()=>{sc[+b.dataset.i]=+b.dataset.v;store.set('po_scan_'+BRK,sc);renderScan()});
+ const first=sc.findIndex(v=>v<3);$('#scanRes').innerHTML=`<h2>Advies</h2>${first<0?'<p>Alle lagen staan op niveau 3 of hoger. Richt je op automatisering en doorontwikkeling.</p>':`<p>Begin bij <b>${scanCrit[first][0]}</b> (score ${sc[first]}).</p><p class="note">Volgende stap: ${scanCrit[first][1][Math.min(2,sc[first])]}.</p>`}<p class="note">Gemiddelde volwassenheid: ${nf1.format(sc.reduce((a,b)=>a+b,0)/4)} van 5.</p>`}
+const road=[['Snelle verbeteringen','0–3 maanden',[['Uren wekelijks laten afsluiten en goedkeuren',1,'Bedrijfsleiding'],['Definities projectresultaat, margeverloop en onderhanden werk vastleggen',3,'Business control'],['Maandelijkse projectreview met vaste agenda invoeren',4,'Directie'],['Meerwerk alleen uitvoeren na opdrachtbevestiging',1,'Projectleiding']]],
+ ['Basis op orde','3–9 maanden',[['Onderhanden werk naar voortgang per project waarderen',1,'Financial control'],['Prognose bij gereedkomen maandelijks per project bijstellen',2,'Projectleiding'],['Standaard afwijkingsanalyse: bezetting, tarief, kostprijs, margeverloop',2,'Business control'],['Kernset KPI\'s met normen per functiegroep',3,'Business control'],...(BRK==='it'?[['Maandelijkse licentiebalans invoeren',1,'Finance']]:[])]],
+ ['Doorontwikkeling','9–18 maanden',[['Dashboard automatisch vullen uit uren- en projectadministratie',3,'IT / finance'],['Rolling forecast op portefeuille en capaciteit',2,'Business control'],['Inschrijvingsbeleid sturen op margenorm en scoringskans',4,'Directie']]]];
+function renderRoad(){const st=store.get('po_road_'+BRK,{});let tot=0,done=0,run=0;
+ $('#roadmapCols').innerHTML=road.map((p,pi)=>`<div class="phase"><div><h2 style="margin:0">${p[0]}</h2><span class="note">${p[1]}</span></div>${p[2].map((it,ii)=>{const id=pi+'_'+ii,s=st[id]||0;tot++;if(s===2)done++;if(s===1)run++;return `<div class="item${s===2?' done':''}"><select id="rd_${id}" aria-label="Status ${it[0]}">${['Niet gestart','Loopt','Gereed'].map((o,oi)=>`<option value="${oi}"${oi===s?' selected':''}>${o}</option>`).join('')}</select><div><div class="t">${it[0]}</div><div class="row" style="margin-top:6px"><span class="pill p-cool">Laag ${it[1]}</span><span class="pill p-mut">${it[2]}</span></div></div></div>`}).join('')}</div>`).join('');
+ $('#progTxt').textContent=`${done} van ${tot} acties gereed`;$('#progSub').textContent=`${run} lopend · ${tot-done-run} niet gestart`;$('#progBar').style.width=(done/tot*100)+'%';
+ $$('#roadmapCols select').forEach(el=>el.onchange=()=>{const s=store.get('po_road_'+BRK,{});s[el.id.slice(3)]=+el.value;store.set('po_road_'+BRK,s);renderRoad()})}
+
+/* ---------- BEGRIPPEN ---------- */
+const GLOSS=[['Productie','Gefactureerde omzet plus mutatie onderhanden werk: de omzet naar voortgang in de periode.'],['Calculatieresultaat','De marge die bij het aannemen van het werk is gecalculeerd.'],['Uitvoeringsresultaat','Het verschil tussen de voorcalculatie en de prognose bij gereedkomen.'],['Prognose bij gereedkomen','Werkelijke kosten tot nu plus nog te maken kosten, en het daaruit volgende verwachte resultaat.'],['Margeverloop','Prognose DCM bij gereedkomen min DCM bij voorcalculatie, in euro of procentpunt.'],['Onderhanden werk (OHW)','Verdiende maar nog niet gefactureerde omzet (of vooruitgefactureerd als negatief).'],['Bezettingsgraad','In dit model gelijk aan benutting; leg altijd vast welke noemer wordt gebruikt.'],['Declarabel uur','Uur dat op een project wordt geschreven en tot opbrengst leidt.'],['Inleen','Ingehuurd personeel via uitzendbureau of zzp, ingezet op projecten.'],['DCM (directe bijdragemarge)','Productie min directe projectkosten; het resultaat waarop de projectleider stuurt.'],['TCM (totale bijdragemarge)','DCM min de indirecte kosten van de uitvoering, zoals niet-declarabele uren en wagenpark; het resultaat van een regio of uitvoeringsorganisatie.'],['Nog te maken kosten (NTMK)','Kosten die naar verwachting nog worden gemaakt tot het project gereed is.'],['Budgetuitputting','Werkelijke kosten tot nu als percentage van de begrote kosten; naast het gereed-percentage gelezen.'],['Prognosestabiliteit','Hoeveel de prognose-DCM van een project gemiddeld per maand verandert; grote sprongen wijzen op te late bijstelling.'],['Urenwaterval','Opbouw van contracturen via verlof, verzuim, opleiding, indirecte tijd en leegloop naar benutte uren, effectieve uren en werktijd op opdracht; elke trede gewaardeerd tegen kostprijs.'],['Netto beschikbare tijd','Contracturen min verlof, feestdagen en verzuim, en afhankelijk van de vastgelegde keuze ook min opleiding. Sommige organisaties noemen dit effectieve tijd.'],['Benutting','Aandeel van de netto beschikbare tijd dat aan werk en reizen voor opdrachten wordt besteed.'],['Effectiviteit (in één keer goed)','Aandeel van de benutte uren dat niet verloren gaat aan herstel, terugkomen, niet thuis of geannuleerd werk. Ook wel first time right of first time fix.'],['Efficiency','Normtijd gedeeld door de werkelijke werktijd op een opdracht.'],['Brutomarge','Productie min materiaal, onderaanneming en ander uitbesteed werk; vóór de eigen personeelskosten.'],['Gesegmenteerde P&L','Margestaffel per segment, bijvoorbeeld activiteit × markt, met overhead via een verdeelsleutel.'],['Verdeelsleutel','Regel waarmee indirecte kosten of overhead over segmenten worden verdeeld, zoals omzet of FTE direct.'],['Activering verhuur','Kosten van geplaatste verhuurinstallaties die op de balans komen; de afschrijving staat in de directe kosten boven de DCM.'],['Percentage of completion','Resultaatneming naar rato van de voortgang van een project, met verliezen direct volledig genomen.'],['Meerwerk','Werk buiten de oorspronkelijke opdracht; vooraf vastleggen met een opdrachtbevestiging.'],['Werkvoorraad','Nog uit te voeren orderwaarde, vaak uitgedrukt in maanden productie.'],['Scoringskans','Aandeel gewonnen offertes of inschrijvingen.'],['Termijnstaat','Gedeeltelijke factuur op basis van een afgesproken termijnschema of voortgang.'],['MRR / ARR','Maandelijkse / jaarlijkse terugkerende omzet uit abonnementen.'],['Netto omzetbehoud','Behouden terugkerende omzet inclusief uitbreiding, gedeeld door de begin-MRR.'],['Licentiebalans','Aansluiting tussen ingekochte, toegewezen en gefactureerde licenties.'],['Best Estimate','Actuele beste verwachting voor het jaareinde.'],['RACI','Responsible, Accountable, Consulted, Informed: verdeling van rollen per proces.']];
+function renderGloss(){const q=$('#glQ').value.toLowerCase();$('#gloss').innerHTML=GLOSS.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)&&(BRK==='it'||!/MRR|omzetbehoud|Licentie/.test(g[0]))).map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join('')}
+$('#glQ').oninput=renderGloss;
+
+/* ---------- UPDATE ---------- */
+function update(){const r=calc(S,'act'),b=calc(BUD,'bud'),l=calc(LY,'ly');
+ syncU();syncCost();renderBasis(r);renderUren(r,b);renderProjects(r,b);renderLic(r,b);renderPL(r,b,l);renderSeg(r,b);const d=renderDash(r,b);
+ $('#ovTiles').innerHTML=tile('Productie (werkelijk/BE)',meur(r.productie),`<span class="${r.productie>=b.productie?'pos':'neg'}">${sgn(r.productie-b.productie,eur)}</span> vs begroting`)+tile('EBITDA',meur(r.ebitda),`<span class="${r.ebitda>=b.ebitda?'pos':'neg'}">${sgn(r.ebitda-b.ebitda,eur)}</span> vs begroting`)+tile('Bezettingsgraad',nf1.format(r.bez)+'%',`begroting ${nf1.format(b.bez)}%`,r.bez<b.bez?'neg':'')+tile('Kern-KPI\'s op norm',`${d.good} van ${d.n}`,`${d.warn} oranje · ${d.bad} rood`)}
+function fullRender(){renderBr();renderLayers();renderChallenges();renderStrat();renderPoc();renderSim();renderDoorb();buildUGlobal();buildCost();curP=null;fType='';fPL='';kpiSel=getCore()[0];renderKd();renderActs();renderOrg();renderCyc();renderDM();renderScan();renderRoad();renderGloss();update();renderKpis();route()}
+fullRender();
+})();
+
+</script>
+<script>
+/* RM:START */
+/* Kernpunten (deel A van het framework): gelden voor elke organisatie.
+   tab = id van het tabblad (section#v-<tab>), laag 1–4, fase 0/1/2 = standaardperiode in de roadmap. */
+const RM_CORE=[
+ {id:'C-B1',tab:'basis',laag:1,groep:'Maandafsluiting',norm:'Vaste afsluitkalender; de maand is dicht op een vaste werkdag',actie:'Afsluitkalender met doelwerkdag invoeren en bewaken',eig:'Financial control',fase:0},
+ {id:'C-B2',tab:'basis',laag:1,groep:'Maandafsluiting',norm:'Mapping van grootboek naar management P&L vastgelegd en onderhouden',actie:'Mappingtabel grootboek → management P&L opstellen',eig:'Financial control',fase:0},
+ {id:'C-B3',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Er is een reconciliatieschema: welke aansluitingen maandelijks, door wie, en wie aftekent',actie:'Reconciliatieschema met eigenaren en aftekening opstellen',eig:'Financial control',fase:0},
+ {id:'C-R1',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Bank: saldi in de administratie sluiten aan op de bankafschriften',actie:'Bankaansluiting maandelijks aftekenen',eig:'Financial control',fase:0},
+ {id:'C-R2',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Debiteuren: openstaande posten sluiten aan op de grootboekrekening',actie:'Debiteurenaansluiting maandelijks maken en aftekenen',eig:'Financial control',fase:0},
+ {id:'C-R3',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Crediteuren: openstaande posten sluiten aan op de grootboekrekening',actie:'Crediteurenaansluiting maandelijks maken en aftekenen',eig:'Financial control',fase:0},
+ {id:'C-R4',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Btw: de aangifte sluit aan op de btw-rekeningen in het grootboek',actie:'Btw-aansluiting per aangifte maken',eig:'Financial control',fase:1},
+ {id:'C-R5',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Salarissen: het loonjournaal sluit aan op het grootboek',actie:'Aansluiting loonjournaal ↔ grootboek maandelijks maken',eig:'Financial control',fase:1},
+ {id:'C-R6',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Activaregister: investeringen en afschrijvingen sluiten aan op de balans',actie:'Activaregister maandelijks aansluiten op het grootboek',eig:'Financial control',fase:1},
+ {id:'C-R7',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Tussenrekeningen en vraagposten zijn aan het eind van de maand leeg of verklaard',actie:'Tussenrekeningen en vraagposten maandelijks opschonen en verklaren',eig:'Financial control',fase:0},
+ {id:'C-B4',tab:'basis',laag:1,groep:'Beheersing',norm:'Functiescheiding en vier-ogenprincipe op stamdata en betalingen',actie:'Functiescheiding en vier-ogenprincipe inrichten',eig:'Financial control',fase:1},
+ {id:'C-B5',tab:'basis',laag:1,groep:'Beheersing',norm:'Kritieke Excel-bestanden zijn gedocumenteerd en beheerst',actie:'Kritieke Excel-processen inventariseren en documenteren',eig:'Business control',fase:0},
+ {id:'C-P1',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'Afwijkingen worden maandelijks verklaard naar volume, prijs en efficiëntie',actie:'Standaard afwijkingsanalyse invoeren in de maandrapportage',eig:'Business control',fase:1},
+ {id:'C-P2',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'Er is een Best Estimate of rolling forecast, minstens per kwartaal',actie:'Best Estimate per kwartaal invoeren',eig:'Business control',fase:1},
+ {id:'C-P3',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'De belangrijkste risico\'s zijn als scenario doorgerekend',actie:'Scenario\'s voor de grootste risico\'s uitwerken',eig:'Business control',fase:2},
+ {id:'C-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Er is een vastgestelde kernset van 10–15 KPI\'s',actie:'Kernset van 10–15 KPI\'s vaststellen met directie',eig:'Business control',fase:0},
+ {id:'C-K2',tab:'kpis',laag:3,groep:'KPI-set',norm:'Elke kern-KPI heeft een KPI-kaart met definitie, formule, eigenaar en norm',actie:'KPI-kaarten opstellen voor de kernset',eig:'Business control',fase:0},
+ {id:'C-K3',tab:'kpis',laag:3,groep:'KPI-set',norm:'Het dashboard wordt automatisch gevuld uit één bron',actie:'Dashboard automatisch vullen vanuit één datamodel',eig:'IT / finance',fase:2},
+ {id:'C-S1',tab:'sturing',laag:4,groep:'Business review',norm:'Business review met vaste agenda en actielijst (eigenaar, deadline, effect)',actie:'Vaste agenda en actielijst voor de business review invoeren',eig:'Finance business partner',fase:0},
+ {id:'C-S2',tab:'sturing',laag:4,groep:'Business review',norm:'Opvolging van acties is vast agendapunt; het effect wordt gemeten',actie:'Opvolging en effectmeting van acties borgen',eig:'Directie',fase:1},
+ {id:'C-O1',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Bevoegdhedenmatrix met drempelbedragen is vastgesteld',actie:'Bevoegdhedenmatrix vaststellen',eig:'Directie',fase:1},
+ {id:'C-O2',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Rollen van financial control, business control en lijn zijn vastgelegd (RACI)',actie:'RACI per kernproces vastleggen',eig:'Finance',fase:1},
+ {id:'C-Y1',tab:'cyclus',laag:4,groep:'Stuurcyclus',norm:'Stuurcyclus en rapportagekalender zijn vastgesteld en bekend',actie:'Stuurcyclus en rapportagekalender vaststellen en publiceren',eig:'Business control',fase:0},
+ {id:'C-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Eén bron per gegeven; bronsystemen en koppelingen zijn beschreven',actie:'Bronnen en koppelingen beschrijven; één bron per gegeven afspreken',eig:'IT / finance',fase:1},
+ {id:'C-D2',tab:'datamodel',laag:1,groep:'Data',norm:'Standaarddimensies (project, entiteit, kostenplaats) zijn verplicht bij het boeken',actie:'Verplichte dimensies instellen in het financieel pakket',eig:'Financial control',fase:1}
+];
+const RM_FASES=[['Snelle verbeteringen','0–3 maanden'],['Basis op orde','3–9 maanden'],['Doorontwikkeling','9–18 maanden']];
+const RM_LAGEN=['Financiële basis','Business drivers','KPI\'s','Sturing'];
+
+/* Projectorganisaties: branchepunten B2 (en B3 voor IT); br = branches waarvoor het punt geldt */
+const RM_PO=[
+ {id:'P-U1',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Alle uren worden wekelijks geschreven en goedgekeurd, op project en activiteit',actie:'Wekelijkse urenregistratie en goedkeuring afdwingen',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-U2',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Registratieregels liggen vast (pauzes, afwezigheid, overwerk, reistijd)',actie:'Registratieregels uren vastleggen en communiceren',eig:'Business control',fase:0},
+ {id:'P-U4',tab:'uren',laag:1,groep:'Urenregistratie',norm:'Herstel- en terugkom-uren hebben een eigen code op het project of een herstelorder',actie:'Herstelcode invoeren in de urenregistratie',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-U3',tab:'uren',laag:3,groep:'Capaciteit',norm:'De urenwaterval per functiegroep wordt gerapporteerd, met vastgelegde keuzes voor de noemer',actie:'Urenwaterval en definitie benutting vastleggen op de KPI-kaart',eig:'Business control',fase:1},
+ {id:'P-B1',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Uitgangspunten voor resultaatneming liggen per projecttype vast',actie:'Uitgangspunten resultaatneming vaststellen met directie',eig:'Financial control',fase:0},
+ {id:'P-B2',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Onderhanden werk per project: verdiend tegenover gefactureerd, maandelijks',actie:'Maandelijkse OHW-staat per project invoeren',eig:'Financial control',fase:1},
+ {id:'P-B3',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Meerwerk wordt vastgelegd met opdrachtbevestiging vóór uitvoering',actie:'Werkwijze meerwerk met opdrachtbevestiging invoeren',eig:'Projectleiding',fase:0},
+ {id:'P-B4',tab:'basis',laag:1,groep:'Resultaatneming en onderhanden werk',norm:'Per projecttype ligt vast welk deel van herstel doorbelastbaar is',actie:'Doorbelastbaarheid herstel per projecttype vastleggen',eig:'Directie',fase:0},
+ {id:'P-B5',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Projectadministratie ↔ grootboek: werkelijke kosten en opbrengsten per project sluiten aan',actie:'Maandelijkse aansluiting projectadministratie ↔ grootboek',eig:'Financial control',fase:0},
+ {id:'P-B6',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Termijnstaten en facturatie sluiten aan op debiteuren en onderhanden werk',actie:'Aansluiting termijnstaten ↔ debiteuren en OHW invoeren',eig:'Financial control',fase:1},
+ {id:'P-J1',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'De projectleider stelt maandelijks de prognose bij gereedkomen op, met nog te maken kosten en risicopost',actie:'Maandelijkse prognose bij gereedkomen per project invoeren',eig:'Projectleiding',fase:0},
+ {id:'P-J5',tab:'projecten',laag:4,groep:'Projectcontrol',norm:'Er is een maandelijkse projectreview per projectleider, met business control als challenger',actie:'Maandelijkse projectreview invoeren',eig:'Bedrijfsleiding',fase:0},
+ {id:'P-J2',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'De DCM-brug per project (met herstel apart) wordt in de review besproken',actie:'DCM-brug als vast format in de projectreview',eig:'Business control',fase:1},
+ {id:'P-J3',tab:'projecten',laag:2,groep:'Projectcontrol',norm:'Voortgang wordt fysiek bepaald, of herstel-uren worden uit de voortgang op kosten gefilterd',actie:'Onafhankelijke voortgangsmeting invoeren',eig:'Projectleiding',fase:1},
+ {id:'P-J4',tab:'projecten',laag:3,groep:'Projectcontrol',norm:'Prognosestabiliteit (PRO-09) wordt gemeten',actie:'Prognose-historie per project bewaren en PRO-09 meten',eig:'Business control',fase:2},
+ {id:'P-S2',tab:'pl',laag:2,groep:'Margestaffel',norm:'De margestaffel DCM–TCM–EBITDA is ingericht, met een eigenaar per trede',actie:'Margestaffel met eigenaar per trede inrichten',eig:'Business control',fase:1},
+ {id:'P-S1',tab:'segmenten',laag:2,groep:'Segmentatie',norm:'Er is een gesegmenteerde P&L tot TCM, met een vaste verdeelsleutel voor overhead',actie:'Gesegmenteerde P&L met verdeelsleutel opzetten',eig:'Business control',fase:2},
+ {id:'P-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Orderportefeuille en werkvoorraad (COM-12, COM-14) worden maandelijks gerapporteerd',actie:'Rapportage orderportefeuille en werkvoorraad invoeren',eig:'Commercie',fase:1},
+ {id:'P-L1',tab:'licenties',laag:1,groep:'Licenties',norm:'De licentiebalans (ingekocht, toegewezen, gefactureerd) wordt maandelijks afgestemd',actie:'Maandelijkse licentiebalans invoeren',eig:'Financial control',fase:0,br:['it']},
+ {id:'P-L2',tab:'licenties',laag:2,groep:'Licenties',norm:'Prijsverhogingen van leveranciers worden tijdig doorbelast; er is een verlengingskalender',actie:'Verlengingskalender en doorbelastingsregel invoeren',eig:'Commercie',fase:1,br:['it']}
+];
+window.RM_CFG={naam:'projectorganisaties',key:()=>'po_rm_v1_'+(window.__BRK||'inst'),fases:RM_FASES,lagen:RM_LAGEN,
+ items:()=>RM_CORE.concat(RM_PO).filter(i=>!i.br||i.br.includes(window.__BRK||'inst')),
+ demo:()=>({'C-B1':'deels','C-B2':'deels','C-B3':'deels','C-R1':'ok','C-R2':'deels','C-R3':'deels','C-R4':'ok','C-R5':'ok','C-R6':'ok','C-R7':'niet','P-B5':'niet','P-B6':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet','C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'deels','C-D1':'niet','C-D2':'deels',
+  'P-U1':'deels','P-U2':'niet','P-U4':'niet','P-U3':'niet','P-B1':'deels','P-B2':'deels','P-B3':'niet','P-B4':'niet','P-J1':'deels','P-J5':'ok','P-J2':'niet','P-J3':'niet','P-J4':'niet','P-S2':'deels','P-S1':'niet','P-K1':'deels','P-L1':'niet','P-L2':'deels'})};
+
+/* B.Enable · module Vastleggen → Verbeterroadmap (generiek, voor alle frameworks)
+   Verwacht window.RM_CFG = {
+     naam:'inwarmte', key:()=>'opslagsleutel', items:()=>[{id,tab,laag,groep,norm,actie,eig,fase}],
+     fases:[['Snelle verbeteringen','0–3 maanden'],...], lagen:['Financiële basis',...], demo:()=>({id:'ok'|'deels'|'niet'}) }
+   Zet per tabblad (section#v-<tab>) een kaart "Vastleggen" en bouwt in #rmRoad de roadmap. */
+(function(){
+const C=window.RM_CFG;if(!C)return;
+const $=s=>document.querySelector(s);
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LAB={ok:'Op orde',deels:'Deels',niet:'Niet op orde'};
+const PRIO=['Hoog','Midden','Laag'],STAT=['Niet gestart','Loopt','Gereed'];
+function fresh(demo){const d={st:{},act:{},extra:[],demo:!!demo};if(demo&&C.demo)Object.entries(C.demo()).forEach(([id,s])=>d.st[id]={s,o:''});return d}
+let K=C.key(),D=LS.get(K,null)||fresh(true);
+const save=()=>LS.set(K,D);
+const items=()=>C.items().filter(it=>document.getElementById('v-'+it.tab));
+const tabNaam=t=>{const a=document.querySelector('#nav a[href="#'+t+'"]');if(!a)return t;const sp=a.querySelector('span');return a.textContent.slice(sp?sp.textContent.length:0).trim()};
+const st=id=>(D.st[id]&&D.st[id].s)||'';
+const act=(id,it)=>Object.assign({fase:it.fase||0,prio:1,stat:0,eig:it.eig||''},D.act[id]||{});
+
+function panel(tab){const sec=document.getElementById('v-'+tab);if(!sec)return;const its=items().filter(i=>i.tab===tab);if(!its.length)return;
+  let card=sec.querySelector(':scope>.rmPanel');if(!card){card=document.createElement('div');card.className='card rmPanel';sec.appendChild(card)}
+  const n=its.filter(i=>st(i.id)).length,ok=its.filter(i=>st(i.id)==='ok').length;const groepen=[...new Set(its.map(i=>i.groep))];
+  card.innerHTML=`<div class="row" style="justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px"><h2 style="margin:0">Vastleggen: hoe staat het bij jullie?</h2><span class="note">${n} van ${its.length} beoordeeld · ${ok} op orde</span></div>
+   <p class="note" style="margin:4px 0 6px">Beoordeel per punt de huidige situatie. Wat niet of deels op orde is, wordt een actie in de <a href="#roadmap">verbeterroadmap</a>.${D.demo?' <span class="badge-ex">voorbeeldinvulling</span>':''}</p>`+
+   groepen.map(g=>`<h3 class="rmG">${esc(g)}</h3>`+its.filter(i=>i.groep===g).map(it=>{const s=st(it.id),o=(D.st[it.id]||{}).o||'';
+    return `<div class="rmRow"><div><div class="rmT">${esc(it.norm)}</div><div class="note">Laag ${it.laag}${s&&s!=='ok'?' · actie: '+esc(it.actie):''}</div></div>
+     <div class="seg rmSeg" role="group" aria-label="Beoordeling">${['ok','deels','niet'].map(k=>`<button type="button" class="${s===k?'on rm-'+k:''}" data-id="${it.id}" data-s="${k}" aria-pressed="${s===k}">${LAB[k]}</button>`).join('')}</div>
+     <input class="rmO" data-id="${it.id}" value="${esc(o)}" placeholder="Toelichting" aria-label="Toelichting"></div>`}).join('')).join('');
+  card.querySelectorAll('.rmSeg button').forEach(b=>b.onclick=()=>{const id=b.dataset.id,cur=st(id);D.st[id]=Object.assign(D.st[id]||{o:''},{s:cur===b.dataset.s?'':b.dataset.s});save();all()});
+  card.querySelectorAll('.rmO').forEach(el=>el.onchange=()=>{const id=el.dataset.id;D.st[id]=Object.assign(D.st[id]||{s:''},{o:el.value});save();road()});
+}
+function acties(){const out=[];items().forEach(it=>{const s=st(it.id);if(s==='deels'||s==='niet')out.push(Object.assign({it,s,o:(D.st[it.id]||{}).o||''},act(it.id,it),{id:it.id,tekst:it.actie,laag:it.laag,tab:it.tab}))});
+  D.extra.forEach(x=>out.push(Object.assign({s:'eigen',o:'',tab:''},act(x.id,x),{id:x.id,tekst:x.tekst,laag:x.laag,eigen:1})));
+  return out.sort((a,b)=>a.laag-b.laag||a.prio-b.prio)}
+function road(){const host=$('#rmRoad');if(!host)return;const its=items(),A=acties();
+  const lagen=C.lagen.map((l,i)=>{const li=its.filter(x=>x.laag===i+1),b=li.filter(x=>st(x.id)),ok=b.filter(x=>st(x.id)==='ok').length,de=b.filter(x=>st(x.id)==='deels').length;const pct=b.length?(ok+de*0.5)/b.length:null;return{l,n:li.length,b:b.length,ok,de,pct,score:pct==null?null:1+Math.round(pct*4)}});
+  const open=its.filter(x=>!st(x.id)),gereed=A.filter(a=>a.stat===2).length;
+  host.innerHTML=`<div class="card" style="margin-top:16px"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Roadmap uit de vastleggingen</h2><p class="note" style="margin:2px 0 0">${A.length} acties · ${gereed} gereed · ${open.length} punten nog niet beoordeeld${D.demo?' · <span class="badge-ex">voorbeeldinvulling</span>':''}</p></div>
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" id="rmCsv">Exporteer roadmap (Excel)</button><button class="btn" id="rmCsv2">Exporteer vastleggingen</button><button class="btn" id="rmCopy">Kopieer roadmap</button><button class="btn" id="rmNieuw">Begin nulmeting (alles leeg)</button>${D.demo?'':'<button class="btn" id="rmDemo">Voorbeeld terugzetten</button>'}</div></div>
+    <p class="note rmMsg" id="rmMsg" role="status"></p>
+    <div class="grid g4" style="margin-top:8px">${lagen.map((x,i)=>`<div class="tile"><div class="lbl">Laag ${i+1} · ${esc(x.l)}</div><div class="val">${x.pct==null?'–':Math.round(x.pct*100)+'%'}</div><div class="sub">${x.ok} op orde · ${x.de} deels · ${x.b-x.ok-x.de} niet · ${x.n-x.b} open${x.score?` · niveau ${x.score}`:''}</div><div class="bar" style="margin-top:6px"><i style="width:${(x.pct||0)*100}%;background:${x.pct==null?'var(--line)':x.pct>=0.6?'var(--good)':x.pct>=0.35?'var(--warn)':'var(--bad)'}"></i></div></div>`).join('')}</div></div>
+   <div class="grid g3" style="margin-top:16px">${C.fases.map((f,fi)=>{const L=A.filter(a=>a.fase===fi);return `<div class="phase"><div><h2 style="margin:0">${esc(f[0])}</h2><span class="note">${esc(f[1])} · ${L.length} acties</span></div>${L.map(card).join('')||'<p class="note">Geen acties.</p>'}</div>`}).join('')}</div>
+   <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px">
+    <div class="card"><h2>Eigen actie toevoegen</h2><div class="stack" style="gap:8px"><input id="rmNT" placeholder="Omschrijving van de actie" aria-label="Omschrijving"><div class="row" style="gap:8px"><select id="rmNL" aria-label="Laag">${C.lagen.map((l,i)=>`<option value="${i+1}">Laag ${i+1} · ${esc(l)}</option>`).join('')}</select><select id="rmNF" aria-label="Fase">${C.fases.map((f,i)=>`<option value="${i}">${esc(f[0])}</option>`).join('')}</select><button class="btn pri" id="rmAdd">Toevoegen</button></div></div></div>
+    <div class="card"><h2>Nog te beoordelen (${open.length})</h2>${open.length?[...new Set(open.map(x=>x.tab))].map(t=>`<p style="margin:4px 0"><a href="#${t}">${esc(tabNaam(t))}</a> <span class="note">· ${open.filter(x=>x.tab===t).length} punten</span></p>`).join(''):'<p class="note">Alles is beoordeeld.</p>'}</div>
+   </div>`;
+  host.querySelectorAll('[data-a]').forEach(el=>el.onchange=()=>{const id=el.dataset.id;D.act[id]=Object.assign(D.act[id]||{},{[el.dataset.a]:el.dataset.a==='eig'?el.value:+el.value});save();road()});
+  host.querySelectorAll('.rmDel').forEach(b=>b.onclick=()=>{D.extra=D.extra.filter(x=>x.id!==b.dataset.id);delete D.act[b.dataset.id];save();road()});
+  $('#rmAdd').onclick=()=>{const t=$('#rmNT').value.trim();if(!t)return;const id='x'+Date.now().toString(36);D.extra.push({id,tekst:t,laag:+$('#rmNL').value,fase:+$('#rmNF').value});D.act[id]={fase:+$('#rmNF').value};save();road()};
+  $('#rmCsv').onclick=()=>download(csvRoad(),C.naam+'-verbeterroadmap.csv');
+  $('#rmCsv2').onclick=()=>download(csvVast(),C.naam+'-vastleggingen.csv');
+  $('#rmCopy').onclick=()=>{const t=rowsRoad().map(r=>r.join('\t')).join('\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>msg('Gekopieerd. Plak in Excel.'),()=>msg('Kopiëren lukt hier niet; gebruik de export.'))};
+  $('#rmNieuw').onclick=()=>{if(!host.dataset.sure){host.dataset.sure=1;msg('Klik nogmaals om alle vastleggingen en acties te wissen.');setTimeout(()=>delete host.dataset.sure,4000);return}delete host.dataset.sure;D=fresh(false);save();all();msg('Alles is leeg. Beoordeel per tabblad wat op orde is.')};
+  const dm=$('#rmDemo');if(dm)dm.onclick=()=>{D=fresh(true);save();all()};
+}
+function card(a){const lagL=C.lagen[a.laag-1]||'';return `<div class="rmAct ${a.s} ${a.stat===2?'done':''}"><div class="rmT">${esc(a.tekst)}</div>
+  <div class="row" style="gap:6px;margin-top:4px;flex-wrap:wrap"><span class="pill p-cool">Laag ${a.laag}</span>${a.eigen?'<span class="pill p-mut">eigen actie</span>':`<span class="pill ${a.s==='niet'?'p-bad':'p-warn'}">${LAB[a.s]}</span><a class="note" href="#${a.tab}">${esc(tabNaam(a.tab))}</a>`}</div>
+  ${a.o?`<p class="note" style="margin:6px 0 0">${esc(a.o)}</p>`:''}
+  <div class="rmCtl"><select data-a="fase" data-id="${a.id}" aria-label="Fase">${C.fases.map((f,i)=>`<option value="${i}"${i===a.fase?' selected':''}>${esc(f[1])}</option>`).join('')}</select>
+   <select data-a="prio" data-id="${a.id}" aria-label="Prioriteit">${PRIO.map((p,i)=>`<option value="${i}"${i===a.prio?' selected':''}>Prio ${p.toLowerCase()}</option>`).join('')}</select>
+   <select data-a="stat" data-id="${a.id}" aria-label="Status">${STAT.map((p,i)=>`<option value="${i}"${i===a.stat?' selected':''}>${p}</option>`).join('')}</select>
+   <input data-a="eig" data-id="${a.id}" value="${esc(a.eig)}" placeholder="Eigenaar" aria-label="Eigenaar"></div>
+  ${a.eigen?`<button class="btn rmDel" data-id="${a.id}" style="margin-top:6px">Verwijderen</button>`:''}</div>`}
+function rowsRoad(){return [['Fase','Periode','Laag','Actie','Bevinding','Toelichting','Eigenaar','Prioriteit','Status','Tabblad']].concat(acties().sort((a,b)=>a.fase-b.fase||a.laag-b.laag||a.prio-b.prio).map(a=>[C.fases[a.fase][0],C.fases[a.fase][1],a.laag+' · '+(C.lagen[a.laag-1]||''),a.tekst,a.eigen?'eigen actie':LAB[a.s],a.o,a.eig,PRIO[a.prio],STAT[a.stat],a.tab?tabNaam(a.tab):'']))}
+function rowsVast(){return [['Tabblad','Laag','Onderwerp','Doelsituatie','Beoordeling','Toelichting','Actie bij afwijking']].concat(items().map(it=>[tabNaam(it.tab),it.laag,it.groep,it.norm,LAB[st(it.id)]||'Nog niet beoordeeld',(D.st[it.id]||{}).o||'',it.actie]))}
+const toCsv=rows=>'﻿'+rows.map(r=>r.map(v=>{v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')).join('\r\n');
+const csvRoad=()=>toCsv(rowsRoad()),csvVast=()=>toCsv(rowsVast());
+let DL=null;try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}catch(e){}
+async function download(txt,name){
+  if(DL){try{await DL.save({filename:name,data:txt});msg('Bestand '+name+' opgeslagen.')}catch(e){msg(e&&e.code==='declined'?'Opslaan geannuleerd.':'Opslaan lukt hier niet; gebruik Kopieer roadmap.')}return}
+  if(window.claude){msg('Opslaan lukt in deze weergave niet; gebruik Kopieer roadmap en plak in Excel.');return}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);msg('Bestand '+name+' gedownload.')}catch(e){msg('Downloaden lukt hier niet; gebruik Kopieer roadmap.')}}
+function msg(t){const m=$('#rmMsg');if(m)m.textContent=t}
+function niveaus(){const its=items();return C.lagen.map((l,i)=>{const b=its.filter(x=>x.laag===i+1&&st(x.id)),ok=b.filter(x=>st(x.id)==='ok').length,de=b.filter(x=>st(x.id)==='deels').length;
+  const afg=b.length?1+Math.round((ok+de*0.5)/b.length*4):null,man=(D.scan||{})[i];return{i,b:b.length,afg,man,eff:man||afg||1}})}
+function scan(){const host=$('#scan'),res=$('#scanRes');if(!host)return;const crit=window.__scanCrit||[],N=niveaus();
+  host.innerHTML=N.map(n=>{const c=crit[n.i]||['Laag '+(n.i+1)+' · '+C.lagen[n.i],[]],txt=c[1][n.eff-1]||'';
+   const bron=n.man?`<span class="pill p-warn">handmatig</span> <span class="note">afgeleid: ${n.afg||'–'}</span> <button type="button" class="linkbtn rmScanReset" data-i="${n.i}">terug naar afgeleid</button>`:n.afg?`<span class="pill p-cool">afgeleid</span> <span class="note">uit ${n.b} beoordeelde punten</span>`:`<span class="pill p-mut">nog niets vastgelegd</span>`;
+   return `<div><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px"><h3 style="margin:0">${esc(c[0])}</h3><div class="seg">${[1,2,3,4,5].map(v=>`<button type="button" class="${v===n.eff?'on':''} rmScanBtn" data-i="${n.i}" data-v="${v}" aria-label="${esc(c[0])} niveau ${v}" aria-pressed="${v===n.eff}">${v}</button>`).join('')}</div></div>
+    <div class="row" style="gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center">${bron}</div><p class="note" style="margin:4px 0 0">${n.eff}: ${esc(txt)}</p><div class="bar" style="margin-top:6px"><i style="width:${n.eff*20}%;background:${n.eff>=3?'var(--good)':n.eff===2?'var(--warn)':'var(--bad)'}"></i></div></div>`}).join('')+
+   '<p class="note" style="margin:4px 0 0">Het niveau volgt uit de beoordelingen bij <i>Vastleggen</i> (op orde telt 1, deels ½). Kies een ander niveau als het gesprek tot een ander oordeel leidt.</p>';
+  host.querySelectorAll('.rmScanBtn').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,v=+b.dataset.v,n=N[i];D.scan=D.scan||{};if(v===n.afg)delete D.scan[i];else D.scan[i]=v;save();scan();road()});
+  host.querySelectorAll('.rmScanReset').forEach(b=>b.onclick=()=>{delete (D.scan||{})[+b.dataset.i];save();scan();road()});
+  if(res){const f=N.find(n=>n.eff<3),gem=N.reduce((a,n)=>a+n.eff,0)/N.length,c=f?(crit[f.i]||['Laag '+(f.i+1),[]]):null;
+   res.innerHTML=`<h2>Advies</h2>${!f?'<p>Alle lagen staan op niveau 3 of hoger. Richt je op doorontwikkeling en automatisering.</p>':`<p>Begin bij <b>${esc(c[0])}</b> (niveau ${f.eff}). Verbeteringen in hogere lagen leveren pas iets op als deze laag op orde is.</p><p class="note">Doelniveau per laag: 3.${c[1][Math.min(2,f.eff)]?' Volgende stap: '+esc(c[1][Math.min(2,f.eff)])+'.':''}</p><p class="note">De acties voor deze laag staan hieronder bovenaan in elke periode.</p>`}<p class="note">Gemiddelde volwassenheid: ${gem.toFixed(1).replace('.',',')} van 5.</p>`}}
+function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road();scan()}
+window.RM={refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}document.querySelectorAll('.rmPanel').forEach(c=>c.remove());all()}};
+all();
+})();
+
+/* RM:END */
+
+/* LOCK:START presentatie-slot: geen beveiliging, alleen voor de presentatie */
+(function(){
+const LOCK_VIEWS=["sturing", "organisatie", "cyclus", "datamodel", "roadmap"];
+const LOCK_HASH="58b4eeafef5fb0038d776d2384ef7a7099eb239f25e5dca3ea91c0c73130c188";
+const KEY='be_unlock_'+location.pathname;
+let fails=0,waitUntil=0;
+const isOpen=()=>{try{return sessionStorage.getItem(KEY)===LOCK_HASH}catch(e){return false}};
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('benable:'+t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function apply(){const open=isOpen();
+  LOCK_VIEWS.forEach(v=>{const s=document.getElementById('v-'+v);if(!s)return;s.classList.toggle('locked',!open);
+    [...s.children].forEach(c=>{if(!c.classList.contains('lockbox')){if(open)c.removeAttribute('aria-hidden');else c.setAttribute('aria-hidden','true')}});
+    const a=document.querySelector('#nav a[href="#'+v+'"]');if(a)a.classList.toggle('lk',!open)});}
+LOCK_VIEWS.forEach(v=>{const s=document.getElementById('v-'+v);if(!s)return;const box=document.createElement('div');box.className='lockbox';
+  box.innerHTML='<h2>Bespreken we samen</h2><p>Dit onderdeel lichten we toe in de sessie. Vul de pincode in om het te openen.</p><form><input type="password" inputmode="numeric" autocomplete="off" aria-label="Pincode" maxlength="12"><button class="btn pri" type="submit">Open</button></form><div class="msg" role="status"></div>';
+  s.insertBefore(box,s.firstChild);
+  box.querySelector('form').onsubmit=async e=>{e.preventDefault();const inp=box.querySelector('input'),msg=box.querySelector('.msg');
+    if(Date.now()<waitUntil){msg.textContent='Even wachten en opnieuw proberen.';return}
+    if(await sha(inp.value.trim())===LOCK_HASH){try{sessionStorage.setItem(KEY,LOCK_HASH)}catch(err){}msg.textContent='';inp.value='';apply()}
+    else{fails++;inp.value='';msg.textContent='Onjuiste pincode.';if(fails>=5){waitUntil=Date.now()+30000;fails=0;msg.textContent='Te vaak onjuist. Probeer het over 30 seconden opnieuw.'}}};});
+apply();
+// bezoeker en vervaldatum uit de toegangslink (cookie gezet door de server)
+try{const m=document.cookie.match(/(?:^|; )be_who=([^;]*)/);if(m){const [n,e]=decodeURIComponent(m[1]).split('|');const d=new Date(+e*1000);const el=document.createElement('div');el.className='who';el.textContent='Toegang voor '+n+' tot '+d.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});const sn=document.querySelector('.sidenote');if(sn)sn.after(el)}}catch(e){}
+})();
+/* LOCK:END */
+</script>
+</body>
+</html>

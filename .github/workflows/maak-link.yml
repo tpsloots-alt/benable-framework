@@ -17,6 +17,7 @@ on:
         type: choice
         options:
           - /inwarmte/
+          - /projectorganisaties/
       domein:
         description: 'Domein'
         required: true
