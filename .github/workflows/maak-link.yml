@@ -19,6 +19,7 @@ on:
           - /inwarmte/
           - /projectorganisaties/
           - /warmtebedrijf/
+          - /implementatieplan/
       domein:
         description: 'Domein'
         required: true

@@ -14,6 +14,7 @@ public/                 de site zelf
   inwarmte/index.html   framework InWarmte (alleen met link)
   projectorganisaties/index.html   framework Projectorganisaties (alleen met link)
   warmtebedrijf/index.html   geanonimiseerde warmtecasus voor feedback, zonder pincode (alleen met link)
+  implementatieplan/index.html   losse tool: roadmap inlezen en omzetten naar implementatieplan (alleen met link, zonder pincode)
 functions/
   _middleware.js        controleert de links; hier staan ook de beschermde paden
   ingetrokken.js        id's van links die niet meer mogen werken
