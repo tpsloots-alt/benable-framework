@@ -235,7 +235,8 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
     <div class="navgrp">Laag 1 · Klopt het?</div>
     <a href="#basis"><span>02</span>Financiële basis</a>
     <div class="navgrp">Laag 2 · Waarom?</div>
-    <a href="#marge"><span>03</span>Marge</a>
+    <a href="#marge"><span>3a</span>Marge</a>
+    <a href="#omzet"><span>3b</span>Omzetverantwoording</a>
     <a href="#opwekking"><span>04</span>Projectportfolio</a>
     <a href="#realisatie"><span>4b</span>Ontwikkeling en realisatie</a>
     <a href="#pl"><span>05</span>P&amp;L en scenario's</a>
@@ -345,6 +346,7 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
 <section class="view" id="v-marge">
   <h1>Laag 2 · Marge: vaste opbrengsten en collectieve netten</h1>
   <p class="lede">Bij InWarmte bestaat het grootste deel van de opbrengst uit vaste bedragen per aansluiting (bronwarmte, koude, huur warmtepomp); die stel je hieronder in bij <i>Individuele systemen</i>. Voor de collectieve netten geldt de klassieke opbouw: de commerciële marge (opbrengst uit levering min toegerekende kostprijs) wordt los gehouden van het resultaat op inkoop en opwek. De toegerekende kostprijs bestaat uit de kale kostprijs plus een kostenbijdrage per component; het verschil tussen gevraagde en gerealiseerde kostenbijdrage is een eigen resultaat. <span class="badge-ex">fictieve waarden</span></p>
+  <p class="note" style="margin-top:-4px">Dit tabblad gaat over de marge. De omzet zelf, uit warmtelevering én uit projectrealisatie, wordt verantwoord op <a href="#omzet">3b Omzetverantwoording</a>.</p>
   <div class="grid" style="grid-template-columns:320px minmax(0,1fr)" id="margeGrid">
     <div class="card form" id="drivers"></div>
     <div class="stack">
@@ -364,6 +366,53 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
         <p class="note">Gerealiseerd als percentage van de gevraagde kostenbijdrage. Onder de 100% levert resultaat op, erboven een tekort. Een structurele afwijking is input voor de volgende tariefherziening (KPI KWA-03).</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 3b OMZETVERANTWOORDING -->
+<section class="view" id="v-omzet">
+  <h1>Laag 2 · Omzetverantwoording: warmtelevering en projectrealisatie</h1>
+  <p class="lede">De omzet van InWarmte komt uit twee verschillende bronnen met een eigen logica. Omzet uit warmtelevering is terugkerend en hangt af van het aantal aansluitingen dat contract en factuur heeft. Omzet uit projectrealisatie is eenmalig en volgt de voortgang van de bouw. Beide moeten apart zichtbaar zijn, aansluiten op Exact Online per BV en een eigen controle hebben. <span class="badge-demo">Fictieve bedragen</span></p>
+  <div class="grid g4" id="omTiles"></div>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-top:16px">
+    <div class="card">
+      <h2>Omzet naar bron</h2>
+      <div class="chart" id="omChart"></div>
+      <p class="note">Warmtelevering en dienstverlening zijn dezelfde cijfers als in de P&amp;L, inclusief het afgetrokken omzetlek. Omzet uit projectrealisatie is hier apart getoond en niet opgenomen in de EBITDA van het warmtebedrijf in tab 05; de realisatie loopt in dit model via de investering.</p>
+    </div>
+    <div class="card">
+      <h2>Verantwoordingsketen per stroom</h2>
+      <h3 style="margin-top:0">Warmtelevering</h3>
+      <p class="note" style="margin-top:0">Register van aansluitingen → contract → facturatierun → omzet per BV in Exact Online. Meet je op <a href="#basis">02 Financiële basis</a> met de omzetvolledigheid: nu <b id="omVol"></b>.</p>
+      <h3>Projectrealisatie</h3>
+      <p class="note" style="margin-top:0">Aansluitbijdrage en aanneemsom per project → voortgang van de bouw → verdiende omzet → termijnfacturatie → nog te factureren of vooruitgefactureerd. Voortgang en kosten per project staan op <a href="#realisatie">4b Ontwikkeling en realisatie</a>.</p>
+      <h3>Wat de directie moet kunnen beantwoorden</h3>
+      <ul class="clean">
+        <li>Hoeveel van de omzet is terugkerend en hoeveel eenmalig?</li>
+        <li>Heeft elke aansluiting die warmte krijgt een contract en een factuur?</li>
+        <li>Wat is verdiend op projecten maar nog niet gefactureerd, en omgekeerd?</li>
+        <li>Sluit de omzet per stroom aan op Exact Online, per BV?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Omzetstromen in één overzicht</h2>
+    <div class="tablewrap"><table id="omTable"></table></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Projectrealisatie: verdiend tegenover gefactureerd</h2>
+    <p class="note" style="margin-top:-6px">Verdiende omzet = aansluitbijdrage × voortgang (percentage gereed). Het saldo is nog te factureren (positief) of vooruitgefactureerd (negatief); beide horen op de balans te staan en per project berekend te zijn.</p>
+    <div class="stack" style="gap:12px">
+      <div class="form stack" id="omForm" style="max-width:420px"></div>
+      <div class="tablewrap"><table id="omProj"></table></div>
+    </div>
+    <h3 style="margin-top:14px">Uitgangspunten</h3>
+    <ul class="clean">
+      <li>Omzet uit realisatie volgt de voortgang, niet het factuurmoment. Leg dit vast in een beleid en stem het af met de accountant.</li>
+      <li>Aansluitbijdragen en aanneemsommen liggen per project vast in het contract; meerwerk en wijzigingen lopen via een vast proces.</li>
+      <li>Voortgang is meetbaar: opgeleverde aansluitingen of kosten tot nu ten opzichte van de prognose bij gereedkomen, vastgelegd door de projectmanager.</li>
+      <li>Een project zonder voortgangsstaat heeft geen omzet; zonder cijfers geen verantwoording.</li>
+    </ul>
   </div>
 </section>
 
@@ -617,7 +666,7 @@ const sgn=(v,f)=>(v>0?'+':v<0?'−':'')+f(Math.abs(v));
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
 /* ---------- ROUTING ---------- */
-const views=['overzicht','basis','marge','opwekking','realisatie','pl','kpis','sturing','organisatie','cyclus','datamodel','roadmap','begrippen'];
+const views=['overzicht','basis','marge','omzet','opwekking','realisatie','pl','kpis','sturing','organisatie','cyclus','datamodel','roadmap','begrippen'];
 function route(){
   const h=location.hash.replace('#','');const v=views.includes(h)?h:'overzicht';
   views.forEach(x=>$('#v-'+x).classList.toggle('on',x===v));
@@ -728,7 +777,7 @@ function calc(p){
   r.central=r.ow.T.ebit-r.ebit;
   r.derden=r.ow.rows.reduce((s,x)=>s+(1-entById(x.pr.ent)[2]/100)*(x.ebit-r.central*x.A/r.ow.T.aansl),0);
   r.ebitEig=r.ebit-r.derden;
-  r.omzet=r.F*p.tarFact+r.vast+r.bronV+r.huur+T0.rd+p.nevAant*p.nevFee-r.vol.lek;
+  r.omzet=r.F*p.tarFact+r.vast+r.bronV+r.huur+T0.rd+p.nevAant*p.nevFee-r.vol.lek;r.omzDv=T0.rd;
   r.dWC=r.omzet*(p.dso-p.dsoLY)/365;
   r.cffo=r.ebitda-r.dWC;
   r.fcf=r.cffo-p.capex;
@@ -874,7 +923,7 @@ function renderOpwek(r){
   const {rows,T}=r.ow;
   priceDefs.forEach(d=>{$('#in_'+d[0]).value=S[d[0]];$('#o_'+d[0]).textContent=d[5](S[d[0]])});
   const pr=S.proj[curProj];projDefs.forEach(d=>{const el=$('#pj_'+d[0]);if(el){el.value=pr[d[0]];$('#po_'+d[0]).textContent=d[5](pr[d[0]])}});
-  $('#oLinked').innerHTML=`Toegerekende kostprijs <b>€ ${nf2.format(S.kaal)}/GJ</b>, gefactureerd tarief <b>€ ${nf2.format(S.tarFact)}/GJ</b> en weerseffect <b>${sgn(S.weer,x=>nf1.format(x))}%</b> stel je in op <a href="#marge">03 Marge</a>; onderhoud per aansluiting volgt uit <a href="#pl">05 P&amp;L</a>.`;
+  $('#oLinked').innerHTML=`Toegerekende kostprijs <b>€ ${nf2.format(S.kaal)}/GJ</b>, gefactureerd tarief <b>€ ${nf2.format(S.tarFact)}/GJ</b> en weerseffect <b>${sgn(S.weer,x=>nf1.format(x))}%</b> stel je in op <a href="#marge">3a Marge</a>; onderhoud per aansluiting volgt uit <a href="#pl">05 P&amp;L</a>.`;
   const bud=calc(BUD).ow.T;
   const usedEnts=new Set(S.proj.map(x=>x.ent)).size;
   $('#oTiles').innerHTML=tile('Projecten',`${S.proj.length}`,`${usedEnts} entiteiten · ${nf0.format(T.aansl)} aansl. in exploitatie`)+
@@ -1043,6 +1092,47 @@ $('#setBudget').onclick=()=>{BUD=clone(S);store.set('inw_budget_v1',BUD);update(
 function resetAll(){S=mkAct();BUD=clone(DEF);save();store.set('inw_budget_v1',BUD);update();if(typeof renderKd==='function'&&$('#kdTable'))renderKd()}
 $('#resetAll').onclick=resetAll;
 
+
+function omRP(p){const lead=p.oLead===undefined?10:p.oLead;
+  return RPROJ.filter(x=>x.fase!=='gestopt').map(b=>{const o=Object.assign({},b,p.rp[b.id]||{});const real=o.fase==='real';
+    const ver=real?o.bak*o.ger/100:0,fac=real?o.bak*Math.min(100,Math.max(0,o.ger+lead))/100:0;
+    return{id:o.id,naam:o.naam,fase:o.fase,aansl:o.aansl,bak:o.bak,ger:o.ger,ver,fac,ohw:ver-fac}})}
+function renderOmzet(r,bud){
+  const rp=omRP(S),sv=rp.reduce((a,x)=>a+x.ver,0),sf=rp.reduce((a,x)=>a+x.fac,0),sb=rp.reduce((a,x)=>a+x.bak,0);
+  const lev=r.omzet,tot=lev+sv,bl=bud.omzet;
+  const rows=[
+   ['Collectieve netten, variabel (per GJ)',r.F*S.tarFact,'terugkerend','Grootboek 8000 · facturatierun','Financial control'],
+   ['Vastrecht en meterhuur collectief',r.vast,'terugkerend','Grootboek 8010 · facturatierun','Financial control'],
+   ['Vastrecht bron en koude (individueel)',r.bronV,'terugkerend','Facturatierun per BV','Financial control'],
+   ['Huur warmtepompen',r.huur,'terugkerend','Facturatierun per BV','Financial control'],
+   ['Dienstverlening (fee per aansluiting)',r.omzDv,'terugkerend','Contract met opdrachtgever','Commercie'],
+   ['Nevendiensten (service en onderhoud)',r.nevOmzet,'terugkerend','Grootboek 8110','Commercie'],
+   ['Omzetlek (niet-gefactureerd)',-r.vol.lek,'correctie','Match register ↔ factuur','Financial control']];
+  const sub=rows.reduce((a,x)=>a+x[1],0);
+  const pct=v=>tot?nf1.format(v/tot*100)+'%':'–';
+  const tr=x=>`<tr><td>${x[0]}</td><td class="n${x[1]<0?' neg':''}">${x[1]<0?'−':''}${keur(Math.abs(x[1]))}</td><td class="n">${pct(x[1])}</td><td>${x[2]}</td><td>${x[3]}</td><td>${x[4]}</td></tr>`;
+  $('#omTable').innerHTML='<thead><tr><th>Omzetstroom</th><th class="n">k€</th><th class="n">% van totaal</th><th>Aard</th><th>Sluit aan op</th><th>Eigenaar</th></tr></thead><tbody>'
+   +rows.map(tr).join('')
+   +`<tr class="sum"><td>Subtotaal warmtelevering en dienstverlening</td><td class="n">${keur(sub)}</td><td class="n">${pct(sub)}</td><td></td><td></td><td></td></tr>`
+   +tr(['Aansluitbijdragen projectrealisatie (verdiend)',sv,'eenmalig','Grootboek 8100 · voortgangsstaat','Projectmanagement met financial control'])
+   +`<tr class="sum"><td>Totale omzet</td><td class="n">${keur(sub+sv)}</td><td class="n">100%</td><td></td><td></td><td></td></tr></tbody>`;
+  $('#omTiles').innerHTML=tile('Totale omzet',meur(tot),`${nf0.format(lev/tot*100)}% terugkerend, ${nf0.format(sv/tot*100)}% eenmalig`)
+   +tile('Warmtelevering en dienstverlening',meur(lev),`<span class="${lev>=bl?'pos':'neg'}">${sgn(lev-bl,eur)}</span> vs begroting`)
+   +tile('Projectrealisatie, verdiend',meur(sv),`van ${meur(sb)} aan aansluitbijdragen in de portefeuille`)
+   +tile(r.omzet&&sf>sv?'Vooruitgefactureerd':'Nog te factureren',meur(Math.abs(sv-sf)),`verdiend ${meur(sv)} · gefactureerd ${meur(sf)}`,Math.abs(sv-sf)>sb*0.1?'neg':'');
+  {const it=[['Collectief variabel',r.F*S.tarFact],['Vastrecht collectief',r.vast],['Bron en koude',r.bronV],['Huur warmtepompen',r.huur],['Dienstverlening',r.omzDv],['Nevendiensten',r.nevOmzet],['Omzetlek',-r.vol.lek],['Projectrealisatie',sv]];
+   const W=520,lh=30,lw=150,mx=Math.max(...it.map(x=>Math.abs(x[1])))*1.1||1,sx=x=>Math.abs(x)/mx*(W-lw-70);let s='';
+   it.forEach((x,i)=>{const y=i*lh+4;const real=i===7;s+=`<text x="0" y="${y+17}" style="fill:var(--ink)">${x[0]}</text><rect x="${lw}" y="${y}" width="${Math.max(1,sx(x[1]))}" height="22" rx="3" fill="${x[1]<0?'var(--bad,#b3261e)':real?'var(--warm,#d0671f)':'var(--cool)'}"/><text class="vl" x="${lw+sx(x[1])+6}" y="${y+17}">${x[1]<0?'−':''}${keur(Math.abs(x[1]))} k€</text>`});
+   $('#omChart').innerHTML=`<svg viewBox="0 0 ${W} ${it.length*lh+8}" role="img" aria-label="Omzet naar bron: warmtelevering en projectrealisatie">${s}</svg>`}
+  if(!$('#omForm').dataset.b){$('#omForm').innerHTML='<div class="field"><label for="of_lead"><span>Facturatie loopt voor (+) of achter (−) op voortgang (procentpunt)</span><output id="of_leadO"></output></label><input type="range" id="of_lead" min="-20" max="30" step="1"></div><p class="note">Fictieve startwaarde; vervang door de werkelijke termijnstaat per project.</p>';
+    $('#of_lead').oninput=e=>{S.oLead=+e.target.value;save();update()};$('#omForm').dataset.b=1}
+  {const l=S.oLead===undefined?10:S.oLead;$('#of_lead').value=l;$('#of_leadO').textContent=(l>0?'+':'')+l+' pt'}
+  $('#omProj').innerHTML='<thead><tr><th>Project</th><th>Fase</th><th class="n">Aansl.</th><th class="n">Aansluitbijdrage k€</th><th class="n">Gereed</th><th class="n">Verdiend k€</th><th class="n">Gefactureerd k€</th><th class="n">Saldo k€</th></tr></thead><tbody>'
+   +rp.map(x=>`<tr><td>${x.naam}</td><td>${x.fase==='real'?'Realisatie':'Ontwikkeling'}</td><td class="n">${nf0.format(x.aansl)}</td><td class="n">${keur(x.bak)}</td><td class="n">${x.fase==='real'?nf0.format(x.ger)+'%':'–'}</td><td class="n">${keur(x.ver)}</td><td class="n">${keur(x.fac)}</td><td class="n${Math.abs(x.ohw)>x.bak*0.1&&x.bak?' neg':''}">${x.ohw>0?'+':x.ohw<0?'−':''}${keur(Math.abs(x.ohw))}</td></tr>`).join('')
+   +`<tr class="sum"><td>Totaal</td><td></td><td class="n">${nf0.format(rp.reduce((a,x)=>a+x.aansl,0))}</td><td class="n">${keur(sb)}</td><td></td><td class="n">${keur(sv)}</td><td class="n">${keur(sf)}</td><td class="n">${sv-sf>0?'+':sv-sf<0?'−':''}${keur(Math.abs(sv-sf))}</td></tr></tbody>`;
+  $('#omVol').textContent=nf1.format(r.vol.pct)+'%';
+}
+
 function update(){
   const r=calc(S);
   syncInputs();
@@ -1050,7 +1140,7 @@ function update(){
   $('#mTiles').innerHTML=tile('Commerciële marge',meur(r.comm),`€ ${nf2.format(r.mPerGJ)} per GJ`)+tile('Resultaat kostenbijdrage',meur(r.sourcing),`kostenbijdrage € ${nf2.format(r.brickSum)}/GJ`,r.sourcing<0?'neg':'')+tile('Bruto marge',meur(r.wm),`<span class="${r.wm>=bud.wm?'pos':'neg'}">${sgn(r.wm-bud.wm,eur)}</span> vs begroting`)+tile('Bruto marge per aansluiting',eur(r.wmPerAansl),`${nf0.format(r.V)} GJ collectief geleverd`);
   const d=renderDash(r,bud);const wd=Math.max(...getBasis().steps.map(s=>s.wd));
   $('#ovTiles').innerHTML=tile('Bruto marge (werkelijk/BE)',meur(r.wm),`<span class="${r.wm>=bud.wm?'pos':'neg'}">${sgn(r.wm-bud.wm,eur)}</span> vs begroting`)+tile('EBITDA',meur(r.ebitda),`<span class="${r.ebitda>=bud.ebitda?'pos':'neg'}">${sgn(r.ebitda-bud.ebitda,eur)}</span> vs begroting`)+tile('Kern-KPI\'s op norm',`${d.good} van ${d.n}`,`${d.warn} oranje · ${d.bad} rood`)+tile('Maandafsluiting',`werkdag ${wd}`,`doel werkdag ${getBasis().wd}`,wd>getBasis().wd?'neg':'');
-  renderBridge(r);renderBricks(r);renderOpwek(r);renderReal(r);renderPL(r);renderBasis(r);
+  renderBridge(r);renderBricks(r);renderOpwek(r);renderReal(r);renderPL(r);renderBasis(r);renderOmzet(r,bud);
 }
 
 /* ---------- 01 OVERZICHT ---------- */
@@ -1059,7 +1149,7 @@ const layers=[
   rows:[['Grootboek en mapping','Standaard rekeningschema met vaste mapping naar de management P&L'],['Maandafsluiting','Vaste afsluitkalender, cut-off van opbrengsten en inkoop, overlopende posten'],['Opbrengstverantwoording','Omzetketen sluitend: aansluitingenregister → contract → facturatierun → omzet in Exact Online per BV; nog niet gefactureerde levering bij collectieve netten'],['Reconciliaties','Omzetvolledigheid, facturatie ↔ grootboek, intercompany tussen BV\'s, debiteuren, energiebalans netten'],['Investeringsadministratie','Activering van net, aansluitingen, bronnen en IT; afschrijvingen'],['Interne beheersing','Functiescheiding, vier-ogenprincipe, controle op handmatige boekingen']],
   out:'Een gesloten maand met afgestemde cijfers, uiterlijk op een vaste werkdag na maandeinde.'},
  {n:2,name:'Business drivers',q:'Waarom?',owner:'Business control met commercie, inkoop en operations',tab:'marge',
-  rows:[['Volume','Geleverde GJ per tariefcategorie, aansluitingen, graaddagen'],['Prijs en tarief','Vastrecht, variabel tarief per GJ, aansluitbijdragen'],['Kostenbijdrage','Gevraagde vs gerealiseerde kostprijs per tariefcategorie'],['Inkoop en bron','Inkoopprijs per GJ, bronmix, piekinzet, netverlies'],['Klantprocessen','Juistheid facturen, achterstanden, betaalgedrag'],['Kosten','FTE, inhuur, onderhoud per km net, IT-licenties'],['Investeringen','Nieuwe aansluitingen, vervanging, verduurzaming bron']],
+  rows:[['Volume','Geleverde GJ per tariefcategorie, aansluitingen, graaddagen'],['Prijs en tarief','Vastrecht, variabel tarief per GJ, aansluitbijdragen'],['Kostenbijdrage','Gevraagde vs gerealiseerde kostprijs per tariefcategorie'],['Inkoop en bron','Inkoopprijs per GJ, bronmix, piekinzet, netverlies'],['Klantprocessen','Juistheid facturen, achterstanden, betaalgedrag'],['Omzetverantwoording','Omzet uit warmtelevering en projectrealisatie, verdiend tegenover gefactureerd'],['Kosten','FTE, inhuur, onderhoud per km net, IT-licenties'],['Investeringen','Nieuwe aansluitingen, vervanging, verduurzaming bron']],
   out:'Verklaarde afwijkingen, een rolling forecast en scenario\'s.'},
  {n:3,name:'KPI\'s en prestaties',q:'Presteren we?',owner:'Business control (KPI-set), KPI-eigenaren in de lijn',tab:'kpis',
   rows:[['Financieel','Warmtemarge, commerciële marge, inkoopmarge, EBITDA, kasstroom'],['Klant en commercie','Marge en volume per GJ per kanaal, groei aansluitingen, klanttevredenheid'],['Operationeel','Juistheid facturen, DSO, doorlooptijd klantcases, beschikbaarheid net'],['Kosten','Kosten per aansluiting en per GJ'],['Duurzaamheid','Aandeel duurzame bron, CO₂ per GJ'],['Kwaliteit van sturing','Forecastnauwkeurigheid, afwijking kostenbijdrage, tijdigheid afsluiting']],
@@ -1461,7 +1551,7 @@ const RM_INW=[
  {id:'I-V5',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Register van aansluitingen wordt maandelijks gematcht met contracten en facturatie',actie:'Maandelijkse match register ↔ contract ↔ factuur met uitzonderingenlijst',eig:'Financial control / operations',fase:0},
  {id:'I-V9',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Mutaties (nieuw, verhuizing, leegstand) worden binnen de maand verwerkt in contract en facturatie',actie:'Mutatieproces aansluitingen met doorlooptijdnorm inrichten',eig:'Operations',fase:0},
  {id:'I-V6',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Bij een overname liggen klantbestand, tarieven en openingsbalans vast vóór de eerste eigen facturatierun',actie:'Overnamechecklist (dag 1) voor finance opstellen',eig:'Financial control',fase:1},
- {id:'I-V7',tab:'basis',laag:1,groep:'Omzetketen en Exact Online',norm:'Nog te factureren en vooruitgefactureerd worden per project berekend en geboekt',actie:'Berekening nog te factureren per project invoeren',eig:'Financial control',fase:1},
+ {id:'I-V7',tab:'omzet',laag:1,groep:'Omzet projectrealisatie',norm:'Nog te factureren en vooruitgefactureerd worden per project berekend en geboekt',actie:'Berekening nog te factureren per project invoeren',eig:'Financial control',fase:1},
  {id:'I-V10',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Voorschotten en eindafrekeningen (collectieve netten) sluiten aan op het grootboek',actie:'Aansluiting voorschotten en eindafrekeningen invoeren',eig:'Financial control',fase:1},
  {id:'I-V11',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Energiebalans collectieve netten: ingevoed, geleverd, gefactureerd en geboekt sluiten maandelijks aan',actie:'Maandelijkse energiebalans voor de collectieve netten invoeren',eig:'Finance / operations',fase:1},
  {id:'I-M1',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Tarieven (bron, koude, huur) liggen per project vast en worden volgens een vaste regel geïndexeerd',actie:'Tariefregister per project met indexatieregel opzetten',eig:'Commercie',fase:1},
@@ -1475,6 +1565,12 @@ const RM_INW=[
  {id:'I-R3',tab:'realisatie',laag:2,groep:'Activering eigen uren',norm:'Eigen uren worden na het investeringsbesluit op het project geschreven',actie:'Urenregistratie per project verplicht maken voor realisatie',eig:'Projectmanagement',fase:0},
  {id:'I-R4',tab:'realisatie',laag:1,groep:'Activering eigen uren',norm:'Activeringsbeleid is vastgelegd en afgestemd met de accountant',actie:'Activeringsbeleid eigen uren vastleggen en afstemmen',eig:'Financial control',fase:0},
  {id:'I-R5',tab:'realisatie',laag:2,groep:'Ontwikkeling en realisatie',norm:'Na oplevering volgt een nacalculatie tegenover de businesscase',actie:'Nacalculatie na oplevering standaard maken',eig:'Business control',fase:2},
+ {id:'I-O1',tab:'omzet',laag:1,groep:'Omzet per stroom',norm:'Omzet uit warmtelevering en uit projectrealisatie staat op aparte grootboekrekeningen en wordt apart gerapporteerd',actie:'Rekeningschema en rapportage splitsen naar omzet levering en omzet realisatie',eig:'Financial control',fase:0},
+ {id:'I-O2',tab:'omzet',laag:1,groep:'Omzet projectrealisatie',norm:'Omzet uit realisatie wordt verantwoord op basis van voortgang en is vastgelegd in beleid, afgestemd met de accountant',actie:'Beleid omzetverantwoording realisatie (voortgangsmethode) vastleggen',eig:'Financial control',fase:0},
+ {id:'I-O3',tab:'omzet',laag:2,groep:'Omzet projectrealisatie',norm:'Aansluitbijdragen en aanneemsommen liggen per project vast in het contract; meerwerk loopt via een gecontroleerd proces',actie:'Contractregister met aansluitbijdrage en meerwerkproces per project opzetten',eig:'Projectmanagement met commercie',fase:1},
+ {id:'I-O4',tab:'omzet',laag:2,groep:'Omzet projectrealisatie',norm:'Per project worden maandelijks verdiende omzet, gefactureerd en saldo (nog te factureren of vooruitgefactureerd) bepaald',actie:'Maandelijkse voortgangsstaat per project met omzet en saldo invoeren',eig:'Projectmanagement met financial control',fase:1},
+ {id:'I-O5',tab:'omzet',laag:3,groep:'Omzet per stroom',norm:'Een maandelijkse omzetbrug toont omzet per stroom en sluit aan op Exact Online per BV',actie:'Maandelijkse omzetbrug per stroom en per BV invoeren',eig:'Business control',fase:1},
+ {id:'I-O6',tab:'omzet',laag:3,groep:'Omzet per stroom',norm:'Terugkerende en eenmalige omzet worden onderscheiden in rapportage en prognose',actie:'Onderscheid terugkerend en eenmalig opnemen in de rapportage',eig:'Business control',fase:2},
  {id:'I-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Omzetvolledigheid (KWA-07) wordt maandelijks gemeten',actie:'KPI omzetvolledigheid inrichten',eig:'Financial control',fase:1},
  {id:'I-S1',tab:'sturing',laag:4,groep:'Externe verantwoording',norm:'Rapportage per entiteit en aan partners (corporaties, VvE) heeft een vaste opzet',actie:'Standaard partnerrapportage per entiteit opzetten',eig:'Business control',fase:1},
  {id:'I-S2',tab:'sturing',laag:4,groep:'Externe verantwoording',norm:'Noodlevering wordt apart verantwoord, met zicht op kostendekking',actie:'Aparte verantwoording noodlevering inrichten',eig:'Financial control',fase:1},
@@ -1485,11 +1581,11 @@ window.RM_CFG={naam:'inwarmte',key:()=>'inw_rm_v1',fases:RM_FASES,lagen:RM_LAGEN
   'C-B1':'deels','C-B2':'niet','C-B3':'niet','C-R1':'ok','C-R2':'deels','C-R3':'deels','C-R4':'ok','C-R5':'ok','C-R6':'niet','C-R7':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
   'C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'niet','C-D1':'niet','C-D2':'deels',
   'I-M1':'ok','I-M2':'deels','I-P1':'deels','I-P2':'niet','I-P3':'deels','I-P4':'niet','I-R1':'ok','I-R2':'deels','I-R3':'niet','I-R4':'niet','I-R5':'niet',
-  'I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
+  'I-O1':'niet','I-O2':'niet','I-O3':'deels','I-O4':'niet','I-O5':'niet','I-O6':'niet','I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
 
 /* B.Enable · module Vastleggen → Verbeterroadmap (generiek, voor alle frameworks)
    Verwacht window.RM_CFG = {
-     naam:'inwarmte', key:()=>'opslagsleutel', items:()=>[{id,tab,laag,groep,norm,actie,eig,fase}],
+     naam:'framework', key:()=>'opslagsleutel', items:()=>[{id,tab,laag,groep,norm,actie,eig,fase}],
      fases:[['Snelle verbeteringen','0–3 maanden'],...], lagen:['Financiële basis',...], demo:()=>({id:'ok'|'deels'|'niet'}) }
    Zet per tabblad (section#v-<tab>) een kaart "Vastleggen" en bouwt in #rmRoad de roadmap. */
 (function(){
