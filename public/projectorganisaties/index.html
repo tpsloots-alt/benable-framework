@@ -1313,11 +1313,11 @@ LOCK_VIEWS.forEach(v=>{const s=document.getElementById('v-'+v);if(!s)return;cons
   s.insertBefore(box,s.firstChild);
   box.querySelector('form').onsubmit=async e=>{e.preventDefault();const inp=box.querySelector('input'),msg=box.querySelector('.msg');
     if(Date.now()<waitUntil){msg.textContent='Even wachten en opnieuw proberen.';return}
-    if(await sha(inp.value.trim())===LOCK_HASH){try{sessionStorage.setItem(KEY,LOCK_HASH)}catch(err){}msg.textContent='';inp.value='';apply()}
+    if(await sha(inp.value.trim())===LOCK_HASH){try{sessionStorage.setItem(KEY,LOCK_HASH)}catch(err){}try{fetch(location.pathname.replace(/[^/]*$/,'')+'_pin',{method:'POST',credentials:'same-origin'}).catch(()=>{})}catch(err){}msg.textContent='';inp.value='';apply()}
     else{fails++;inp.value='';msg.textContent='Onjuiste pincode.';if(fails>=5){waitUntil=Date.now()+30000;fails=0;msg.textContent='Te vaak onjuist. Probeer het over 30 seconden opnieuw.'}}};});
 apply();
 // bezoeker en vervaldatum uit de toegangslink (cookie gezet door de server)
-try{const m=document.cookie.match(/(?:^|; )be_who=([^;]*)/);if(m){const [n,e]=decodeURIComponent(m[1]).split('|');const d=new Date(+e*1000);const el=document.createElement('div');el.className='who';el.textContent='Toegang voor '+n+' tot '+d.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});const sn=document.querySelector('.sidenote');if(sn)sn.after(el)}}catch(e){}
+try{const m=document.cookie.match(/(?:^|; )be_who=([^;]*)/);if(m){const [n,e]=decodeURIComponent(m[1]).split('|');const d=new Date(+e*1000);const el=document.createElement('div');el.className='who';el.textContent='Toegang voor '+n+' tot '+d.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});const pv=document.createElement('div');pv.textContent='Het gebruik van deze persoonlijke link wordt bijgehouden.';pv.style.marginTop='4px';el.appendChild(pv);const sn=document.querySelector('.sidenote');if(sn)sn.after(el)}}catch(e){}
 })();
 /* LOCK:END */
 </script>

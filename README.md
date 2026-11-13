@@ -68,6 +68,17 @@ Elke link wordt lokaal bijgehouden in `links-log.csv` (niet in git): datum, naam
 - **Overzicht:** `toegang/links.md` toont alle uitgegeven links: naam, pagina, geldig tot, id en status. De knop *Maak toegangslink* werkt het bij.
 - **Intrekken:** Actions → **Trek toegangslink in** → Run workflow → vul het id in. Het id komt in `functions/ingetrokken.js` en de status in het overzicht wordt bijgewerkt. Na de deploy (1 à 2 minuten) werkt de link niet meer.
 
+## Gebruik van links bekijken
+
+Bij elk bezoek houdt de site per link bij: eerste en laatste bezoek, aantal bezoeken, regio (bij benadering, geen IP-adressen) en of de pincode is gebruikt. Op de pagina staat dat het gebruik wordt bijgehouden.
+
+- **Bekijken:** Actions → **Toon linkgebruik** → Run workflow. De tabel staat in de samenvatting van de run, inclusief links die nog niet gebruikt zijn.
+- **Eenmalig inrichten:**
+  1. Cloudflare → *Storage & Databases → KV* → namespace `benable-toegang` aanmaken.
+  2. Pages-project → *Settings → Bindings* → KV namespace toevoegen met variabelenaam `TOEGANG`.
+  3. Een tweede geheime sleutel `ADMIN_SECRET` in Cloudflare (*Variables and Secrets*, type Secret) én in GitHub (*Settings → Secrets → Actions*). Daarna opnieuw deployen.
+- Zonder de KV-koppeling werkt de site gewoon; er wordt dan niets bijgehouden.
+
 ## De pincode
 
 Wijzigen:

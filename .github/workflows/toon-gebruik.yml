@@ -1,0 +1,20 @@
+name: Toon linkgebruik
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gebruik:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Gebruik ophalen
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+        run: node scripts/toon-gebruik.mjs https://framework.benable.nl >> "$GITHUB_STEP_SUMMARY"

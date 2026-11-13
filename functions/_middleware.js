@@ -26,6 +26,37 @@ const cookie = (req, naam) => {
   return m ? decodeURIComponent(m[1]) : null;
 };
 
+// Gebruik per link bijhouden in Cloudflare KV (binding TOEGANG). Geen IP-adressen, alleen regio bij benadering.
+async function registreer(env, p, request, soort) {
+  if (!env.TOEGANG) return;
+  const key = 'u:' + p.i;
+  let r = null;
+  try { r = await env.TOEGANG.get(key, 'json'); } catch {}
+  r = r || { i: p.i, n: p.n, p: p.p, e: p.e, eerste: null, laatste: null, aantal: 0, regio: {}, pin: null };
+  const nu = new Date().toISOString();
+  if (soort === 'pin') { r.pin = r.pin || nu; r.pinLaatst = nu; }
+  else {
+    const cf = request.cf || {};
+    const regio = [cf.country, cf.region || cf.city].filter(Boolean).join(' · ') || 'onbekend';
+    r.eerste = r.eerste || nu; r.laatste = nu; r.aantal = (r.aantal || 0) + 1;
+    r.regio[regio] = (r.regio[regio] || 0) + 1;
+  }
+  await env.TOEGANG.put(key, JSON.stringify(r));
+}
+
+async function beheer(request, env) {
+  const auth = request.headers.get('Authorization') || '';
+  if (!env.ADMIN_SECRET || auth !== 'Bearer ' + env.ADMIN_SECRET) return new Response('Geen toegang', { status: 401 });
+  if (!env.TOEGANG) return Response.json({ fout: 'KV-binding TOEGANG ontbreekt' }, { status: 500 });
+  const uit = []; let cursor;
+  do {
+    const l = await env.TOEGANG.list({ prefix: 'u:', cursor });
+    for (const k of l.keys) { const v = await env.TOEGANG.get(k.name, 'json'); if (v) uit.push(v); }
+    cursor = l.list_complete ? null : l.cursor;
+  } while (cursor);
+  return Response.json(uit, { headers: { 'Cache-Control': 'no-store' } });
+}
+
 function geweigerd(reden) {
   const html = `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>B.Enable · Control Framework</title>
 <style>body{font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;background:#F3F5F8;color:#14263A;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:460px;padding:32px;background:#fff;border:1px solid #D5DBE2;border-top:4px solid #1E3A5F;border-radius:12px}h1{font-size:20px;margin:0 0 10px}p{color:#566577;line-height:1.5}</style></head>
@@ -33,8 +64,9 @@ function geweigerd(reden) {
   return new Response(html, { status: 403, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' } });
 }
 
-export async function onRequest({ request, env, next }) {
+export async function onRequest({ request, env, next, waitUntil }) {
   const url = new URL(request.url);
+  if (url.pathname === '/_beheer/gebruik') return beheer(request, env);
   const pad = BESCHERMD.find((p) => url.pathname.startsWith(p) || url.pathname === p.slice(0, -1));
   if (!pad) {
     const res = await next();
@@ -50,6 +82,14 @@ export async function onRequest({ request, env, next }) {
   if (p.p !== pad) return geweigerd('Deze link geeft geen toegang tot deze pagina.');
   if (p.e <= nu) return geweigerd('Deze link is verlopen.');
   if (INGETROKKEN.includes(p.i)) return geweigerd('Deze link is ingetrokken.');
+
+  // Melding van het presentatie-slot: pincode is gebruikt.
+  if (url.pathname === pad + '_pin' && request.method === 'POST') {
+    waitUntil(registreer(env, p, request, 'pin').catch(() => {}));
+    return new Response(null, { status: 204 });
+  }
+  const isPagina = url.pathname === pad || url.pathname === pad + 'index.html';
+  if (isPagina) waitUntil(registreer(env, p, request, 'bezoek').catch(() => {}));
 
   const maxAge = p.e - nu;
   if (uitLink) {
