@@ -435,7 +435,7 @@ const nf0=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0}),nf1=new Intl.
 const KEY='be_impl_v1';
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const MAAT=['S','M','L','XL'];
-const defMile=[['Definities en begrippenlijst zijn vastgesteld door de directie','De afsluitkalender en de eigenaren zijn bekend en worden gevolgd','De eerste versie van de kern-KPI\'s ligt vast'],['De maand is drie keer achter elkaar afgesloten volgens de kalender','De cijfers in het maandrapport worden door het MT als de waarheid geaccepteerd','Afwijkingen worden standaard verklaard in drivers'],['Dashboards worden elke maand gebruikt in het MT-overleg','De maandrapportage komt tot stand zonder handmatige datastappen','De stuurcyclus met actielijst is vastgesteld en wordt opgevolgd']];
+const defMile=[['Het MT heeft het vertrekpunt en de prioriteiten vastgesteld (nulmeting)','Definities en begrippenlijst zijn vastgesteld door de directie','De maand is drie keer achter elkaar afgesloten volgens de kalender en het MT accepteert de cijfers'],['Afwijkingen worden standaard verklaard in drivers','Dashboards worden elke maand gebruikt in het MT-overleg','Elke kern-KPI heeft een eigenaar en een KPI-kaart'],['De maandrapportage komt tot stand zonder handmatige datastappen','De stuurcyclus met actielijst is vastgesteld en wordt opgevolgd','Besluiten worden gevolgd op hun financiële effect']];
 let D=LS.get(KEY,null),view='fase';
 const capOf=e=>{const v=(D.capE||{})[e];return v>0?v:D.cap};
 const fresh=()=>({klant:'',demo:false,start:'',cap:8,capE:{},dag:{S:5,M:15,L:30,XL:60},mnd:{S:1,M:2,L:4,XL:6},acties:[],mijl:{}});
