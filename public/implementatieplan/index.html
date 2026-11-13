@@ -452,7 +452,17 @@ const capOf=e=>{const v=(D.capE||{})[e];return v>0?v:(isExt(e)?(D.capExt>0?D.cap
 const tarief=()=>{const t=parseFloat(D.tarief);return isFinite(t)&&t>=0?t:800};
 const eur=v=>'€ '+nf0.format(Math.round(v));
 /* Eigenaar (verantwoordelijk) en uitvoerders: a.uit=[{n,p}] met p in % van de inspanning; de rest blijft bij de eigenaar. */
-function parseUit(str,eig){const out=[];let tot=0;String(str||'').split(/[;,]/).forEach(t=>{const m=t.trim().match(/^(.*?)[\s:]*(\d+(?:[.,]\d+)?)\s*%$/);if(!m)return;const n=m[1].trim(),pc=Math.round(parseFloat(m[2].replace(',','.')));if(!n||!(pc>0)||n.toLowerCase()===String(eig||'').toLowerCase())return;const take=Math.min(pc,100-tot);if(take>0){out.push({n,p:take});tot+=take}});return out}
+const uitIgn=[];
+function parseUit(str,eig){const out=[];let tot=0;uitIgn.length=0;String(str||'').split(/[;,]/).forEach(t=>{const s=t.trim();if(!s)return;const m=s.match(/^(.*?)[\s:]*(\d+(?:[.,]\d+)?)\s*%$/);
+  if(!m){uitIgn.push(`"${s}" (zet er een percentage bij, bijv. ${s.replace(/[\d\s%.,:]+$/,'')||'IT'} 40%)`);return}
+  const n=m[1].trim(),pc=Math.round(parseFloat(m[2].replace(',','.')));
+  if(!n){uitIgn.push(`"${s}" (naam ontbreekt)`);return}
+  if(!(pc>0)){uitIgn.push(`"${s}" (percentage moet boven 0 liggen)`);return}
+  if(n.toLowerCase()===String(eig||'').toLowerCase()){uitIgn.push(`"${s}" (de eigenaar houdt de rest zelf)`);return}
+  const take=Math.min(pc,100-tot);
+  if(take<=0){uitIgn.push(`"${s}" (de verdeling is al vol: samen maximaal 100%)`);return}
+  if(take<pc)uitIgn.push(`"${s}" (ingekort tot ${take}%: samen maximaal 100%)`);
+  out.push({n,p:take});tot+=take});return out}
 const fmtUit=a=>(a.uit||[]).map(x=>x.n+' '+x.p+'%').join(', ');
 function shares(a){const u=(a.uit||[]).filter(x=>x.n&&x.p>0),out=[];let tot=0;u.forEach(x=>{tot+=x.p});const own=Math.max(0,100-tot)/100;if(own>0.0001)out.push([a.eig,own]);u.forEach(x=>{const f=out.find(o=>o[0]===x.n);if(f)f[1]+=x.p/100;else out.push([x.n,x.p/100])});return out}
 const involves=(a,e)=>shares(a).some(s=>s[0]===e);
@@ -639,7 +649,7 @@ $('#klant').oninput=e=>{D.klant=e.target.value;save();$('#klantPr').textContent=
 function bind(){
   document.querySelectorAll('[data-kleur]').forEach(el=>el.onclick=()=>{D.kleur=el.dataset.kleur;save();render()});
   document.querySelectorAll('[data-cape]').forEach(el=>el.onchange=()=>{D.capE=D.capE||{};const v=parseFloat(String(el.value).replace(',','.'));if(v>0)D.capE[el.dataset.cape]=v;else delete D.capE[el.dataset.cape];save();render()});
-  document.querySelectorAll('[data-k]').forEach(el=>el.onchange=()=>{const a=D.acties.find(x=>x.id===el.dataset.id),k=el.dataset.k;a[k]=k==='uit'?parseUit(el.value,a.eig):(el.type==='checkbox'?el.checked:(['start','dur'].includes(k)?Math.max(1,+el.value||1):el.value));if(k==='eig')a.uit=parseUit(fmtUit(a),a.eig);if(k==='maat'){a.maatBron='hand';if(!a.vast)a.dur=D.mnd[a.maat]}if(k==='start'||k==='dur')a.vast=true;save();render()});
+  document.querySelectorAll('[data-k]').forEach(el=>el.onchange=()=>{const a=D.acties.find(x=>x.id===el.dataset.id),k=el.dataset.k;a[k]=k==='uit'?parseUit(el.value,a.eig):(el.type==='checkbox'?el.checked:(['start','dur'].includes(k)?Math.max(1,+el.value||1):el.value));let ign=[];if(k==='uit')ign=uitIgn.slice();if(k==='eig'){const b=fmtUit(a);a.uit=parseUit(b,a.eig);ign=uitIgn.slice()}if(k==='maat'){a.maatBron='hand';if(!a.vast)a.dur=D.mnd[a.maat]}if(k==='start'||k==='dur')a.vast=true;save();render();if(ign.length){const t='Genegeerd bij Uitvoering: '+ign.join('; ')+'.';$('#msg').textContent=t;const inp=document.querySelector(`[data-id="${a.id}"][data-k="uit"]`);if(inp){const s=document.createElement('div');s.className='note';s.setAttribute('role','status');s.style.cssText='color:var(--be-warn);max-width:240px;white-space:normal';s.textContent=t;inp.parentNode.appendChild(s)}}else if(k==='uit')$('#msg').textContent=a.uit.length?'Uitvoering vastgelegd; de eigenaar houdt '+(100-a.uit.reduce((s,x)=>s+x.p,0))+'%.':'';});
   document.querySelectorAll('[data-del]').forEach(el=>el.onclick=()=>{D.acties=D.acties.filter(x=>x.id!==el.dataset.del);D.acties.forEach(x=>{if(x.na===el.dataset.del)x.na=''});save();render()});
   const add=$('#bAdd');if(add)add.onclick=()=>{const n=Math.max(0,...D.acties.map(a=>+a.id.slice(1)))+1,f=D.fases[0];D.acties.push({id:'a'+n,fase:f.key,tekst:'Nieuwe actie',eig:'Niet toegewezen',laag:'',prio:'',maat:'M',maatBron:'hand',start:f.w[0],dur:2,na:'',bes:false,vast:true});save();render()};
   document.querySelectorAll('[data-opt]').forEach(el=>el.onclick=()=>{const [i,j]=el.dataset.opt.split(':').map(Number),o=((advies()[i]||{}).opts||[])[j];if(o){o.apply();save();render()}});
@@ -708,7 +718,7 @@ function mgKpis(M){const{k}=M,ut=Math.round(M.util*100);
   return `<div class="m-kpis">`+
    t('Verbeteracties',D.acties.length,`in ${D.fases.length} fasen`)+
    t('Totale inspanning',`${nf0.format(k.tot)}<small>dagen</small>`,`looptijd ${k.last} maanden`)+
-   t('Capaciteitsbenutting',`${ut}<small>%</small>`,`${nf0.format(M.ownTot)} van ${nf0.format(M.avail)} eigen beschikbare dagen`,k.over?'bad':ut>=85?'warn':'ok')+
+   t('Capaciteitsbenutting',`${ut}<small>%</small>`,`${nf0.format(M.ownTot)} van ${nf0.format(M.avail)} eigen beschikbare dagen (${M.es.length} eigenaren, ${nf0.format(M.capSum)} d/mnd samen, ${M.H} maanden)${M.ext.days?`; ${nf0.format(M.ext.days)} dagen inleen tellen niet mee`:''}`,k.over?'bad':ut>=85?'warn':'ok')+
    t('Knelpunten',M.kn,M.kn?`${M.over.length} overbelaste maanden · ${M.conf.length} afhankelijkheden niet gehaald`:'geen overbelasting en alle afhankelijkheden gehaald',M.kn?'bad':'ok')+
    t('Directiebesluiten',M.bes.length,M.bes.length?`acties waarvoor een besluit nodig is`:'geen besluit gemarkeerd',M.bes.length?'warn':'')+`</div>`}
 
