@@ -1,7 +1,7 @@
 {
-  "$schema_note": "B.Enable huisstijl-tokens, eerste aanzet (v0.1). Niet afgeleid van officiële huisstijl: de website (benable.nl) bevat geen uitleesbare kleur- of lettertypegegevens. Kleuren zijn een voorstel dat aansluit op de toon van de site en het huidige Control Framework.",
-  "version": "0.2",
-  "date": "2026-11-12",
+  "$schema_note": "B.Enable huisstijl-tokens (v0.3). Niet afgeleid van officiële huisstijl: de website (benable.nl) bevat geen uitleesbare kleur- of lettertypegegevens. v0.3: kleuren en componenten bijgewerkt naar de opgegeven adviesinstrument-stijl (primair #193657, accent #C74612, achtergrond #F5F7FA).",
+  "version": "0.3",
+  "date": "2026-11-13",
   "brand": {
     "name": "B.Enable",
     "naamgebruik": {
@@ -29,12 +29,12 @@
     "pictogram": {
       "omschrijving": "Monogram: witte B met oranje punt (naar het woordmerk B.enable) op een donkerblauw afgerond vierkant",
       "kleuren": {
-        "vlak": "#1E3A5F (primary)",
+        "vlak": "#193657 (primary)",
         "letter": "#FFFFFF",
         "punt": "#F0773A (accent, lichte variant voor contrast op donkerblauw)"
       },
       "radius": "12 op 64 (≈ 19%)",
-      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"12\" fill=\"#1E3A5F\"/><text x=\"27\" y=\"48\" text-anchor=\"middle\" font-family=\"Arial, Helvetica, sans-serif\" font-weight=\"700\" font-size=\"46\" fill=\"#fff\">B</text><circle cx=\"49\" cy=\"43\" r=\"5.5\" fill=\"#F0773A\"/></svg>",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"12\" fill=\"#193657\"/><text x=\"27\" y=\"48\" text-anchor=\"middle\" font-family=\"Arial, Helvetica, sans-serif\" font-weight=\"700\" font-size=\"46\" fill=\"#fff\">B</text><circle cx=\"49\" cy=\"43\" r=\"5.5\" fill=\"#F0773A\"/></svg>",
       "bestanden": {
         "favicon.svg": "browsertabblad (moderne browsers)",
         "favicon-32.png": "fallback 32×32",
@@ -46,15 +46,15 @@
   },
   "colors": {
     "light": {
-      "background": "#F3F5F8",
+      "background": "#F5F7FA",
       "surface": "#FFFFFF",
-      "border": "#D5DBE2",
-      "text": "#14263A",
-      "text_muted": "#566577",
-      "primary": "#1E3A5F",
-      "primary_soft": "#DDE7F2",
-      "accent": "#C2410C",
-      "accent_soft": "#FBE5D8",
+      "border": "#DDE3EA",
+      "text": "#16283C",
+      "text_muted": "#4A5B6E",
+      "primary": "#193657",
+      "primary_soft": "#EAF0F6",
+      "accent": "#C74612",
+      "accent_soft": "#FBEBE3",
       "on_primary": "#FFFFFF",
       "on_accent": "#FFFFFF"
     },
@@ -73,12 +73,12 @@
     },
     "status": {
       "light": {
-        "good": "#1C7C4A",
-        "good_soft": "#DCF1E4",
-        "warning": "#8F5E00",
-        "warning_soft": "#FBEFD2",
+        "good": "#1F7A4D",
+        "good_soft": "#E3F3EA",
+        "warning": "#8A5A00",
+        "warning_soft": "#FBF0D6",
         "critical": "#B42318",
-        "critical_soft": "#FBE0DD"
+        "critical_soft": "#FCE5E2"
       },
       "dark": {
         "good": "#4CC283",
@@ -91,9 +91,9 @@
     },
     "chart": {
       "categorical": [
-        "#1E3A5F",
+        "#193657",
         "#2A9D8F",
-        "#C2410C",
+        "#C74612",
         "#8D6CAB",
         "#6A994E",
         "#D08A1D",
@@ -114,7 +114,8 @@
       "warning_op_surface": 5.57,
       "wit_op_primary": 11.5,
       "wit_op_accent": 5.18,
-      "norm": "Alle tekstkleuren ≥ 4,5:1 (AA)"
+      "norm": "Alle tekstkleuren ≥ 4,5:1 (AA)",
+      "opmerking": "Waarden van v0.2; opnieuw meten bij vaststellen van v0.3"
     }
   },
   "typography": {
@@ -161,7 +162,7 @@
   "shape": {
     "radius_px": {
       "small": 4,
-      "default": 8,
+      "default": 10,
       "pill": 99
     },
     "spacing_px": [
@@ -173,12 +174,12 @@
       32
     ],
     "border_px": 1,
-    "schaduw": "Spaarzaam; kaarten met rand in plaats van schaduw"
+    "schaduw": "Eén subtiele schaduw (0 1px 2px) op kaarten; verder randen"
   },
   "components": {
-    "kaart": "Wit vlak, 1px rand, radius 8, padding 18",
-    "kpi_tegel": "Linkerrand 5px in statuskleur; code, naam, waarde, referentie",
-    "knop_primair": "Accent als vlak, witte tekst",
+    "kaart": "Wit vlak, 1px rand, radius 10, subtiele schaduw, padding 16",
+    "kpi_tegel": "Pictogram in getint vlak, label, waarde (Archivo 800, 26px), toelichting; rood bij afwijking",
+    "knop_primair": "Primary (marineblauw) als vlak, witte tekst; accent alleen voor markeringen",
     "knop_secundair": "Wit vlak, rand, tekst in primary",
     "demo_label": {
       "tekst": "Demo – fictieve data",
@@ -206,5 +207,12 @@
     "Officieel logo (SVG) ontbreekt; het pictogram is een tijdelijk monogram",
     "Huisstijlkleuren zijn een voorstel; bevestigen of vervangen",
     "Aanspreekvorm vaststellen"
-  ]
+  ],
+  "layout": {
+    "zijbalk": "Primary als achtergrond, logo B. bovenaan, actieve sectie met accentstreep",
+    "kopbalk": "Sticky balk met broodkruimel (laag · sectie), klantnaam-veld en knop Afdrukken",
+    "print": "A4 liggend; navigatie en bediening verborgen; klantnaam in de kopregel",
+    "modus": "Altijd licht (ook bij donker apparaat): tool wordt geprint en gepresenteerd",
+    "generator": "theme.py zet het BRAND-blok; design.py (ontwerplaag) zet kopbalk, zijbalk en componentstijlen op basis van deze kleuren"
+  }
 }

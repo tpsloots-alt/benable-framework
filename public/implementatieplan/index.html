@@ -26,96 +26,277 @@
   color-scheme:dark;
 }
 /* BRAND:END */
+/* ==========================================================================
+   1 · DESIGN TOKENS  (B.Enable · alleen hier kleuren, typografie, ruimte wijzigen)
+   De vaste B.Enable-variabelen staan in het BRAND-blok hierboven; deze laag
+   zet de adviesinstrument-stijl daaroverheen en wordt niet door theme.py aangepast.
+   ========================================================================== */
+:root:root:root{
+  --be-navy:#193657; --be-navy-700:#122A45; --be-navy-100:#D9E2EC; --be-navy-50:#EAF0F6;
+  --be-orange:#C74612; --be-orange-700:#A93A0E; --be-orange-50:#FBEBE3;
+  --be-bg:#F5F7FA; --be-surface:#FFFFFF;
+  --be-ink:#16283C; --be-ink-2:#4A5B6E; --be-ink-3:#6B7A8B;
+  --be-line:#DDE3EA; --be-line-soft:#EDF1F5;
+  --be-good:#1F7A4D; --be-good-50:#E3F3EA; --be-warn:#8A5A00; --be-warn-50:#FBF0D6; --be-bad:#B42318; --be-bad-50:#FCE5E2;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  --r-sm:6px; --r-md:10px;
+  --shadow:0 1px 2px rgba(25,54,87,.06);
+  --focus:0 0 0 3px rgba(25,54,87,.25);
+  --fs-xs:11.5px; --fs-sm:12.5px; --fs-md:14px; --fs-lg:16px; --fs-xl:26px;
+  /* koppeling met de vaste B.Enable-variabelen (altijd licht: het plan wordt ook geprint en gepresenteerd) */
+  --bg:var(--be-bg); --panel:var(--be-surface); --ink:var(--be-ink); --muted:var(--be-ink-2); --line:var(--be-line);
+  --accent:var(--be-orange); --accent-soft:var(--be-orange-50); --cool:var(--be-navy); --cool-soft:var(--be-navy-50); --primary:var(--be-navy);
+  --good:var(--be-good); --good-soft:var(--be-good-50); --warn:var(--be-warn); --warn-soft:var(--be-warn-50); --bad:var(--be-bad); --bad-soft:var(--be-bad-50);
+  --radius:var(--r-md); color-scheme:light;
+}
+
+/* ==========================================================================
+   2 · BASIS
+   ========================================================================== */
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
-.wrap{max-width:1240px;margin:0 auto;padding:24px 20px 60px}
-h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em}
-h2{font-size:1.2rem}h3{font-size:1rem}
-a{color:var(--cool)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
-.hero{border-left:6px solid var(--accent);padding:24px 28px;margin-bottom:16px}
-.kicker{font:600 12px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.hero .t{font:800 clamp(1.7rem,3.4vw,2.5rem)/1.08 var(--display);margin:8px 0 10px}
-.hero .t span{color:var(--accent)}
-.lede{max-width:105ch;color:var(--muted);margin:0}
-.note{font-size:13px;color:var(--muted);margin:6px 0 0}
-.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.tile .lbl{font-size:12.5px;color:var(--muted)}.tile .val{font:700 1.7rem var(--display)}.tile .sub{font-size:12.5px;color:var(--muted)}
-.tile .val.neg{color:var(--bad)}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.btn{font:500 13px var(--body);padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
-.btn:hover{border-color:var(--cool)}.btn.pri{background:var(--cool);color:#fff;border-color:var(--cool)}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
-.seg button{font:500 13px var(--body);padding:8px 14px;border:0;background:transparent;color:var(--ink);cursor:pointer;border-right:1px solid var(--line)}
-.seg button:last-child{border-right:0}.seg button.on{background:var(--cool);color:#fff}
-input,select,textarea{font:inherit;font-size:13.5px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 8px;max-width:100%}
-textarea{width:100%;min-height:90px;font-family:var(--mono);font-size:12px}
-table{border-collapse:collapse;width:100%;font-size:13.5px}
-th{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:6px 6px;border-bottom:1px solid var(--line)}
-td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--be-bg);color:var(--be-ink);font:var(--fs-md)/1.5 var(--body);font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em;color:var(--be-navy)}
+h2{font-size:var(--fs-lg);font-weight:700}h3{font-size:var(--fs-md);font-weight:700}
+a{color:var(--be-navy)}
+.wrap{max-width:1320px;margin:0 auto;padding:var(--sp-4) var(--sp-5) 56px}
+.note{font-size:var(--fs-sm);color:var(--be-ink-2);margin:var(--sp-1) 0 0}
+.kicker{font:600 11px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--be-ink-3)}
+.stack>*+*{margin-top:var(--sp-4)}
+.grid{display:grid;gap:var(--sp-4)}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:var(--r-sm)}
+
+/* ==========================================================================
+   3 · COMPONENTEN
+   ========================================================================== */
+/* 3.1 header */
+.top{background:var(--be-navy);color:#fff;border-radius:var(--r-md);padding:var(--sp-3) var(--sp-5);display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:var(--sp-3);min-width:0}
+.logo{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.12);display:grid;place-items:center;flex:none;position:relative;font:800 20px var(--display);color:#fff}
+.logo::after{content:"";position:absolute;right:6px;bottom:7px;width:6px;height:6px;border-radius:50%;background:#F0773A}
+.brand-t{line-height:1.15}
+.brand-t b{font:800 16px var(--display);letter-spacing:-.01em}
+.brand-t span{display:block;font-size:12px;color:#B9C7D8}
+.top-sub{flex:1;min-width:220px;border-left:1px solid rgba(255,255,255,.2);padding-left:var(--sp-5)}
+.top-sub b{display:block;font:700 15px var(--display);letter-spacing:-.005em}
+.top-sub span{font-size:12.5px;color:#B9C7D8}
+.top-client{display:flex;align-items:center;gap:var(--sp-2);margin-left:auto}
+.top-client label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#B9C7D8}
+.top-client input{width:210px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:var(--r-sm);padding:7px 10px;font-size:13.5px}
+.top-client input::placeholder{color:#9FB0C4}
+.top-client input:focus-visible{box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+.badge-demo{font:600 11px var(--body);color:#FBE7C5;background:rgba(240,119,58,.25);border:1px solid rgba(240,119,58,.6);padding:3px 9px;border-radius:99px;white-space:nowrap}
+
+/* 3.2 panelen */
+.panel{background:var(--be-surface);border:1px solid var(--be-line);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.panel-h{width:100%;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);background:transparent;border:0;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:var(--r-md)}
+.panel-h h2{font-size:var(--fs-md)}
+.panel-h .sum{color:var(--be-ink-2);font-size:var(--fs-sm);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel-h .chev{color:var(--be-ink-3);transition:transform .15s}
+.panel-h[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.panel-b{padding:0 var(--sp-4) var(--sp-4);border-top:1px solid var(--be-line-soft)}
+.panel-bar{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
+.panel-bar .sum{flex:1;color:var(--be-ink-2);font-size:var(--fs-sm)}
+.card{background:var(--be-surface);border:1px solid var(--be-line);border-radius:var(--r-md);box-shadow:var(--shadow);padding:var(--sp-4)}
+
+/* 3.3 knoppen, invoer, navigatie */
+.btn{font:500 13px var(--body);padding:7px 13px;border-radius:var(--r-sm);border:1px solid var(--be-line);background:var(--be-surface);color:var(--be-navy);cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s}
+.btn:hover{border-color:var(--be-navy);background:var(--be-navy-50)}
+.btn.pri{background:var(--be-navy);border-color:var(--be-navy);color:#fff}.btn.pri:hover{background:var(--be-navy-700)}
+.btn.acc{background:var(--be-orange);border-color:var(--be-orange);color:#fff}.btn.acc:hover{background:var(--be-orange-700)}
+.btn.ghost{border-color:transparent;background:transparent}.btn.ghost:hover{background:var(--be-navy-50)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.row{display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap}
+input,select,textarea{font:inherit;font-size:13.5px;color:var(--be-ink);background:var(--be-surface);border:1px solid var(--be-line);border-radius:var(--r-sm);padding:6px 9px;max-width:100%}
+input:hover,select:hover,textarea:hover{border-color:#B9C4D0}
+input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var(--be-navy)}
+input[type=checkbox]{accent-color:var(--be-navy);width:16px;height:16px}
+textarea{width:100%;min-height:96px;font-family:var(--mono);font-size:12px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:var(--fs-sm);color:var(--be-ink-2)}
+.field .inl{display:flex;gap:var(--sp-2);align-items:center;color:var(--be-ink);flex-wrap:wrap}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:var(--sp-4);align-items:end;margin-top:var(--sp-4)}
+.seg{display:inline-flex;align-items:center;border:1px solid var(--be-line);border-radius:var(--r-sm);overflow:hidden;background:var(--be-surface)}
+.seg .seg-l{padding:0 10px;font-size:var(--fs-xs);letter-spacing:.06em;text-transform:uppercase;color:var(--be-ink-3);background:var(--be-bg);align-self:stretch;display:flex;align-items:center;border-right:1px solid var(--be-line)}
+.seg button{font:500 12.5px var(--body);padding:6px 12px;border:0;border-right:1px solid var(--be-line);background:transparent;color:var(--be-navy);cursor:pointer}
+.seg button:last-child{border-right:0}.seg button:hover{background:var(--be-navy-50)}
+.seg button.on{background:var(--be-navy);color:#fff}
+
+/* navigatie + acties = één werkbalk */
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3) var(--sp-5);flex-wrap:wrap;padding:0 var(--sp-4);border-bottom:1px solid var(--be-line)}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.note:empty{display:none}
+.tabs button{font:600 12.5px var(--body);padding:15px 9px 12px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--be-ink-2);cursor:pointer;margin-bottom:-1px;border-radius:0}
+.tabs button:hover{color:var(--be-navy)}
+.tabs button.on{color:var(--be-navy);border-bottom-color:var(--be-orange)}
+.tb-act{display:flex;gap:var(--sp-2);align-items:center;padding:var(--sp-2) 0;flex-wrap:wrap;margin-left:auto}
+.viewbar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3) var(--sp-5);flex-wrap:wrap;margin-bottom:var(--sp-3)}
+.view-b{padding:var(--sp-4)}
+
+/* 3.4 kerncijfers */
+.kpi{background:var(--be-surface);border:1px solid var(--be-line);border-radius:var(--r-md);box-shadow:var(--shadow);padding:var(--sp-4);display:flex;gap:var(--sp-3);align-items:flex-start;min-width:0}
+.kpi-ic{width:34px;height:34px;border-radius:9px;background:var(--be-navy-50);color:var(--be-navy);display:grid;place-items:center;flex:none}
+.kpi-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.kpi-l{font-size:var(--fs-sm);color:var(--be-ink-2);font-weight:500}
+.kpi-v{font:800 var(--fs-xl)/1.15 var(--display);color:var(--be-navy);margin:2px 0 3px;letter-spacing:-.01em}
+.kpi-s{font-size:var(--fs-sm);color:var(--be-ink-3);line-height:1.35}
+.kpi.neg .kpi-ic{background:var(--be-bad-50);color:var(--be-bad)}.kpi.neg .kpi-v{color:var(--be-bad)}
+.kpi.ok .kpi-ic{background:var(--be-good-50);color:var(--be-good)}
+
+/* 3.5 chips, labels, legenda */
+.chip{display:inline-flex;align-items:center;gap:5px;font:500 11px var(--body);padding:1px 8px;border-radius:99px;background:var(--be-navy-50);color:var(--be-navy);white-space:nowrap}
+.chip.dec{background:var(--be-orange-50);color:var(--be-orange-700)}
+.chip.bad{background:var(--be-bad-50);color:var(--be-bad)}
+.pill{display:inline-block;font:500 11px var(--body);padding:2px 8px;border-radius:99px;background:var(--be-navy-50);color:var(--be-navy)}
+.pill.w{background:var(--be-warn-50);color:var(--be-warn)}.pill.b{background:var(--be-bad-50);color:var(--be-bad)}.pill.g{background:var(--be-good-50);color:var(--be-good)}
+.own{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--be-ink-2);font-weight:500;white-space:nowrap}
+.own i{width:8px;height:8px;border-radius:50%;flex:none}
+.legend{display:flex;align-items:center;gap:var(--sp-2) var(--sp-5);flex-wrap:wrap;font-size:var(--fs-sm);color:var(--be-ink-2)}
+.lg-items{display:flex;gap:var(--sp-2) var(--sp-4);flex-wrap:wrap}
+.lg{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:10px;border-radius:3px;flex:none}
+.dm-s{color:var(--be-orange);font-size:12px;line-height:1}
+
+/* 3.6 tabellen */
 .tw{overflow-x:auto}
-.pill{display:inline-block;font:500 11px var(--body);padding:2px 8px;border-radius:99px;background:var(--cool-soft);color:var(--cool)}
-.pill.w{background:var(--warn-soft);color:var(--warn)}.pill.b{background:var(--bad-soft);color:var(--bad)}.pill.g{background:var(--good-soft);color:var(--good)}
-.flag{display:inline-block;font:600 11px var(--body);color:var(--warn);background:var(--warn-soft);border:1px solid var(--warn);padding:3px 8px;border-radius:4px;margin-left:8px}
-/* gantt */
-.gantt{display:grid;font-size:13px;min-width:900px}
-.gh{font:600 11px var(--mono);color:var(--muted);text-align:center;padding:4px 0;border-bottom:1px solid var(--line)}
-.gl{padding:5px 8px 5px 0;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gc{border-bottom:1px solid var(--line);border-left:1px dashed var(--line);min-height:28px}
-.gg{grid-column:1/-1;font:700 13px var(--display);padding:10px 0 4px;color:var(--cool)}
-.bar{margin:4px 1px;border-radius:5px;background:var(--cool);color:#fff;font-size:11px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:20px;display:flex;align-items:center}
-.bar.S{background:#5b7fa6}.bar.L{background:var(--accent)}
-.bar.bes{outline:2px solid var(--ink);outline-offset:-2px}
-.legend .sel{display:inline-flex;gap:4px;align-items:center}.legend .sel button{padding:3px 9px;font-size:12px}.legend .sel button.on{background:var(--primary);color:var(--panel);border-color:var(--primary)}
-.legend b{color:var(--ink)}.sw{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
-.load{margin:3px 1px;border-radius:4px;text-align:center;font:500 11px var(--mono);padding:3px 0;background:var(--good-soft);color:var(--good)}
-.load.mid{background:var(--warn-soft);color:var(--warn)}.load.hi{background:var(--bad-soft);color:var(--bad)}.load.z{background:transparent;color:var(--muted)}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:8px 0}
-.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
-@media (max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-size:var(--fs-xs);font-weight:600;color:var(--be-ink-3);text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:9px 10px;border-bottom:1px solid var(--be-line);background:var(--be-bg);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--be-line-soft);vertical-align:middle}
+tbody tr:hover td{background:#FAFBFD}
+tfoot td{border-top:1px solid var(--be-line);border-bottom:0;background:var(--be-bg)}
+.tbl-n th:not(:first-child),.tbl-n td:not(:first-child){text-align:right}
+td.neg,.neg{color:var(--be-bad);font-weight:700}
+.meter{height:8px;border-radius:4px;background:var(--be-line-soft);min-width:90px}.meter i{display:block;height:8px;border-radius:4px;background:var(--be-navy)}
+
+/* 3.7 gantt */
+.gantt{display:grid;font-size:13px;min-width:980px;border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-surface)}
+.gantt>*{min-width:0}
+.gl0,.gl,.gg-in{position:sticky;left:0}
+.gq{font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--be-navy);background:var(--be-navy-50);text-align:left;padding:6px 8px;border-left:1px solid var(--be-navy-100);border-bottom:1px solid var(--be-navy-100);white-space:nowrap;overflow:hidden}
+.gh{font:500 11px var(--body);color:var(--be-ink-3);text-align:center;padding:6px 0;border-bottom:1px solid var(--be-line);background:var(--be-surface);border-left:1px solid var(--be-line-soft)}
+.gh.qs,.gq{border-left-color:var(--be-navy-100)}
+.gl0{z-index:4;background:var(--be-navy-50);border-bottom:1px solid var(--be-navy-100);padding:6px 12px;font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--be-navy);display:flex;align-items:flex-end}
+.gh.gl0{background:var(--be-surface);border-bottom:1px solid var(--be-line);justify-content:flex-start}
+.gg{grid-column:1/-1;padding:0;border-top:1px solid var(--be-line);background:color-mix(in srgb,var(--fc,var(--be-navy)) 7%,#fff);border-left:4px solid var(--fc,var(--be-navy))}
+.gg-in{display:inline-flex;align-items:center;gap:var(--sp-3);padding:9px 12px;z-index:3;white-space:nowrap}
+.gg-in b{font:700 13.5px var(--display);color:var(--be-navy)}
+.gg-n{width:22px;height:22px;border-radius:50%;background:var(--fc,var(--be-navy));color:#fff;font:700 12px var(--display);display:grid;place-items:center}
+.gg-d{width:10px;height:10px;border-radius:50%;background:var(--fc,var(--be-navy))}
+.gg-s{font-size:var(--fs-sm);color:var(--be-ink-2)}
+.gg-r{font-size:var(--fs-sm);color:var(--be-ink-3);padding-left:var(--sp-3);border-left:1px solid var(--be-line)}
+.gl{z-index:2;background:var(--be-surface);padding:7px 12px;border-bottom:1px solid var(--be-line-soft);display:flex;flex-direction:column;justify-content:center;gap:3px;min-height:46px}
+.gl-t{font-weight:500;color:var(--be-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gl-m{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:nowrap;overflow:hidden}
+.gl-m .dep{font-size:11.5px;color:var(--be-ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow{grid-column:2/-1;display:grid;align-items:center;position:relative;border-bottom:1px solid var(--be-line-soft);min-height:46px;background-image:linear-gradient(90deg,var(--be-line-soft) 1px,transparent 1px);background-size:calc(100%/var(--h)) 100%}
+.grow>*{grid-row:1}
+.tint{align-self:stretch}
+.ql{align-self:stretch;width:0;border-left:1px solid var(--be-navy-100);pointer-events:none}
+.bar{margin:0 2px;border-radius:5px;color:#fff;font:500 11.5px var(--body);padding:0 8px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;height:22px;display:flex;align-items:center;opacity:.93;box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
+.dm{justify-self:center;color:var(--be-orange);font-size:14px;line-height:1;z-index:1;cursor:default}
+.load{margin:3px 2px;border-radius:4px;text-align:center;font:500 11px var(--body);padding:3px 0;background:var(--be-good-50);color:var(--be-good)}
+.load.mid{background:var(--be-warn-50);color:var(--be-warn)}.load.hi{background:var(--be-bad-50);color:var(--be-bad)}.load.z{background:transparent;color:var(--be-ink-3)}
+.gl.lrow{background:var(--be-bg);min-height:34px;font-weight:600;color:var(--be-ink-2)}
+
+/* 3.8 managementweergave */
+.mg-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-4)}
+.mg-head h2{font-size:22px}
+.mg h3{margin:var(--sp-5) 0 var(--sp-2)}
+.mg .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3)}
+.mg ul{margin:var(--sp-1) 0 0;padding:0;list-style:none}.mg li{padding:3px 0;font-size:13.5px}
+.check{display:inline-block;width:16px;color:var(--be-navy)}
+
+/* ==========================================================================
+   4 · LAYOUT / RESPONSIVE  (desktop en tablet)
+   ========================================================================== */
+@media (max-width:1100px){.g4,.mg .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.top-sub{border-left:0;padding-left:0}.top-client{margin-left:0;width:100%}.top-client input{flex:1;width:auto}}
+@media (max-width:900px){.g2{grid-template-columns:1fr}.wrap{padding:var(--sp-3) var(--sp-3) 40px}.tabs button{padding:12px 10px 9px}}
+@media (max-width:560px){.g4,.mg .kpis{grid-template-columns:1fr}}
+
+/* ==========================================================================
+   5 · PRINT  (managementweergave: A4 liggend; werkbalk en bediening verborgen)
+   ========================================================================== */
+@page{size:A4 landscape;margin:11mm}
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff;font-size:12px}
+  .wrap{max-width:none;padding:0}
+  .noprint,.toolbar,#impCard,#setPanel,.top-client input,.viewbar .seg{display:none!important}
+  .top{background:#fff;color:var(--be-navy);border:0;border-bottom:2px solid var(--be-navy);border-radius:0;box-shadow:none;padding:0 0 8px}
+  .top-sub{border-left-color:var(--be-line)}.top-sub span,.brand-t span{color:var(--be-ink-2)}.logo{background:var(--be-navy)}
+  .top-client .pr{display:inline!important;font:700 14px var(--display);color:var(--be-navy)}
+  .card,.panel,.kpi{box-shadow:none}
+  .gantt{min-width:0;font-size:11px}.gl{position:static}.gl0,.gg-in{position:static}
+  .view-b{padding:8px 0 0}
+  .kpi,.mg li,tr{break-inside:avoid}
+  .panel{border:0}.gl{min-height:34px;padding:4px 10px}.grow{min-height:34px}.gg-in{padding:6px 10px}.bar{height:20px}
+  .mg h3{break-after:avoid}
+  .tw{overflow:visible}
+  .g4,.mg .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi{padding:10px 12px}.kpi-v{font-size:22px}
+  .badge-demo{background:#fff;color:var(--be-orange-700);border-color:var(--be-orange)}
+  .top-client label{color:var(--be-ink-3)}
+}
+body[data-view=mgmt] #tiles{display:none}
+.pr{display:none}
+
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card hero">
-    <div class="kicker">B.Enable · Control Framework</div>
-    <div class="t">Van roadmap naar implementatieplan.<br><span>Wie doet wat, wanneer.</span></div>
-    <p class="lede">Lees de verbeterroadmap in, kies per actie de inspanning (S, M of L) en laat het plan zien wat haalbaar is: een tijdlijn per fase en per eigenaar, de belasting per persoon, de besluiten die de directie moet nemen en de criteria om door te gaan naar de volgende fase. Werkt met elke roadmap in csv-vorm.</p>
-    <p class="note">Een uitgave van B.Enable <span class="flag" id="demoFlag" style="display:none">Voorbeeldroadmap – fictief</span></p>
-  </div>
+<div class="wrap stack">
 
-  <div class="card" id="impCard">
-    <div class="row" style="justify-content:space-between"><h2>1 · Roadmap inlezen</h2><div class="row"><button class="btn" id="bTog" aria-expanded="true" aria-controls="impBody">Inklappen ▴</button><button class="btn" id="bDemo">Voorbeeld laden</button><button class="btn" id="bClear">Alles wissen</button></div></div>
-    <div id="impBody">
-    <p class="note">Gebruik de export of de knop Kopieer roadmap uit een B.Enable-framework, of een eigen csv/Excel-selectie met kolommen als Fase, Periode, Laag, Actie, Eigenaar en Prioriteit. Alleen Actie is verplicht.</p>
-    <div class="grid g2" style="margin-top:10px">
-      <div><label class="note" for="fFile">Kies een csv-bestand</label><br><input type="file" id="fFile" accept=".csv,.txt,.tsv"></div>
-      <div><label class="note" for="tPaste">Of plak de tabel (uit Excel of Kopieer roadmap)</label><textarea id="tPaste" placeholder="Fase;Periode;Laag;Actie;Eigenaar;Prioriteit…"></textarea><div class="row" style="margin-top:6px"><button class="btn pri" id="bImp">Inlezen</button><span class="note" id="impMsg"></span></div></div>
+  <!-- header -->
+  <header class="top">
+    <div class="brand"><div class="logo" aria-hidden="true">B</div><div class="brand-t"><b>B.Enable</b><span>Control Framework</span></div></div>
+    <div class="top-sub"><b>Van roadmap naar implementatieplan</b><span>Wie doet wat, wanneer · besluiten, belasting en mijlpalen</span></div>
+    <span class="badge-demo" id="demoFlag" style="display:none">Voorbeeldroadmap · fictief</span>
+    <div class="top-client"><label for="klant">Klant</label><input type="text" id="klant" placeholder="Klantnaam" autocomplete="off" aria-label="Klantnaam"><span class="pr" id="klantPr"></span></div>
+  </header>
+
+  <!-- roadmap inlezen -->
+  <section class="panel" id="impCard">
+    <div class="panel-bar">
+      <h2>Roadmap inlezen</h2><span class="sum" id="impSum"></span>
+      <button class="btn ghost" id="bDemo">Voorbeeld laden</button>
+      <button class="btn ghost" id="bClear">Alles wissen</button>
+      <button class="btn" id="bTog" aria-expanded="true" aria-controls="impBody">Inklappen ▴</button>
     </div>
-    </div>
-  </div>
-
-  <div id="app" style="display:none">
-    <div class="grid g4" id="tiles" style="margin-top:14px"></div>
-
-    <div class="card" style="margin-top:14px">
-      <div class="row" style="justify-content:space-between"><h2>2 · Instellingen</h2></div>
-      <div class="row" style="margin-top:8px;gap:18px">
-        <label>Startmaand plan <select id="sMo" aria-label="Maand"></select> <select id="sYr" aria-label="Jaar"></select></label>
-        <label>Standaard beschikbaar per eigenaar <input type="number" id="sCap" min="1" max="22" style="width:70px"> dagen per maand</label>
-        <label>S = <input type="number" id="dS" min="1" style="width:60px"> d · M = <input type="number" id="dM" min="1" style="width:60px"> d · L = <input type="number" id="dL" min="1" style="width:60px"> dagen</label>
-        <button class="btn pri" id="bPlan">Plan automatisch inroosteren</button>
+    <div id="impBody" class="panel-b">
+      <p class="note">Gebruik de export of de knop Kopieer roadmap uit een B.Enable-framework, of een eigen csv/Excel-selectie met kolommen als Fase, Periode, Laag, Actie, Eigenaar en Prioriteit. Alleen Actie is verplicht.</p>
+      <div class="grid g2" style="margin-top:12px">
+        <div><label class="note" for="fFile">Kies een csv-bestand</label><br><input type="file" id="fFile" accept=".csv,.txt,.tsv" style="margin-top:6px"></div>
+        <div><label class="note" for="tPaste">Of plak de tabel (uit Excel of Kopieer roadmap)</label><textarea id="tPaste" placeholder="Fase;Periode;Laag;Actie;Eigenaar;Prioriteit…" style="margin-top:6px"></textarea><div class="row" style="margin-top:8px"><button class="btn pri" id="bImp">Inlezen</button><span class="note" id="impMsg"></span></div></div>
       </div>
-      <p class="note">Inroosteren zet elke actie op het vroegste moment binnen de periode van zijn fase waarop de eigenaar nog capaciteit heeft en nadat de actie waar hij van afhangt klaar is. Je past daarna alles zelf aan in de tabel.</p>
     </div>
+  </section>
 
-    <div class="row" style="margin:16px 0 8px;justify-content:space-between">
-      <div class="seg" id="tabs"><button data-v="fase" class="on">Tijdlijn per fase</button><button data-v="eig">Tijdlijn per eigenaar</button><button data-v="tot">Inspanning per eigenaar</button><button data-v="plan">Plan bewerken</button><button data-v="bes">Besluiten en mijlpalen</button></div>
-      <div class="row"><button class="btn" id="bCsv">Exporteer plan (csv)</button><button class="btn" id="bCopy">Kopieer plan</button><span class="note" id="msg"></span></div>
-    </div>
-    <div class="card" id="view"></div>
+  <div id="app" style="display:none" class="stack">
+    <div class="grid g4" id="tiles"></div>
+
+    <!-- planinstellingen (standaard ingeklapt) -->
+    <section class="panel" id="setPanel">
+      <button class="panel-h" id="bSet" aria-expanded="false" aria-controls="setBody"><h2>Planinstellingen</h2><span class="sum" id="setSum"></span><span class="chev" aria-hidden="true">▾</span></button>
+      <div id="setBody" class="panel-b" hidden>
+        <div class="fields">
+          <div class="field">Startmaand plan<div class="inl"><select id="sMo" aria-label="Maand"></select><select id="sYr" aria-label="Jaar"></select></div></div>
+          <div class="field">Standaard beschikbaar per eigenaar<div class="inl"><input type="number" id="sCap" min="1" max="22" style="width:76px"> dagen per maand</div></div>
+          <div class="field">Inspanning per maat<div class="inl">S <input type="number" id="dS" min="1" style="width:60px"> M <input type="number" id="dM" min="1" style="width:60px"> L <input type="number" id="dL" min="1" style="width:60px"> dagen</div></div>
+          <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
+        </div>
+        <p class="note">Inroosteren zet elke actie op het vroegste moment binnen de periode van zijn fase waarop de eigenaar nog capaciteit heeft en nadat de actie waar hij van afhangt klaar is. Je past daarna alles zelf aan in het tabblad Plan bewerken.</p>
+      </div>
+    </section>
+
+    <!-- navigatie, acties en weergave -->
+    <section class="panel">
+      <div class="toolbar">
+        <nav class="tabs" id="tabs" aria-label="Weergave"><button data-v="fase" class="on">Tijdlijn per fase</button><button data-v="eig">Tijdlijn per eigenaar</button><button data-v="tot">Inspanning per eigenaar</button><button data-v="plan">Plan bewerken</button><button data-v="bes">Besluiten en mijlpalen</button><button data-v="mgmt">Managementweergave</button></nav>
+        <div class="tb-act noprint"><span class="note" id="msg" aria-live="polite"></span><button class="btn" id="bPrint" title="Open de managementweergave en druk af of sla op als pdf">Afdrukken</button><button class="btn" id="bCopy">Kopieer plan</button><button class="btn pri" id="bCsv">Exporteer csv</button></div>
+      </div>
+      <div class="view-b" id="view"></div>
+    </section>
   </div>
 </div>
+
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const nf0=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0}),nf1=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:1});
@@ -125,7 +306,7 @@ const MAAT=['S','M','L'];
 const defMile=[['Definities en begrippenlijst zijn vastgesteld door de directie','De afsluitkalender en de eigenaren zijn bekend en worden gevolgd','De eerste versie van de kern-KPI\'s ligt vast'],['De maand is drie keer achter elkaar afgesloten volgens de kalender','De cijfers in het maandrapport worden door het MT als de waarheid geaccepteerd','Afwijkingen worden standaard verklaard in drivers'],['Dashboards worden elke maand gebruikt in het MT-overleg','De maandrapportage komt tot stand zonder handmatige datastappen','De stuurcyclus met actielijst is vastgesteld en wordt opgevolgd']];
 let D=LS.get(KEY,null),view='fase';
 const capOf=e=>{const v=(D.capE||{})[e];return v>0?v:D.cap};
-const fresh=()=>({demo:false,start:'',cap:8,capE:{},dag:{S:5,M:15,L:30},mnd:{S:1,M:2,L:4},acties:[],mijl:{}});
+const fresh=()=>({klant:'',demo:false,start:'',cap:8,capE:{},dag:{S:5,M:15,L:30},mnd:{S:1,M:2,L:4},acties:[],mijl:{}});
 if(!D)D=fresh();
 const save=()=>LS.set(KEY,D);
 
@@ -169,49 +350,95 @@ function demo(){const f=[['Snelle verbeteringen','0–3 maanden'],['Basis op ord
   const A=[[0,'1 · Financiële basis','Definities en begrippenlijst vaststellen','Directie','Hoog','S'],[0,'1 · Financiële basis','Vaste afsluitkalender met eigenaren invoeren','Financial control','Hoog','S'],[0,'4 · Sturing','Vaste agenda en actielijst voor de business review invoeren','Directie','Hoog','S'],
   [1,'1 · Financiële basis','Grootboekmapping naar management P&L opstellen','Financial control','Hoog','M'],[1,'1 · Financiële basis','Maandelijkse reconciliatie van omzet en kosten invoeren','Financial control','Midden','M'],[1,'2 · Business drivers','Standaard afwijkingsanalyse in volume, prijs en kosten','Business control','Hoog','M'],[1,'3 · KPI\'s','Kernset van KPI-kaarten opstellen','Business control','Hoog','M'],[1,'4 · Sturing','Bevoegdhedenmatrix vaststellen','Directie','Midden','S'],
   [2,'3 · KPI\'s','Dashboard automatisch vullen uit één bron','IT','Midden','L'],[2,'2 · Business drivers','Rolling forecast opzetten','Business control','Midden','L'],[2,'1 · Financiële basis','Koppelingen met bronsystemen realiseren','IT','Laag','L'],[2,'4 · Sturing','Opvolging en effectmeting van acties borgen','Directie','Midden','S']];
-  D=fresh();D.demo=true;D.fases=f.map((x,i)=>({key:x[0]+'|'+x[1],naam:x[0],per:x[1],w:windowOf(x[1],i)}));
+  const kl=D.klant;D=fresh();D.klant=kl;D.demo=true;D.fases=f.map((x,i)=>({key:x[0]+'|'+x[1],naam:x[0],per:x[1],w:windowOf(x[1],i)}));
   D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:D.fases[a[0]].key,tekst:a[2],eig:a[3],laag:a[1],prio:a[4],maat:a[5],start:D.fases[a[0]].w[0],dur:D.mnd[a[5]],na:'',bes:/directie/i.test(a[3])}));
   D.acties[3].na='a2';D.acties[5].na='a4';D.acties[6].na='a3';D.acties[9].na='a6';D.acties[8].na='a7';
   replan();save()}
 
-/* ---------- weergave ---------- */
-const mLabel=m=>{if(D.start){const [y,mo]=D.start.split('-').map(Number);const d=new Date(y,mo-1+m-1,1);return d.toLocaleDateString('nl-NL',{month:'short'}).replace('.','')+(d.getMonth()===0||m===1?' '+String(d.getFullYear()).slice(2):'')}return 'M'+m};
-function tiles(){const L=loadOf(),H=planHorizon();let peak=0,pe='',ex=0,anyOver=false;Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>peak){peak=v;pe=e}if(v>capOf(e)+0.01){ex+=v-capOf(e);anyOver=true}}));
+
+/* === WEERGAVE: kerncijfers (berekeningen ongewijzigd; alleen presentatie) === */
+const ICON={
+ acties:'<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
+ inspanning:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>',
+ piek:'<svg viewBox="0 0 24 24"><path d="M3 19h18"/><path d="M5 19v-6M10 19V6M15 19v-9M20 19v-4"/></svg>',
+ knelpunt:'<svg viewBox="0 0 24 24"><path d="M12 3.5l9 16H3z"/><path d="M12 10v4.5M12 17.5v.1"/></svg>'};
+function kpiData(){const L=loadOf();let peak=0,pe='',ex=0,anyOver=false;Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>peak){peak=v;pe=e}if(v>capOf(e)+0.01){ex+=v-capOf(e);anyOver=true}}));
   const tot=D.acties.reduce((s,a)=>s+D.dag[a.maat],0),last=Math.max(...D.acties.map(endOf)),over=Object.entries(L).reduce((s,[e,o])=>s+Object.values(o).filter(v=>v>capOf(e)+0.01).length,0);
   const conf=D.acties.filter(a=>a.na&&D.acties.find(x=>x.id===a.na)&&a.start<=endOf(D.acties.find(x=>x.id===a.na))).length;
-  const t=(l,v,s,c)=>`<div class="card tile"><div class="lbl">${l}</div><div class="val ${c||''}">${v}</div><div class="sub">${s}</div></div>`;
-  $('#tiles').innerHTML=t('Acties',D.acties.length,`${D.acties.filter(a=>a.bes).length} met besluit van de directie`)+t('Totale inspanning',nf0.format(tot)+' dagen',`looptijd ${last} maanden`)+t('Piekbelasting',nf1.format(peak)+' d/mnd',pe?esc(pe):'',anyOver?'neg':'')+t('Knelpunten',over+conf,`${over} maanden boven capaciteit (${nf1.format(ex)} dagen te veel) · ${conf} afhankelijkheden niet gehaald`,over+conf?'neg':'')}
-const PAL=['#2F6FA3','#C2410C','#1C7C4A','#7B4FA6','#B8860B','#0F8B8D','#B83280','#5B6770'];
-const MAATC={S:'#6FA3C9',M:'#2F6FA3',L:'#C2410C'};
+  return{L,peak,pe,ex,anyOver,tot,last,over,conf}}
+function kpiHtml(){const k=kpiData();
+  const t=(ic,l,v,s,c)=>`<div class="kpi ${c||''}"><div class="kpi-ic">${ICON[ic]}</div><div><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div><div class="kpi-s">${s}</div></div></div>`;
+  return t('acties','Acties',D.acties.length,`${D.acties.filter(a=>a.bes).length} met besluit van de directie`)+t('inspanning','Totale inspanning',nf0.format(k.tot)+' dagen',`looptijd ${k.last} maanden`)+t('piek','Piekbelasting',nf1.format(k.peak)+' d/mnd',k.pe?esc(k.pe):'&nbsp;',k.anyOver?'neg':'')+t('knelpunt','Knelpunten',k.over+k.conf,`${k.over} maanden boven capaciteit (${nf1.format(k.ex)} dagen te veel) · ${k.conf} afhankelijkheden niet gehaald`,k.over+k.conf?'neg':'ok')}
+function tiles(){$('#tiles').innerHTML=kpiHtml()}
+
+/* === WEERGAVE: kleuren en legenda === */
+const PAL=['#2F5D8C','#C74612','#2E7D6B','#7A6A9E','#B08A2E','#4F8FA3','#9A4D6B','#6B7785'];
+const MAATC={S:'#7FA7CB',M:'#2F5D8C',L:'#C74612'};
 const eigList=()=>[...new Set(D.acties.map(a=>a.eig))].sort();
 const faseC=k=>PAL[faseIdx(k)%PAL.length],eigC=e=>PAL[Math.max(0,eigList().indexOf(e))%PAL.length];
 const barC=a=>(D.kleur||'fase')==='eig'?eigC(a.eig):(D.kleur||'fase')==='maat'?MAATC[a.maat]:faseC(a.fase);
-function legend(load){const k=D.kleur||'fase';const items=k==='eig'?eigList().map(e=>[eigC(e),e]):k==='maat'?[['S','S · klein'],['M','M · middel'],['L','L · groot']].map(([m,t])=>[MAATC[m],t+` (${D.dag[m]} d)`]):D.fases.map(f=>[faseC(f.key),f.naam]);
-  return `<div class="legend" style="align-items:center"><span class="sel"><b>Kleur op</b>${[['fase','Fase'],['eig','Eigenaar'],['maat','Inspanning']].map(([v,t])=>`<button class="btn${k===v?' on':''}" data-kleur="${v}">${t}</button>`).join('')}</span>`+items.map(([c,t])=>`<span><span class="sw" style="background:${c}"></span>${esc(t)}</span>`).join('')+`<span><span class="sw" style="background:var(--panel);outline:2px solid var(--ink);outline-offset:-2px"></span>besluit van de directie nodig</span><span><span class="pill b">afhankelijkheid niet gehaald</span></span>`+(load?`<span><span class="sw" style="background:var(--good-soft);border:1px solid var(--good)"></span>belasting binnen capaciteit</span><span><span class="sw" style="background:var(--warn-soft);border:1px solid var(--warn)"></span>boven 80%</span><span><span class="sw" style="background:var(--bad-soft);border:1px solid var(--bad)"></span>boven capaciteit</span>`:`<span><span class="sw" style="background:linear-gradient(90deg,#2F6FA355,#2F6FA311);"></span>geschaduwd = geplande periode van de fase</span>`)+'</div>'}
-function gantt(groups){const H=planHorizon(),cols=`minmax(220px,1.6fr) repeat(${H},minmax(34px,1fr))`;let s=`<div class="gantt" style="grid-template-columns:${cols}"><div class="gh" style="text-align:left">Actie</div>`+Array.from({length:H},(_,i)=>`<div class="gh">${mLabel(i+1)}</div>`).join('');
-  groups.forEach(g=>{s+=`<div class="gg" style="${g.mode==='fase'?'color:'+faseC(g.key)+';border-bottom:2px solid '+faseC(g.key):g.mode==='eig'?'color:'+eigC(g.titel)+';border-bottom:2px solid '+eigC(g.titel):''}">${esc(g.titel)}${g.sub?` <span class="note" style="font-weight:400">${esc(g.sub)}</span>`:''}</div>`;
+function legend(load,noSeg){const k=D.kleur||'fase';const items=k==='eig'?eigList().map(e=>[eigC(e),e]):k==='maat'?[['S','S · klein'],['M','M · middel'],['L','L · groot']].map(([m,t])=>[MAATC[m],t+` (${D.dag[m]} d)`]):D.fases.map(f=>[faseC(f.key),f.naam]);
+  return `<div class="legend">`+(noSeg?'':`<div class="seg" role="group" aria-label="Kleur op"><span class="seg-l">Kleur op</span>${[['fase','Fase'],['eig','Eigenaar'],['maat','Inspanning']].map(([v,t])=>`<button data-kleur="${v}" class="${k===v?'on':''}" aria-pressed="${k===v}">${t}</button>`).join('')}</div>`)+`<div class="lg-items">`+items.map(([c,t])=>`<span class="lg"><span class="sw" style="background:${c}"></span>${esc(t)}</span>`).join('')+`<span class="lg"><span class="dm-s">◆</span>besluit directie (uiterlijk de maand ervoor)</span><span class="lg"><span class="chip bad">!</span>afhankelijkheid niet gehaald</span>`+(load?`<span class="lg"><span class="sw" style="background:var(--be-good-50);border:1px solid var(--be-good)"></span>binnen capaciteit</span><span class="lg"><span class="sw" style="background:var(--be-warn-50);border:1px solid var(--be-warn)"></span>boven 80%</span><span class="lg"><span class="sw" style="background:var(--be-bad-50);border:1px solid var(--be-bad)"></span>boven capaciteit</span>`:`<span class="lg"><span class="sw" style="background:#2F5D8C22"></span>geplande periode van de fase</span>`)+'</div></div>'}
+
+/* === WEERGAVE: tijdlijn (maand- en kwartaalindeling) === */
+function qInfo(H){const out=[];for(let i=1;i<=H;i++){let key,label;if(D.start){const [y,mo]=D.start.split('-').map(Number),d=new Date(y,mo-1+i-1,1),q=Math.floor(d.getMonth()/3)+1;key=d.getFullYear()+'Q'+q;label='K'+q+' '+d.getFullYear()}else{const q=Math.ceil(i/3);key='Q'+q;label='Kwartaal '+q}out.push({i,key,label})}return out}
+function gantt(groups){const H=planHorizon(),Q=qInfo(H),cols=`minmax(300px,2.2fr) repeat(${H},minmax(38px,1fr))`;
+  const qs=Q.map((q,i)=>i===0||q.key!==Q[i-1].key);
+  let s=`<div class="gantt" style="grid-template-columns:${cols}"><div class="gl0"></div>`;
+  for(let i=0;i<H;){let j=i+1;while(j<H&&Q[j].key===Q[i].key)j++;s+=`<div class="gq" style="grid-column:${i+2}/span ${j-i}">${j-i>1?esc(Q[i].label):esc(Q[i].label.split(' ')[0])}</div>`;i=j}
+  s+=`<div class="gh gl0">Actie</div>`+Array.from({length:H},(_,i)=>`<div class="gh${qs[i]?' qs':''}">${mLabel(i+1)}</div>`).join('');
+  groups.forEach(g=>{const col=g.mode==='fase'?faseC(g.key):g.mode==='eig'?eigC(g.titel):'var(--be-navy)',dg=g.acties.reduce((t,a)=>t+D.dag[a.maat],0);
+    s+=`<div class="gg" style="--fc:${col}"><div class="gg-in">${g.mode==='fase'?`<span class="gg-n">${faseIdx(g.key)+1}</span>`:`<span class="gg-d"></span>`}<b>${esc(g.titel)}</b>${g.sub?`<span class="gg-s">${esc(g.sub)}</span>`:''}<span class="gg-r">${g.acties.length} acties · ${nf0.format(dg)} dagen</span></div></div>`;
     g.acties.forEach(a=>{const dep=D.acties.find(x=>x.id===a.na),bad=dep&&a.start<=endOf(dep);
-      s+=`<div class="gl" title="${esc(a.tekst)}">${esc(a.tekst)}${bad?' <span class="pill b">afhankelijkheid niet gehaald</span>':''}${a.bes?' <span class="pill w">besluit</span>':''}</div>`;
-      const fw=D.fases[faseIdx(a.fase)].w,tint=g.mode==='fase'?`background:linear-gradient(90deg,transparent ${(fw[0]-1)/H*100}%,${faseC(a.fase)}22 ${(fw[0]-1)/H*100}%,${faseC(a.fase)}22 ${fw[1]/H*100}%,transparent ${fw[1]/H*100}%);`:'';
-      s+=`<div style="grid-column:2/-1;display:grid;grid-template-columns:repeat(${H},minmax(34px,1fr));border-bottom:1px solid var(--line);min-height:28px;${tint}"><div class="bar${a.bes?' bes':''}" style="background:${barC(a)};grid-column:${a.start}/span ${a.dur}" title="${esc(a.tekst)} · ${a.maat} · ${esc(a.eig)}">${esc(g.mode==='eig'?a.fase.split('|')[0]:a.eig)}</div></div>`});
-    if(g.load){const L=g.load;s+=`<div class="gl" style="font-weight:600">Belasting (dagen per maand, max ${capOf(g.titel)})</div><div style="grid-column:2/-1;display:grid;grid-template-columns:repeat(${H},minmax(34px,1fr))">`+Array.from({length:H},(_,i)=>{const v=L[i+1]||0;return `<div class="load ${v>capOf(g.titel)+0.01?'hi':v>capOf(g.titel)*0.8?'mid':v===0?'z':''}">${v?nf1.format(v):'·'}</div>`}).join('')+'</div>'}});
+      const own=g.mode==='eig'?`<span class="own"><i style="background:${faseC(a.fase)}"></i>${esc(a.fase.split('|')[0])}</span>`:`<span class="own"><i style="background:${eigC(a.eig)}"></i>${esc(a.eig)}</span>`;
+      s+=`<div class="gl" title="${esc(a.tekst)}"><div class="gl-t">${esc(a.tekst)}</div><div class="gl-m">${own}${a.bes?'<span class="chip dec">◆ besluit</span>':''}${bad?'<span class="chip bad">! afhankelijkheid niet gehaald</span>':(dep?`<span class="dep">↳ na ${esc(dep.tekst)}</span>`:'')}</div></div>`;
+      const fw=D.fases[faseIdx(a.fase)].w,tint=g.mode==='fase'?`<div class="tint" style="grid-column:${fw[0]}/${Math.min(fw[1],H)+1};background:${faseC(a.fase)}12"></div>`:'';
+      s+=`<div class="grow" style="grid-template-columns:repeat(${H},minmax(38px,1fr));--h:${H}">${tint}${qs.map((b,i)=>b&&i>0?`<div class="ql" style="grid-column:${i+1}"></div>`:'').join('')}${a.bes&&a.start>1?`<div class="dm" style="grid-column:${a.start-1}" title="Besluit uiterlijk ${esc(mLabel(a.start-1))}">◆</div>`:''}<div class="bar" style="background:${barC(a)};grid-column:${a.start}/span ${a.dur}" title="${esc(a.tekst)} · ${a.maat} · ${esc(a.eig)} · ${esc(mLabel(a.start))} – ${esc(mLabel(endOf(a)))}">${a.dur>1?(a.bes&&a.start===1?'◆ ':'')+esc(g.mode==='eig'?a.fase.split('|')[0]:a.eig):(a.bes&&a.start===1?'◆':'')}</div></div>`});
+    if(g.load){const L=g.load;s+=`<div class="gl lrow">Belasting (dagen per maand, max ${capOf(g.titel)})</div><div class="grow" style="grid-template-columns:repeat(${H},minmax(38px,1fr));--h:${H};background-image:none;min-height:34px">`+Array.from({length:H},(_,i)=>{const v=L[i+1]||0;return `<div class="load ${v>capOf(g.titel)+0.01?'hi':v>capOf(g.titel)*0.8?'mid':v===0?'z':''}" style="grid-row:1;grid-column:${i+1}">${v?nf1.format(v):'·'}</div>`}).join('')+'</div>'}});
   return s+'</div>'}
-function vFase(){return legend(false)+`<div class="tw">`+gantt(D.fases.map(f=>({key:f.key,titel:f.naam,sub:f.per,mode:'fase',acties:D.acties.filter(a=>a.fase===f.key).sort((a,b)=>a.start-b.start)})))+'</div>'}
+const faseGroups=()=>D.fases.map(f=>({key:f.key,titel:f.naam,sub:f.per,mode:'fase',acties:D.acties.filter(a=>a.fase===f.key).sort((a,b)=>a.start-b.start)}));
+function vFase(){return `<div class="viewbar">${legend(false)}</div><div class="tw">`+gantt(faseGroups())+'</div>'}
+
+
+const mLabel=m=>{if(D.start){const [y,mo]=D.start.split('-').map(Number);const d=new Date(y,mo-1+m-1,1);return d.toLocaleDateString('nl-NL',{month:'short'}).replace('.','')+(d.getMonth()===0||m===1?' '+String(d.getFullYear()).slice(2):'')}return 'M'+m};
+
+/* === WEERGAVE: managementweergave (afdrukvriendelijk; leest dezelfde gegevens, rekent niets nieuws) === */
+function vMgmt(){const L=loadOf(),es=[...new Set(D.acties.map(a=>a.eig))],f1=v=>String(Math.round(v*10)/10).replace('.',',');
+  const st=D.start?(()=>{const [y,m]=D.start.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('nl-NL',{month:'long',year:'numeric'})})():'niet gekozen (maand 1 = start)';
+  const rows=es.map(e=>{const A=D.acties.filter(a=>a.eig===e),ld=Object.values(L[e]||{}),cp=capOf(e);return{e,n:A.length,dg:A.reduce((s,a)=>s+D.dag[a.maat],0),pk:Math.max(0,...ld),cp,mo:ld.filter(v=>v>cp+0.01).length}}).sort((a,b)=>b.dg-a.dg);
+  const B=D.acties.filter(a=>a.bes).sort((a,b)=>a.start-b.start);
+  return `<div class="mg"><div class="mg-head"><div><div class="kicker">B.Enable · Control Framework</div><h2>Implementatieplan${D.klant?' · '+esc(D.klant):''}</h2><p class="note">Opgesteld op ${new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'})} · start plan: ${esc(st)}</p></div></div>
+  <div class="kpis">${kpiHtml()}</div>
+  <h3>Planning per fase</h3>${legend(false,true)}<div class="tw" style="margin-top:10px">${gantt(faseGroups())}</div>
+  <div class="grid g2"><div><h3>Inspanning per eigenaar</h3><table class="tbl-n"><thead><tr><th>Eigenaar</th><th>Acties</th><th>Dagen</th><th>Piek d/mnd</th><th>Beschikbaar</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="own"><i style="background:${eigC(r.e)}"></i><b style="color:var(--be-ink)">${esc(r.e)}</b></span></td><td>${r.n}</td><td>${f1(r.dg)}</td><td class="${r.pk>r.cp+0.01?'neg':''}">${f1(r.pk)}</td><td>${f1(r.cp)}${r.mo?` <span class="chip bad">${r.mo} mnd te vol</span>`:''}</td></tr>`).join('')}</tbody></table></div>
+  <div><h3>Besluitmomenten voor de directie</h3>${B.length?`<table><thead><tr><th>Uiterlijk</th><th>Actie</th><th>Eigenaar</th></tr></thead><tbody>${B.map(a=>`<tr><td><span class="dm-s">◆</span> ${esc(mLabel(Math.max(1,a.start-1)))}</td><td>${esc(a.tekst)}</td><td>${esc(a.eig)}</td></tr>`).join('')}</tbody></table>`:'<p class="note">Geen acties met een besluit gemarkeerd.</p>'}</div></div>
+  <h3>Mijlpalen: klaar voor de volgende fase als</h3><div class="grid g2">${D.fases.map(f=>{const M=D.mijl[f.key]||(D.mijl[f.key]=defMile[Math.min(faseIdx(f.key),2)].map(t=>({t,d:0}))),last=Math.max(0,...D.acties.filter(a=>a.fase===f.key).map(endOf));return `<div><b style="color:${faseC(f.key)}">${esc(f.naam)}</b> <span class="note">· acties klaar uiterlijk ${last?esc(mLabel(last)):'–'}</span><ul>${M.map(m=>`<li><span class="check">${m.d?'☑':'☐'}</span>${esc(m.t)}</li>`).join('')}</ul></div>`}).join('')}</div></div>`}
+
 function vTot(){const L=loadOf(),es=[...new Set(D.acties.map(a=>a.eig))];const rows=es.map(e=>{const A=D.acties.filter(a=>a.eig===e),dg=A.reduce((s,a)=>s+D.dag[a.maat],0),ld=Object.values(L[e]||{}),pk=Math.max(0,...ld),cp=capOf(e),mo=ld.filter(v=>v>cp+0.01).length,ex=ld.reduce((s,v)=>s+Math.max(0,v-cp),0),st=Math.min(...A.map(a=>a.start)),en=Math.max(...A.map(endOf));return{e,cp,mo,ex,n:A.length,S:A.filter(a=>a.maat==='S').length,M:A.filter(a=>a.maat==='M').length,L:A.filter(a=>a.maat==='L').length,dg,fz:D.fases.map(f=>A.filter(a=>a.fase===f.key).reduce((s,a)=>s+D.dag[a.maat],0)),pk,st,en,gem:dg/Math.max(1,en-st+1)}}).sort((a,b)=>b.dg-a.dg);const T=rows.reduce((s,r)=>s+r.dg,0)||1,mx=Math.max(...rows.map(r=>r.dg))||1,f1=v=>String(Math.round(v*10)/10).replace('.',',');
-const tr=rows.map(r=>`<tr><td><b>${esc(r.e)}</b></td><td class="num">${r.n}</td><td class="num">${r.S}/${r.M}/${r.L}</td><td class="num"><b>${f1(r.dg)}</b></td>${r.fz.map(v=>`<td class="num">${v?f1(v):'–'}</td>`).join('')}<td class="num">${f1(r.gem)}</td><td class="num" style="${r.pk>r.cp+0.01?'color:var(--bad,#c0392b);font-weight:700':''}">${f1(r.pk)}</td><td><input type="number" min="1" max="22" step="0.5" value="${r.cp}" data-cape="${esc(r.e)}" style="width:64px" aria-label="Beschikbaar d/mnd ${esc(r.e)}"></td><td class="num" style="${r.mo?'color:var(--bad,#c0392b);font-weight:700':''}">${r.mo?r.mo+' mnd · '+f1(r.ex)+' d':'–'}</td><td>${mLabel(r.st)} – ${mLabel(r.en)}</td><td style="min-width:110px"><div style="background:#e8edf1;border-radius:4px;height:10px"><div style="width:${Math.round(r.dg/mx*100)}%;height:10px;border-radius:4px;background:var(--accent,#1b6f6a)"></div></div><span class="note">${Math.round(r.dg/T*100)}%</span></td></tr>`).join('');
-const tt=D.acties.length;return `<p class="note" style="margin-top:0">Totale inspanning in dagen per eigenaar, verdeeld over de fasen. Gem. is dagen per maand over de actieve periode; piek is de drukste maand. Pas de beschikbaarheid per eigenaar aan in de kolom Beschikbaar; standaard is dat ${D.cap} dagen per maand. Rood is boven die capaciteit.</p><div class="tw"><table><thead><tr><th>Eigenaar</th><th>Acties</th><th>S/M/L</th><th>Dagen totaal</th>${D.fases.map(f=>`<th>${esc(f.naam)}</th>`).join('')}<th>Gem. d/mnd</th><th>Piek d/mnd</th><th>Beschikbaar d/mnd</th><th>Boven capaciteit</th><th>Actief</th><th>Aandeel</th></tr></thead><tbody>${tr}</tbody><tfoot><tr><td><b>Totaal</b></td><td class="num"><b>${tt}</b></td><td class="num"><b>${['S','M','L'].map(m=>D.acties.filter(a=>a.maat===m).length).join('/')}</b></td><td class="num"><b>${f1(T===1&&!rows.length?0:T)}</b></td>${D.fases.map((f,i)=>`<td class="num"><b>${f1(rows.reduce((s,r)=>s+r.fz[i],0))}</b></td>`).join('')}<td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot></table></div>`}
-function vEig(){const L=loadOf(),es=[...new Set(D.acties.map(a=>a.eig))].sort();return `<p class="note" style="margin-top:0">Rood is boven de beschikbare dagen per maand van de eigenaar (standaard ${D.cap}, per eigenaar aan te passen in het tabblad Inspanning per eigenaar). Schuif acties in het tabblad Plan bewerken of laat het plan opnieuw inroosteren.</p>${legend(true)}<div class="tw">`+gantt(es.map(e=>({titel:e,mode:'eig',acties:D.acties.filter(a=>a.eig===e).sort((a,b)=>a.start-b.start),load:L[e]||{}})))+'</div>'}
+const tr=rows.map(r=>`<tr><td><b>${esc(r.e)}</b></td><td class="num">${r.n}</td><td class="num">${r.S}/${r.M}/${r.L}</td><td class="num"><b>${f1(r.dg)}</b></td>${r.fz.map(v=>`<td class="num">${v?f1(v):'–'}</td>`).join('')}<td class="num">${f1(r.gem)}</td><td class="num${r.pk>r.cp+0.01?' neg':''}">${f1(r.pk)}</td><td><input type="number" min="1" max="22" step="0.5" value="${r.cp}" data-cape="${esc(r.e)}" style="width:64px" aria-label="Beschikbaar d/mnd ${esc(r.e)}"></td><td class="num${r.mo?' neg':''}">${r.mo?r.mo+' mnd · '+f1(r.ex)+' d':'–'}</td><td>${mLabel(r.st)} – ${mLabel(r.en)}</td><td style="min-width:110px"><div class="meter"><i style="width:${Math.round(r.dg/mx*100)}%"></i></div><span class="note">${Math.round(r.dg/T*100)}%</span></td></tr>`).join('');
+const tt=D.acties.length;return `<p class="note" style="margin:0 0 12px">Totale inspanning in dagen per eigenaar, verdeeld over de fasen. Gem. is dagen per maand over de actieve periode; piek is de drukste maand. Pas de beschikbaarheid per eigenaar aan in de kolom Beschikbaar; standaard is dat ${D.cap} dagen per maand. Rood is boven die capaciteit.</p><div class="tw"><table class="tbl-n"><thead><tr><th>Eigenaar</th><th>Acties</th><th>S/M/L</th><th>Dagen totaal</th>${D.fases.map(f=>`<th>${esc(f.naam)}</th>`).join('')}<th>Gem. d/mnd</th><th>Piek d/mnd</th><th>Beschikbaar d/mnd</th><th>Boven capaciteit</th><th>Actief</th><th>Aandeel</th></tr></thead><tbody>${tr}</tbody><tfoot><tr><td><b>Totaal</b></td><td class="num"><b>${tt}</b></td><td class="num"><b>${['S','M','L'].map(m=>D.acties.filter(a=>a.maat===m).length).join('/')}</b></td><td class="num"><b>${f1(T===1&&!rows.length?0:T)}</b></td>${D.fases.map((f,i)=>`<td class="num"><b>${f1(rows.reduce((s,r)=>s+r.fz[i],0))}</b></td>`).join('')}<td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot></table></div>`}
+function vEig(){const L=loadOf(),es=[...new Set(D.acties.map(a=>a.eig))].sort();return `<p class="note" style="margin:0 0 12px">Rood is boven de beschikbare dagen per maand van de eigenaar (standaard ${D.cap}, per eigenaar aan te passen in het tabblad Inspanning per eigenaar). Schuif acties in het tabblad Plan bewerken of laat het plan opnieuw inroosteren.</p><div class="viewbar">${legend(true)}</div><div class="tw">`+gantt(es.map(e=>({titel:e,mode:'eig',acties:D.acties.filter(a=>a.eig===e).sort((a,b)=>a.start-b.start),load:L[e]||{}})))+'</div>'}
 function vPlan(){const opt=(v,list)=>list.map(x=>`<option value="${esc(x[0])}"${x[0]===v?' selected':''}>${esc(x[1])}</option>`).join('');
-  return `<div class="tw"><table><thead><tr><th>Fase</th><th>Actie</th><th>Eigenaar</th><th>Maat</th><th>Start</th><th>Duur</th><th>Na actie</th><th>Besluit</th><th></th></tr></thead><tbody>`+D.acties.map(a=>`<tr><td><select data-id="${a.id}" data-k="fase">${opt(a.fase,D.fases.map(f=>[f.key,f.naam]))}</select></td><td><input type="text" data-id="${a.id}" data-k="tekst" value="${esc(a.tekst)}" style="width:330px"></td><td><input type="text" list="eigL" data-id="${a.id}" data-k="eig" value="${esc(a.eig)}" style="width:150px"></td><td><select data-id="${a.id}" data-k="maat">${MAAT.map(m=>`<option${m===a.maat?' selected':''}>${m}</option>`).join('')}</select></td><td><input type="number" min="1" max="60" data-id="${a.id}" data-k="start" value="${a.start}" style="width:60px"></td><td><input type="number" min="1" max="24" data-id="${a.id}" data-k="dur" value="${a.dur}" style="width:55px"></td><td><select data-id="${a.id}" data-k="na" style="max-width:190px"><option value="">–</option>${opt(a.na,D.acties.filter(x=>x.id!==a.id).map(x=>[x.id,x.tekst.slice(0,40)]))}</select></td><td style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="bes"${a.bes?' checked':''}></td><td><button class="btn" data-del="${a.id}" aria-label="Verwijder">×</button></td></tr>`).join('')+`</tbody></table></div><datalist id="eigL">${[...new Set(D.acties.map(a=>a.eig))].map(e=>`<option value="${esc(e)}">`).join('')}</datalist><div class="row" style="margin-top:10px"><button class="btn" id="bAdd">+ Actie toevoegen</button></div>`}
+  return `<div class="tw"><table class="tbl-e"><thead><tr><th>Fase</th><th>Actie</th><th>Eigenaar</th><th>Maat</th><th>Start</th><th>Duur</th><th>Na actie</th><th>Besluit</th><th></th></tr></thead><tbody>`+D.acties.map(a=>`<tr><td><select data-id="${a.id}" data-k="fase">${opt(a.fase,D.fases.map(f=>[f.key,f.naam]))}</select></td><td><input type="text" data-id="${a.id}" data-k="tekst" value="${esc(a.tekst)}" style="width:330px"></td><td><input type="text" list="eigL" data-id="${a.id}" data-k="eig" value="${esc(a.eig)}" style="width:150px"></td><td><select data-id="${a.id}" data-k="maat">${MAAT.map(m=>`<option${m===a.maat?' selected':''}>${m}</option>`).join('')}</select></td><td><input type="number" min="1" max="60" data-id="${a.id}" data-k="start" value="${a.start}" style="width:60px"></td><td><input type="number" min="1" max="24" data-id="${a.id}" data-k="dur" value="${a.dur}" style="width:55px"></td><td><select data-id="${a.id}" data-k="na" style="max-width:190px"><option value="">–</option>${opt(a.na,D.acties.filter(x=>x.id!==a.id).map(x=>[x.id,x.tekst.slice(0,40)]))}</select></td><td style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="bes"${a.bes?' checked':''}></td><td><button class="btn" data-del="${a.id}" aria-label="Verwijder">×</button></td></tr>`).join('')+`</tbody></table></div><datalist id="eigL">${[...new Set(D.acties.map(a=>a.eig))].map(e=>`<option value="${esc(e)}">`).join('')}</datalist><div class="row" style="margin-top:10px"><button class="btn" id="bAdd">+ Actie toevoegen</button></div>`}
 function vBes(){const B=D.acties.filter(a=>a.bes).sort((a,b)=>a.start-b.start);
   let s=`<div class="grid g2"><div><h3>Besluitmomenten voor de directie</h3><p class="note">Acties waarvoor een besluit of budget nodig is, op volgorde van start. Het besluit moet er liggen vóór de start.</p>`+(B.length?`<table><thead><tr><th>Uiterlijk</th><th>Actie</th><th>Eigenaar</th><th>Maat</th></tr></thead><tbody>`+B.map(a=>`<tr><td>${mLabel(Math.max(1,a.start-1))}</td><td>${esc(a.tekst)}</td><td>${esc(a.eig)}</td><td>${a.maat}</td></tr>`).join('')+'</tbody></table>':'<p class="note">Geen acties met een besluit gemarkeerd. Zet dit aan bij Plan bewerken.</p>')+`</div><div><h3>Mijlpalen: klaar voor de volgende fase als</h3><p class="note">Pas de criteria aan op de organisatie en vink af wat is bereikt.</p>`;
   D.fases.forEach(f=>{const M=D.mijl[f.key]||(D.mijl[f.key]=defMile[Math.min(faseIdx(f.key),2)].map(t=>({t,d:0}))),last=Math.max(0,...D.acties.filter(a=>a.fase===f.key).map(endOf));
-    s+=`<h3 style="margin-top:12px;font-size:.95rem">${esc(f.naam)} <span class="note" style="font-weight:400">· acties klaar uiterlijk ${last?mLabel(last):'–'}</span></h3>`+M.map((m,i)=>`<div class="row" style="margin:4px 0;flex-wrap:nowrap"><input type="checkbox" data-mf="${esc(f.key)}" data-mi="${i}"${m.d?' checked':''}><input type="text" data-mt="${esc(f.key)}" data-mi="${i}" value="${esc(m.t)}" style="flex:1"></div>`).join('')+`<button class="btn" data-madd="${esc(f.key)}" style="margin-top:4px">+ Criterium</button>`});
+    s+=`<h3 style="margin-top:16px">${esc(f.naam)} <span class="note" style="font-weight:400">· acties klaar uiterlijk ${last?mLabel(last):'–'}</span></h3>`+M.map((m,i)=>`<div class="row" style="margin:4px 0;flex-wrap:nowrap"><input type="checkbox" data-mf="${esc(f.key)}" data-mi="${i}"${m.d?' checked':''}><input type="text" data-mt="${esc(f.key)}" data-mi="${i}" value="${esc(m.t)}" style="flex:1"></div>`).join('')+`<button class="btn" data-madd="${esc(f.key)}" style="margin-top:4px">+ Criterium</button>`});
   return s+'</div></div>'}
-function render(){$('#app').style.display=D.acties.length?'':'none';$('#demoFlag').style.display=D.demo?'inline-block':'none';if(!D.acties.length)return;
+/* === FUNCTIE: render, instellingen, navigatie === */
+const startTxt=()=>D.start?(()=>{const [y,m]=D.start.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('nl-NL',{month:'long',year:'numeric'})})():'niet gekozen';
+function render(){document.body.dataset.view=view;$('#app').style.display=D.acties.length?'':'none';$('#demoFlag').style.display=D.demo?'inline-block':'none';
+  const kl=$('#klant');if(document.activeElement!==kl)kl.value=D.klant||'';$('#klantPr').textContent=D.klant||'';
+  $('#impSum').textContent=D.acties.length?`${D.acties.length} acties in ${D.fases.length} fasen ingelezen`:'Nog geen roadmap ingelezen';
+  if(!D.acties.length)return;
   fillStart();$('#sCap').value=D.cap;$('#dS').value=D.dag.S;$('#dM').value=D.dag.M;$('#dL').value=D.dag.L;
-  tiles();document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
-  $('#view').innerHTML={fase:vFase,eig:vEig,tot:vTot,plan:vPlan,bes:vBes}[view]();bind()}
+  $('#setSum').textContent=`Start ${startTxt()} · ${D.cap} d/mnd per eigenaar · S ${D.dag.S} · M ${D.dag.M} · L ${D.dag.L} dagen`;
+  tiles();document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.v===view;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
+  $('#view').innerHTML={fase:vFase,eig:vEig,tot:vTot,plan:vPlan,bes:vBes,mgmt:vMgmt}[view]();bind()}
+function setSet(open){$('#setBody').hidden=!open;$('#bSet').setAttribute('aria-expanded',open)}
+$('#bSet').onclick=()=>setSet($('#setBody').hidden);
+$('#klant').oninput=e=>{D.klant=e.target.value;save();$('#klantPr').textContent=D.klant;if(view==='mgmt')render()};
+function printPlan(){view='mgmt';render();setTimeout(()=>{try{window.print()}catch(e){$('#msg').textContent='Gebruik Ctrl+P (Cmd+P) om af te drukken of als pdf op te slaan.'}},200)}
 function bind(){
   document.querySelectorAll('[data-kleur]').forEach(el=>el.onclick=()=>{D.kleur=el.dataset.kleur;save();render()});
   document.querySelectorAll('[data-cape]').forEach(el=>el.onchange=()=>{D.capE=D.capE||{};const v=parseFloat(String(el.value).replace(',','.'));if(v>0)D.capE[el.dataset.cape]=v;else delete D.capE[el.dataset.cape];save();render()});
@@ -232,6 +459,7 @@ $('#bPlan').onclick=()=>{replan();save();render();$('#msg').textContent='Plan op
 $('#bDemo').onclick=()=>{demo();render();setImp(false)};
 $('#bClear').onclick=()=>{if(!$('#bClear').dataset.s){$('#bClear').dataset.s=1;$('#bClear').textContent='Klik nogmaals om te wissen';setTimeout(()=>{delete $('#bClear').dataset.s;$('#bClear').textContent='Alles wissen'},3500);return}D=fresh();save();$('#bClear').textContent='Alles wissen';delete $('#bClear').dataset.s;render();setImp(true)};
 function setImp(open){$('#impBody').style.display=open?'':'none';const b=$('#bTog');b.textContent=open?'Inklappen ▴':'Uitklappen ▾';b.setAttribute('aria-expanded',open)}
+$('#bPrint').onclick=printPlan;
 $('#bTog').onclick=()=>setImp($('#impBody').style.display==='none');
 function doImport(txt){const m=importRows(parseTable(txt));$('#impMsg').textContent=m||`${D.acties.length} acties ingelezen in ${D.fases.length} fasen.`;if(!m){view='fase';render();setImp(false)}}
 $('#bImp').onclick=()=>doImport($('#tPaste').value);

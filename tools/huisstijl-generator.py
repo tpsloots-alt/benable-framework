@@ -2,7 +2,7 @@
 Gebruik: python3 theme.py brand.json target.html [cf|scan]"""
 import json,sys,re,urllib.parse
 # Standaard B.Enable-pictogram: ook klantvarianten blijven een B.Enable-product.
-DEFAULT_ICON='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1E3A5F"/><text x="27" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="46" fill="#fff">B</text><circle cx="49" cy="43" r="5.5" fill="#F0773A"/></svg>'
+DEFAULT_ICON='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#193657"/><text x="27" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="46" fill="#fff">B</text><circle cx="49" cy="43" r="5.5" fill="#F0773A"/></svg>'
 def iconlink(B):
     svg=(B.get('brand',{}).get('pictogram') or {}).get('svg') or DEFAULT_ICON
     return '<link rel="icon" type="image/svg+xml" data-brand="1" href="data:image/svg+xml,'+urllib.parse.quote(svg)+'">'

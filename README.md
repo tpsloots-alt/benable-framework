@@ -23,6 +23,8 @@ scripts/
   zet-pincode.mjs       zet de pincode van het presentatie-slot
 tools/
   lock.py               maakt van een framework-pagina een sitepagina met slot
+  ontwerplaag.py        zet de ontwerplaag (zijbalk, kopbalk, componenten, print) op een framework-pagina; huisstijl-generator.py zet eerst het BRAND-blok
+  b-enable-huisstijl.json   B.Enable-huisstijl v0.3 (kleuren, typografie, layout)
 ```
 
 ## Eenmalig inrichten
