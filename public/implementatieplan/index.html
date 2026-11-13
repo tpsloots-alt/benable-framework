@@ -202,6 +202,10 @@ td.neg,.neg{color:var(--be-bad);font-weight:700}
 .opt:first-child{border-top:0}
 .opt .chip{justify-self:start;margin-top:2px}.opt-t{min-width:0;line-height:1.45}
 @media (max-width:700px){.opt{grid-template-columns:1fr;gap:6px}.opt .btn{justify-self:start}}
+/* 3.7c beschikbaarheid per periode */
+.bep{display:grid;grid-template-columns:minmax(130px,1.2fr) auto auto auto minmax(140px,1.6fr) auto;gap:8px 12px;align-items:center;margin-top:8px}
+.bep label{display:flex;gap:6px;align-items:center;font-size:var(--fs-sm);color:var(--be-ink-2);white-space:nowrap}
+@media (max-width:700px){.bep{grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid var(--be-line-soft)}.bep>select:first-child,.bep>input[type=text]{grid-column:1/-1}.bep select,.bep input{width:100%!important}}
 /* 3.8 managementmodus (leest dezelfde gegevens als Plan bewerken; geen eigen berekeningen) */
 .modebar{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
 .modeseg{display:inline-flex;border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-surface);padding:2px}
@@ -416,6 +420,7 @@ body.pres .m-sec{margin-top:36px}
           <div class="field">Standaard beschikbaar per eigenaar<div class="inl"><input type="number" id="sCap" min="1" max="22" style="width:76px"> dagen per maand</div></div>
           <div class="field" style="grid-column:span 2">Inspanning per maat<div class="inl" style="flex-wrap:nowrap;white-space:nowrap">S <input type="number" id="dS" min="1" style="width:56px"> M <input type="number" id="dM" min="1" style="width:56px"> L <input type="number" id="dL" min="1" style="width:56px"> XL <input type="number" id="dXL" min="1" style="width:56px"> dagen</div></div>
           <div class="field">Bij automatisch inroosteren<div class="inl"><label class="inl"><input type="checkbox" id="sBeh"> vaste acties behouden</label></div></div>
+          <div class="field">Volgorde bij inroosteren<div class="inl"><select id="sVolg" aria-label="Volgorde bij inroosteren"><option value="slim">Slim: kritiek pad en snelle winst</option><option value="klassiek">Klassiek: laag, dan prioriteit</option></select></div></div>
           <div class="field">Overlap tussen fases<div class="inl"><input type="number" id="sOv" min="0" max="12" style="width:64px"> maanden</div></div>
           <div class="field">Externe partijen (inleen)<div class="inl"><input type="text" id="sExt" placeholder="Inleen" style="width:150px" aria-label="Namen van externe partijen, gescheiden door komma's"></div></div>
           <div class="field">Tarief extern<div class="inl">€ <input type="number" id="sTar" min="0" step="10" style="width:72px"> per dag</div></div>
@@ -423,7 +428,11 @@ body.pres .m-sec{margin-top:36px}
           <div class="field"><span>&nbsp;</span><button class="btn" id="bSchat" title="Schat per actie de zwaarte (S, M, L of XL) op basis van de omschrijving">Schat zwaarte van acties</button></div>
           <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
         </div>
-        <p class="note">Inroosteren zet elke actie op het vroegste moment waarop de eigenaar nog capaciteit heeft en nadat de actie waar hij van afhangt klaar is. Een fase start pas als de acties van de vorige fase klaar zijn (minus de gekozen overlap); de periodes uit de roadmap zijn dus een indicatie en de geplande periode volgt het plan. Bij Uitvoering geef je per actie een deel aan uitvoerders (bijv. IT 60%, Inleen 20%); de rest blijft bij de eigenaar en elke partij draagt alleen zijn eigen deel van de belasting. Externe partijen (standaard Inleen) tellen niet mee in de eigen capaciteitsbenutting en leveren een kostenindicatie op. Op het tabblad Knelpunten en opties staan oplossingen voor overbelasting. Wat je zelf in Plan bewerken aanpast (start of duur) of aanvinkt bij Vast, blijft staan zolang Vaste acties behouden aan staat. Schat zwaarte kiest S, M, L of XL op basis van de omschrijving (trefwoorden, uitvoering door IT, breed bereik); een maat die je zelf kiest blijft behouden.</p>
+        <div style="margin-top:18px"><h3 style="font-size:13.5px">Beschikbaarheid per periode <span class="note" style="font-weight:400">· vakantie, jaarafsluiting of piekdrukte</span></h3>
+          <div id="bepList"></div>
+          <div class="row" style="margin-top:8px"><button class="btn" id="bBepAdd">+ Beperking toevoegen</button></div>
+          <p class="note">Per regel geef je aan hoeveel dagen per maand een eigenaar (of iedereen) in die periode beschikbaar is; 0 dagen is volledig afwezig. De regel vervangt voor die maanden de standaardcapaciteit, maar verhoogt die nooit. Inroosteren, belasting, knelpunten en de Managementmodus rekenen ermee. Periodes volgen de maanden van het plan; wijzig je de startmaand, controleer dan de regels.</p></div>
+        <p class="note">Inroosteren zet elke actie op het vroegste moment waarop de eigenaar nog capaciteit heeft en nadat alle acties waar hij van afhangt klaar zijn. Bij de volgorde Slim gaan acties met een lange keten erachter (kritiek pad) en snelle winst (hoge prioriteit, maat S of M) voor; Klassiek houdt laag en prioriteit aan. Een fase start pas als de acties van de vorige fase klaar zijn (minus de gekozen overlap); de periodes uit de roadmap zijn dus een indicatie en de geplande periode volgt het plan. Bij Uitvoering geef je per actie een deel aan uitvoerders (bijv. IT 60%, Inleen 20%); de rest blijft bij de eigenaar en elke partij draagt alleen zijn eigen deel van de belasting. Externe partijen (standaard Inleen) tellen niet mee in de eigen capaciteitsbenutting en leveren een kostenindicatie op. Op het tabblad Knelpunten en opties staan oplossingen voor overbelasting. Wat je zelf in Plan bewerken aanpast (start of duur) of aanvinkt bij Vast, blijft staan zolang Vaste acties behouden aan staat. Schat zwaarte kiest S, M, L of XL op basis van de omschrijving (trefwoorden, uitvoering door IT, breed bereik); een maat die je zelf kiest blijft behouden.</p>
       </div>
     </section>
 
@@ -448,7 +457,10 @@ const defMile=[['Het MT heeft het vertrekpunt en de prioriteiten vastgesteld (nu
 let D=LS.get(KEY,null),view='fase';
 const extList=()=>D.ext&&D.ext.length?D.ext:['Inleen'];
 const isExt=e=>extList().some(x=>x.toLowerCase()===String(e).toLowerCase());
-const capOf=e=>{const v=(D.capE||{})[e];return v>0?v:(isExt(e)?(D.capExt>0?D.capExt:20):D.cap)};
+const capBase=e=>{const v=(D.capE||{})[e];return v>0?v:(isExt(e)?(D.capExt>0?D.capExt:20):D.cap)};
+const rulesFor=(e,m)=>(D.beperk||[]).filter(r=>(!r.e||r.e===e)&&m>=r.van&&m<=r.tot);
+const ruled=(e,m)=>m!=null&&rulesFor(e,m).length>0;
+const capOf=(e,m)=>{const b=capBase(e);if(m==null)return b;const rs=rulesFor(e,m);return rs.length?Math.max(0,Math.min(b,...rs.map(r=>r.d))):b};
 const tarief=()=>{const t=parseFloat(D.tarief);return isFinite(t)&&t>=0?t:800};
 const eur=v=>'€ '+nf0.format(Math.round(v));
 /* Eigenaar (verantwoordelijk) en uitvoerders: a.uit=[{n,p}] met p in % van de inspanning; de rest blijft bij de eigenaar. */
@@ -469,8 +481,9 @@ const involves=(a,e)=>shares(a).some(s=>s[0]===e);
 function moveShare(a,from,to,pc){a.uit=(a.uit||[]).map(x=>({n:x.n,p:x.p}));
   if(a.eig===from){/* eigenaar geeft deel weg; alleen binnen de resterende 100% */}else{const x=a.uit.find(y=>y.n===from);if(x)x.p=Math.max(0,x.p-pc)}
   const t=a.uit.find(y=>y.n===to);if(t)t.p+=pc;else a.uit.push({n:to,p:pc});a.uit=a.uit.filter(x=>x.p>0)}
-const fresh=()=>({klant:'',demo:false,start:'',cap:8,capE:{},dag:{S:5,M:15,L:30,XL:60},mnd:{S:1,M:2,L:4,XL:6},acties:[],mijl:{}});
+const fresh=()=>({klant:'',demo:false,start:'',cap:8,capE:{},beperk:[],dag:{S:5,M:15,L:30,XL:60},mnd:{S:1,M:2,L:4,XL:6},acties:[],mijl:{}});
 if(!D)D=fresh();
+D.acties.forEach(a=>{if(!a.nas)a.nas=a.na?[a.na]:[]});if(!D.beperk)D.beperk=[];
 D.dag=Object.assign({XL:60},D.dag);D.mnd=Object.assign({XL:6},D.mnd);
 const save=()=>LS.set(KEY,D);
 
@@ -497,24 +510,32 @@ function importRows(rows){if(rows.length<2)return 'Geen regels gevonden.';
     A.push({fk:key,tekst:t,eig:c.eig>=0?(r[c.eig]||'').trim():'',laag:c.laag>=0?(r[c.laag]||'').trim():'',prio:c.prio>=0?(r[c.prio]||'').trim():'',uitS:c.uit>=0?(r[c.uit]||'').trim():''})});
   if(!A.length)return 'Geen acties gevonden.';
   fases.forEach((f,i)=>{f.w=windowOf(f.per,i);f.w0=f.w.slice()});fases.sort((a,b)=>a.w[0]-b.w[0]);
-  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,na:'',bes:/directie|mt|bestuur/i.test(a.eig)}));
+  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,nas:[],bes:/directie|mt|bestuur/i.test(a.eig)}));
   D.mijl={};D.demo=false;schatAll();replan();save();return ''}
 function replan(){const rank=p=>/hoog|1/i.test(p)?0:/midden|2/i.test(p)?1:/laag|3/i.test(p)?2:1,load={};
   const addLoad=(a,s,dur)=>shares(a).forEach(([r,f])=>{const dag=D.dag[a.maat]*f/dur;for(let m=s;m<s+dur;m++){(load[r]=load[r]||{})[m]=((load[r]||{})[m]||0)+dag}});
-  const fits=(a,s,dur)=>shares(a).every(([r,f])=>{const dag=D.dag[a.maat]*f/dur;for(let m=s;m<s+dur;m++){const cur=(load[r]||{})[m]||0;if(cur>0&&cur+dag>capOf(r)+1e-9)return false}return true});
+  const fits=(a,s,dur)=>shares(a).every(([r,f])=>{const dag=D.dag[a.maat]*f/dur;for(let m=s;m<s+dur;m++){const cur=(load[r]||{})[m]||0,c=capOf(r,m);if(c<=0.01)return false;if(cur+dag>c+1e-9&&(cur>0||ruled(r,m)))return false}return true});
   const vast=D.behoud!==false?D.acties.filter(a=>a.vast):[];
   vast.forEach(a=>addLoad(a,a.start,Math.max(1,a.dur)));
-  const order=D.acties.filter(a=>!vast.includes(a)).sort((a,b)=>faseIdx(a.fase)-faseIdx(b.fase)||(parseInt(a.laag)||9)-(parseInt(b.laag)||9)||rank(a.prio)-rank(b.prio));
   const byId=Object.fromEntries(D.acties.map(a=>[a.id,a]));
+  /* Volgorde: klassiek = laag, dan prioriteit. Slim = urgentie uit prioriteit, lengte van de keten erachter (kritiek pad) en snelle winst (hoog en klein/middel). */
+  const slim=D.volgorde!=='klassiek',chain={},succ={};
+  D.acties.forEach(a=>preds(a).forEach(id=>(succ[id]=succ[id]||[]).push(a.id)));
+  const cl=(id,seen)=>{if(chain[id]!=null)return chain[id];if(seen.has(id))return 0;seen.add(id);let b=0;(succ[id]||[]).forEach(s=>{b=Math.max(b,cl(s,seen))});return chain[id]=Math.max(1,byId[id].dur)+b};
+  const urg=a=>(3-rank(a.prio))*10+Math.min(18,cl(a.id,new Set()))*1.5+((rank(a.prio)===0&&(a.maat==='S'||a.maat==='M'))?12:0);
+  const cmp=(a,b)=>slim?(urg(b)-urg(a))||((parseInt(a.laag)||9)-(parseInt(b.laag)||9)):((parseInt(a.laag)||9)-(parseInt(b.laag)||9))||rank(a.prio)-rank(b.prio);
+  const order=D.acties.filter(a=>!vast.includes(a));
   /* Gate-gestuurd: een fase start pas als de acties van de vorige fase klaar zijn (minus de gekozen overlap).
      f.w0 is het oorspronkelijke venster uit de roadmap; f.w wordt de geplande periode en volgt het plan. */
   const ov=Math.max(0,+D.overlap||0);let prevEnd=0;
   D.fases.forEach((f,i)=>{if(!f.w0)f.w0=f.w.slice();
     const base=i===0?f.w0[0]:Math.max(1,prevEnd+1-ov),all=D.acties.filter(a=>faseIdx(a.fase)===i);
-    order.filter(a=>faseIdx(a.fase)===i).forEach(a=>{const dur=Math.max(1,a.dur);let s=base;
-      if(a.na&&byId[a.na])s=Math.max(s,byId[a.na].start+byId[a.na].dur);
+    const pool=order.filter(a=>faseIdx(a.fase)===i),ids=new Set(pool.map(a=>a.id));
+    while(pool.length){let cand=pool.filter(a=>preds(a).every(id=>!ids.has(id)));if(!cand.length)cand=pool;cand.sort(cmp);const a=cand[0];pool.splice(pool.indexOf(a),1);ids.delete(a.id);
+      const dur=Math.max(1,a.dur);let s=base;
+      preds(a).forEach(id=>{const d=byId[id];if(d&&!ids.has(id))s=Math.max(s,d.start+d.dur)});
       for(let t=0;t<60;t++,s++){if(fits(a,s,dur))break}
-      a.start=s;addLoad(a,s,dur)});
+      a.start=s;addLoad(a,s,dur)}
     if(all.length){const st=Math.min(...all.map(a=>a.start)),en=Math.max(...all.map(endOf));f.w=[Math.min(st,base),en];prevEnd=Math.max(prevEnd,en)}else f.w=[base,base]});
   return vast.length}
 /* zwaarte-inschatting (regelgebaseerd, op de omschrijving van de actie; altijd te overrulen) */
@@ -530,14 +551,18 @@ function schatAll(){let n=0,h=0;D.acties.forEach(a=>{if(a.maatBron==='hand'){h++
 const faseIdx=k=>Math.max(0,D.fases.findIndex(f=>f.key===k));
 const planHorizon=()=>Math.max(18,...D.acties.map(a=>a.start+a.dur-1),...D.fases.map(f=>f.w[1]));
 const endOf=a=>a.start+a.dur-1;
+const byIdF=id=>D.acties.find(x=>x.id===id);
+const preds=a=>(a.nas||(a.na?[a.na]:[])).filter(id=>id!==a.id&&byIdF(id));
+const badDeps=a=>preds(a).map(byIdF).filter(d=>a.start<=endOf(d));
+const descOf=id=>{const s=new Set(),q=[id];while(q.length){const c=q.pop();D.acties.forEach(x=>{if(!s.has(x.id)&&preds(x).includes(c)){s.add(x.id);q.push(x.id)}})}return s};
 function loadOf(){const L={};D.acties.forEach(a=>{const dur=Math.max(1,a.dur);shares(a).forEach(([r,f])=>{const d=D.dag[a.maat]*f/dur;for(let m=a.start;m<a.start+a.dur;m++){(L[r]=L[r]||{})[m]=((L[r]||{})[m]||0)+d}})});return L}
 function demo(){const f=[['Snelle verbeteringen','0–3 maanden'],['Basis op orde','3–9 maanden'],['Doorontwikkeling','9–18 maanden']];
   const A=[[0,'1 · Financiële basis','Definities en begrippenlijst vaststellen','Directie','Hoog','S'],[0,'1 · Financiële basis','Vaste afsluitkalender met eigenaren invoeren','Financial control','Hoog','S'],[0,'4 · Sturing','Vaste agenda en actielijst voor de business review invoeren','Directie','Hoog','S'],
   [1,'1 · Financiële basis','Grootboekmapping naar management P&L opstellen','Financial control','Hoog','M'],[1,'1 · Financiële basis','Maandelijkse reconciliatie van omzet en kosten invoeren','Financial control','Midden','M'],[1,'2 · Business drivers','Standaard afwijkingsanalyse in volume, prijs en kosten','Business control','Hoog','M'],[1,'3 · KPI\'s','Kernset van KPI-kaarten opstellen','Business control','Hoog','M'],[1,'4 · Sturing','Bevoegdhedenmatrix vaststellen','Directie','Midden','S'],
   [2,'3 · KPI\'s','Dashboard automatisch vullen uit één bron','IT','Midden','L'],[2,'2 · Business drivers','Rolling forecast opzetten','Business control','Midden','L'],[2,'1 · Financiële basis','Koppelingen met bronsystemen realiseren','IT','Laag','L'],[2,'4 · Sturing','Opvolging en effectmeting van acties borgen','Directie','Midden','S']];
   const kl=D.klant;D=fresh();D.klant=kl;D.demo=true;D.fases=f.map((x,i)=>({key:x[0]+'|'+x[1],naam:x[0],per:x[1],w:windowOf(x[1],i),w0:windowOf(x[1],i)}));
-  D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:D.fases[a[0]].key,tekst:a[2],eig:a[3],laag:a[1],prio:a[4],maat:a[5],start:D.fases[a[0]].w[0],dur:D.mnd[a[5]],na:'',bes:/directie/i.test(a[3])}));
-  D.acties[8].uit=[{n:'Business control',p:30}];D.acties[10].uit=[{n:'Inleen',p:50}];D.acties[3].na='a2';D.acties[5].na='a4';D.acties[6].na='a3';D.acties[9].na='a6';D.acties[8].na='a7';
+  D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:D.fases[a[0]].key,tekst:a[2],eig:a[3],laag:a[1],prio:a[4],maat:a[5],start:D.fases[a[0]].w[0],dur:D.mnd[a[5]],nas:[],bes:/directie/i.test(a[3])}));
+  D.acties[8].uit=[{n:'Business control',p:30}];D.acties[10].uit=[{n:'Inleen',p:50}];D.acties[3].nas=['a2'];D.acties[5].nas=['a4'];D.acties[6].nas=['a3'];D.acties[9].nas=['a6'];D.acties[8].nas=['a7','a6'];D.beperk=[{e:'Financial control',van:3,tot:3,d:4,r:'Jaarafsluiting'}];
   replan();save()}
 
 
@@ -547,9 +572,9 @@ const ICON={
  inspanning:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>',
  piek:'<svg viewBox="0 0 24 24"><path d="M3 19h18"/><path d="M5 19v-6M10 19V6M15 19v-9M20 19v-4"/></svg>',
  knelpunt:'<svg viewBox="0 0 24 24"><path d="M12 3.5l9 16H3z"/><path d="M12 10v4.5M12 17.5v.1"/></svg>'};
-function kpiData(){const L=loadOf();let peak=0,pe='',ex=0,anyOver=false;Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>peak){peak=v;pe=e}if(v>capOf(e)+0.01){ex+=v-capOf(e);anyOver=true}}));
-  const tot=D.acties.reduce((s,a)=>s+D.dag[a.maat],0),last=Math.max(...D.acties.map(endOf)),over=Object.entries(L).reduce((s,[e,o])=>s+Object.values(o).filter(v=>v>capOf(e)+0.01).length,0);
-  const conf=D.acties.filter(a=>a.na&&D.acties.find(x=>x.id===a.na)&&a.start<=endOf(D.acties.find(x=>x.id===a.na))).length;
+function kpiData(){const L=loadOf();let peak=0,pe='',ex=0,anyOver=false;Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>peak){peak=v;pe=e}if(v>capOf(e,+m)+0.01){ex+=v-capOf(e,+m);anyOver=true}}));
+  const tot=D.acties.reduce((s,a)=>s+D.dag[a.maat],0),last=Math.max(...D.acties.map(endOf)),over=Object.entries(L).reduce((s,[e,o])=>s+Object.entries(o).filter(([m,v])=>v>capOf(e,+m)+0.01).length,0);
+  const conf=D.acties.reduce((s,a)=>s+badDeps(a).length,0);
   return{L,peak,pe,ex,anyOver,tot,last,over,conf}}
 function kpiHtml(){const k=kpiData();
   const t=(ic,l,v,s,c)=>`<div class="kpi ${c||''}"><div class="kpi-ic">${ICON[ic]}</div><div><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div><div class="kpi-s">${s}</div></div></div>`;
@@ -574,13 +599,13 @@ function gantt(groups){const H=planHorizon(),Q=qInfo(H),cols=`minmax(300px,2.2fr
   s+=`<div class="gh gl0">Actie</div>`+Array.from({length:H},(_,i)=>`<div class="gh${qs[i]?' qs':''}">${mLabel(i+1)}</div>`).join('');
   groups.forEach(g=>{const col=g.mode==='fase'?faseC(g.key):g.mode==='eig'?eigC(g.titel):'var(--be-navy)',dg=g.acties.reduce((t,a)=>t+D.dag[a.maat],0);
     s+=`<div class="gg" style="--fc:${col}"><div class="gg-in">${g.mode==='fase'?`<span class="gg-n">${faseIdx(g.key)+1}</span>`:`<span class="gg-d"></span>`}<b>${esc(g.titel)}</b>${g.sub?`<span class="gg-s">${esc(g.sub)}</span>`:''}<span class="gg-r">${g.acties.length} acties · ${nf0.format(dg)} dagen</span></div></div>`;
-    g.acties.forEach(a=>{const dep=D.acties.find(x=>x.id===a.na),bad=dep&&a.start<=endOf(dep);
+    g.acties.forEach(a=>{const ds=preds(a).map(byIdF),dep=ds[0],bad=badDeps(a).length>0;
       const own=g.mode==='eig'?`<span class="own"><i style="background:${faseC(a.fase)}"></i>${esc(a.fase.split('|')[0])}</span>`:`<span class="own"><i style="background:${eigC(a.eig)}"></i>${esc(a.eig)}</span>`;
       const shr=g.mode==='eig'?(shares(a).find(x=>x[0]===g.titel)||[0,1]):null,shc=g.mode==='eig'?(shr&&shr[1]<0.999?`<span class="chip" title="Aandeel van deze eigenaar in de inspanning">${Math.round(shr[1]*100)}% ${a.eig===g.titel?'eigen deel':'uitvoerder'}</span>`:''):((a.uit&&a.uit.length)?`<span class="chip" title="Uitvoering door">+ ${esc(fmtUit(a))}</span>`:'');
-      s+=`<div class="gl" title="${esc(a.tekst)}"><div class="gl-t">${esc(a.tekst)}</div><div class="gl-m">${own}${shc}${a.bes?'<span class="chip dec">◆ besluit</span>':''}${bad?'<span class="chip bad">! afhankelijkheid niet gehaald</span>':(dep?`<span class="dep">↳ na ${esc(dep.tekst)}</span>`:'')}</div></div>`;
+      s+=`<div class="gl" title="${esc(a.tekst)}"><div class="gl-t">${esc(a.tekst)}</div><div class="gl-m">${own}${shc}${a.bes?'<span class="chip dec">◆ besluit</span>':''}${bad?'<span class="chip bad">! afhankelijkheid niet gehaald</span>':(dep?`<span class="dep" title="${esc(ds.map(d=>d.tekst).join(' · '))}">↳ na ${esc(dep.tekst)}${ds.length>1?' +'+(ds.length-1):''}</span>`:'')}</div></div>`;
       const fw=D.fases[faseIdx(a.fase)].w,tint=g.mode==='fase'?`<div class="tint" style="grid-column:${fw[0]}/${Math.min(fw[1],H)+1};background:${faseC(a.fase)}12"></div>`:'';
       s+=`<div class="grow" style="grid-template-columns:repeat(${H},minmax(38px,1fr));--h:${H}">${tint}${qs.map((b,i)=>b&&i>0?`<div class="ql" style="grid-column:${i+1}"></div>`:'').join('')}${a.bes&&a.start>1?`<div class="dm" style="grid-column:${a.start-1}" title="Besluit uiterlijk ${esc(mLabel(a.start-1))}">◆</div>`:''}<div class="bar" style="background:${barC(a)};grid-column:${a.start}/span ${a.dur}" title="${esc(a.tekst)} · ${a.maat} · ${esc(a.eig)} · ${esc(mLabel(a.start))} – ${esc(mLabel(endOf(a)))}">${a.dur>1?(a.bes&&a.start===1?'◆ ':'')+esc(g.mode==='eig'?a.fase.split('|')[0]:a.eig):(a.bes&&a.start===1?'◆':'')}</div></div>`});
-    if(g.load){const L=g.load;s+=`<div class="gl lrow">Belasting (dagen per maand, max ${capOf(g.titel)})</div><div class="grow" style="grid-template-columns:repeat(${H},minmax(38px,1fr));--h:${H};background-image:none;min-height:34px">`+Array.from({length:H},(_,i)=>{const v=L[i+1]||0;return `<div class="load ${v>capOf(g.titel)+0.01?'hi':v>capOf(g.titel)*0.8?'mid':v===0?'z':''}" style="grid-row:1;grid-column:${i+1}">${v?nf1.format(v):'·'}</div>`}).join('')+'</div>'}});
+    if(g.load){const L=g.load;s+=`<div class="gl lrow">Belasting (dagen per maand, standaard max ${capOf(g.titel)})</div><div class="grow" style="grid-template-columns:repeat(${H},minmax(38px,1fr));--h:${H};background-image:none;min-height:34px">`+Array.from({length:H},(_,i)=>{const v=L[i+1]||0;return `<div class="load ${v>capOf(g.titel,i+1)+0.01?'hi':v>capOf(g.titel,i+1)*0.8?'mid':v===0?'z':''}" style="grid-row:1;grid-column:${i+1}" title="${ruled(g.titel,i+1)?'Beperkte beschikbaarheid: '+f1(capOf(g.titel,i+1))+' d':''}">${v?nf1.format(v):(ruled(g.titel,i+1)?'▾':'·')}</div>`}).join('')+'</div>'}});
   return s+'</div>'}
 const faseGroups=()=>D.fases.map(f=>({key:f.key,titel:f.naam,sub:f.per,mode:'fase',acties:D.acties.filter(a=>a.fase===f.key).sort((a,b)=>a.start-b.start)}));
 function vFase(){return `<div class="viewbar">${legend(false)}</div><div class="tw">`+gantt(faseGroups())+'</div>'}
@@ -590,12 +615,12 @@ const mLabel=m=>{if(D.start){const [y,mo]=D.start.split('-').map(Number);const d
 
 function extStats(){const L=loadOf(),per={};D.acties.forEach(a=>shares(a).forEach(([r,f])=>{if(isExt(r))per[r]=(per[r]||0)+D.dag[a.maat]*f}));const days=Object.values(per).reduce((s,v)=>s+v,0);return{per,days,cost:days*tarief()}}
 function vTot(){const L=loadOf(),es=eigList(),fr=(a,e)=>(shares(a).find(s=>s[0]===e)||[0,0])[1],f1=v=>String(Math.round(v*10)/10).replace('.',',');
-const rows=es.map(e=>{const A=D.acties.filter(a=>involves(a,e)),dg=A.reduce((s,a)=>s+D.dag[a.maat]*fr(a,e),0),ld=Object.values(L[e]||{}),pk=Math.max(0,...ld),cp=capOf(e),mo=ld.filter(v=>v>cp+0.01).length,ex=ld.reduce((s,v)=>s+Math.max(0,v-cp),0),st=Math.min(...A.map(a=>a.start)),en=Math.max(...A.map(endOf));return{e,cp,mo,ex,n:A.length,S:A.filter(a=>a.maat==='S').length,M:A.filter(a=>a.maat==='M').length,L:A.filter(a=>a.maat==='L').length,XL:A.filter(a=>a.maat==='XL').length,dg,fz:D.fases.map(f=>A.filter(a=>a.fase===f.key).reduce((s,a)=>s+D.dag[a.maat]*fr(a,e),0)),pk,st,en,gem:dg/Math.max(1,en-st+1)}}).sort((a,b)=>b.dg-a.dg);const T=rows.reduce((s,r)=>s+r.dg,0)||1,mx=Math.max(...rows.map(r=>r.dg))||1,X=extStats();
+const rows=es.map(e=>{const A=D.acties.filter(a=>involves(a,e)),dg=A.reduce((s,a)=>s+D.dag[a.maat]*fr(a,e),0),le=Object.entries(L[e]||{}),ld=le.map(x=>x[1]),pk=Math.max(0,...ld),cp=capOf(e),mo=le.filter(([m,v])=>v>capOf(e,+m)+0.01).length,ex=le.reduce((s,[m,v])=>s+Math.max(0,v-capOf(e,+m)),0),st=Math.min(...A.map(a=>a.start)),en=Math.max(...A.map(endOf));return{e,cp,mo,ex,n:A.length,S:A.filter(a=>a.maat==='S').length,M:A.filter(a=>a.maat==='M').length,L:A.filter(a=>a.maat==='L').length,XL:A.filter(a=>a.maat==='XL').length,dg,fz:D.fases.map(f=>A.filter(a=>a.fase===f.key).reduce((s,a)=>s+D.dag[a.maat]*fr(a,e),0)),pk,st,en,gem:dg/Math.max(1,en-st+1)}}).sort((a,b)=>b.dg-a.dg);const T=rows.reduce((s,r)=>s+r.dg,0)||1,mx=Math.max(...rows.map(r=>r.dg))||1,X=extStats();
 const tr=rows.map(r=>`<tr><td><b>${esc(r.e)}</b>${isExt(r.e)?' <span class="chip" title="Externe capaciteit: telt niet mee in de eigen capaciteitsbenutting">extern</span>':''}</td><td class="num">${r.n}</td><td class="num">${r.S}/${r.M}/${r.L}/${r.XL}</td><td class="num"><b>${f1(r.dg)}</b></td>${r.fz.map(v=>`<td class="num">${v?f1(v):'–'}</td>`).join('')}<td class="num">${f1(r.gem)}</td><td class="num${r.pk>r.cp+0.01?' neg':''}">${f1(r.pk)}</td><td><input type="number" min="1" max="60" step="0.5" value="${r.cp}" data-cape="${esc(r.e)}" style="width:64px" aria-label="Beschikbaar d/mnd ${esc(r.e)}"></td><td class="num${r.mo?' neg':''}">${r.mo?r.mo+' mnd · '+f1(r.ex)+' d':'–'}</td><td>${mLabel(r.st)} – ${mLabel(r.en)}</td><td style="min-width:110px"><div class="meter"><i style="width:${Math.round(r.dg/mx*100)}%"></i></div><span class="note">${Math.round(r.dg/T*100)}%</span></td></tr>`).join('');
 const tt=D.acties.length;return `<p class="note" style="margin:0 0 12px">Totale inspanning in dagen per eigenaar of uitvoerder, verdeeld over de fasen. Bij een actie met uitvoerders telt elke partij alleen zijn eigen aandeel. Gem. is dagen per maand over de actieve periode; piek is de drukste maand. Pas de beschikbaarheid aan in de kolom Beschikbaar; standaard is dat ${D.cap} dagen per maand (extern: ${capOf(extList()[0])}). Rood is boven die capaciteit.</p><div class="tw"><table class="tbl-n"><thead><tr><th>Eigenaar / uitvoerder</th><th>Acties</th><th>S/M/L/XL</th><th>Dagen totaal</th>${D.fases.map(f=>`<th>${esc(f.naam)}</th>`).join('')}<th>Gem. d/mnd</th><th>Piek d/mnd</th><th>Beschikbaar d/mnd</th><th>Boven capaciteit</th><th>Actief</th><th>Aandeel</th></tr></thead><tbody>${tr}</tbody><tfoot><tr><td><b>Totaal</b></td><td class="num"><b>${tt}</b></td><td class="num"><b>${['S','M','L','XL'].map(m=>D.acties.filter(a=>a.maat===m).length).join('/')}</b></td><td class="num"><b>${f1(T===1&&!rows.length?0:T)}</b></td>${D.fases.map((f,i)=>`<td class="num"><b>${f1(rows.reduce((s,r)=>s+r.fz[i],0))}</b></td>`).join('')}<td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot></table></div>`+(X.days?`<p class="note" style="margin-top:12px"><b>Inleen en extern:</b> ${f1(X.days)} dagen, bij ${eur(tarief())} per dag circa ${eur(X.cost)}. Dit is een planningsindicatie voor het budgetbesluit; het tarief is aan te passen in de planinstellingen.</p>`:'')}
 function vEig(){const L=loadOf(),es=eigList();return `<p class="note" style="margin:0 0 12px">Rood is boven de beschikbare dagen per maand van de eigenaar (standaard ${D.cap}, per eigenaar aan te passen in het tabblad Inspanning per eigenaar). Schuif acties in het tabblad Plan bewerken of laat het plan opnieuw inroosteren.</p><div class="viewbar">${legend(true)}</div><div class="tw">`+gantt(es.map(e=>({titel:e,mode:'eig',acties:D.acties.filter(a=>involves(a,e)).sort((a,b)=>a.start-b.start),load:L[e]||{}})))+'</div>'}
 function vPlan(){const opt=(v,list)=>list.map(x=>`<option value="${esc(x[0])}"${x[0]===v?' selected':''}>${esc(x[1])}</option>`).join('');
-  return `<div class="tw"><table class="tbl-e"><thead><tr><th>Fase</th><th>Actie</th><th>Eigenaar</th><th title="Wie voert een deel uit, bijv. IT 60%, Inleen 20%. De rest blijft bij de eigenaar.">Uitvoering</th><th>Maat</th><th>Start</th><th>Duur</th><th>Na actie</th><th>Besluit</th><th title="Blijft staan bij automatisch inroosteren">Vast</th><th></th></tr></thead><tbody>`+D.acties.map(a=>`<tr><td data-l="Fase"><select data-id="${a.id}" data-k="fase">${opt(a.fase,D.fases.map(f=>[f.key,f.naam]))}</select></td><td data-l="Actie"><input type="text" data-id="${a.id}" data-k="tekst" value="${esc(a.tekst)}" style="width:330px"></td><td data-l="Eigenaar"><input type="text" list="eigL" data-id="${a.id}" data-k="eig" value="${esc(a.eig)}" style="width:150px"></td><td data-l="Uitvoering (bijv. IT 60%, Inleen 20%)"><input type="text" list="eigL" data-id="${a.id}" data-k="uit" value="${esc(fmtUit(a))}" placeholder="bijv. IT 60%" style="width:150px"></td><td data-l="Maat" style="white-space:nowrap"><select data-id="${a.id}" data-k="maat" title="${esc(a.why||'')}">${MAAT.map(m=>`<option${m===a.maat?' selected':''}>${m}</option>`).join('')}</select>${a.maatBron==='schat'?` <span class="chip" title="${esc(a.why||'')}">geschat</span>`:''}</td><td data-l="Start (maand)"><input type="number" min="1" max="60" data-id="${a.id}" data-k="start" value="${a.start}" style="width:60px"></td><td data-l="Duur (maanden)"><input type="number" min="1" max="24" data-id="${a.id}" data-k="dur" value="${a.dur}" style="width:55px"></td><td data-l="Na actie"><select data-id="${a.id}" data-k="na" style="max-width:190px"><option value="">–</option>${opt(a.na,D.acties.filter(x=>x.id!==a.id).map(x=>[x.id,x.tekst.slice(0,40)]))}</select></td><td data-l="Besluit directie" style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="bes"${a.bes?' checked':''}></td><td data-l="Vast" style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="vast"${a.vast?' checked':''} aria-label="Vast bij inroosteren"></td><td data-l=""><button class="btn" data-del="${a.id}" aria-label="Verwijder">×</button></td></tr>`).join('')+`</tbody></table></div><datalist id="eigL">${[...new Set(D.acties.map(a=>a.eig).concat(eigList(),extList()))].map(e=>`<option value="${esc(e)}">`).join('')}</datalist><div class="row" style="margin-top:10px"><button class="btn" id="bAdd">+ Actie toevoegen</button></div>`}
+  return `<div class="tw"><table class="tbl-e"><thead><tr><th>Fase</th><th>Actie</th><th>Eigenaar</th><th title="Wie voert een deel uit, bijv. IT 60%, Inleen 20%. De rest blijft bij de eigenaar.">Uitvoering</th><th>Maat</th><th>Start</th><th>Duur</th><th>Na actie</th><th>Besluit</th><th title="Blijft staan bij automatisch inroosteren">Vast</th><th></th></tr></thead><tbody>`+D.acties.map(a=>`<tr><td data-l="Fase"><select data-id="${a.id}" data-k="fase">${opt(a.fase,D.fases.map(f=>[f.key,f.naam]))}</select></td><td data-l="Actie"><input type="text" data-id="${a.id}" data-k="tekst" value="${esc(a.tekst)}" style="width:330px"></td><td data-l="Eigenaar"><input type="text" list="eigL" data-id="${a.id}" data-k="eig" value="${esc(a.eig)}" style="width:150px"></td><td data-l="Uitvoering (bijv. IT 60%, Inleen 20%)"><input type="text" list="eigL" data-id="${a.id}" data-k="uit" value="${esc(fmtUit(a))}" placeholder="bijv. IT 60%" style="width:150px"></td><td data-l="Maat" style="white-space:nowrap"><select data-id="${a.id}" data-k="maat" title="${esc(a.why||'')}">${MAAT.map(m=>`<option${m===a.maat?' selected':''}>${m}</option>`).join('')}</select>${a.maatBron==='schat'?` <span class="chip" title="${esc(a.why||'')}">geschat</span>`:''}</td><td data-l="Start (maand)"><input type="number" min="1" max="60" data-id="${a.id}" data-k="start" value="${a.start}" style="width:60px"></td><td data-l="Duur (maanden)"><input type="number" min="1" max="24" data-id="${a.id}" data-k="dur" value="${a.dur}" style="width:55px"></td><td data-l="Na actie">${preds(a).map(id=>`<span class="chip" style="margin:0 4px 4px 0" title="${esc(byIdF(id).tekst)}">${esc(byIdF(id).tekst.slice(0,28))}<button data-pdel="${a.id}:${id}" aria-label="Voorganger verwijderen" style="border:0;background:none;cursor:pointer;color:inherit;padding:0 0 0 5px;font-size:13px">×</button></span>`).join('')}<select data-padd="${a.id}" style="max-width:190px" aria-label="Voorganger toevoegen"><option value="">${preds(a).length?'+ voorganger':'–'}</option>${(()=>{const ex=new Set(preds(a)),ds=descOf(a.id);return opt('',D.acties.filter(x=>x.id!==a.id&&!ex.has(x.id)&&!ds.has(x.id)).map(x=>[x.id,x.tekst.slice(0,40)]))})()}</select></td><td data-l="Besluit directie" style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="bes"${a.bes?' checked':''}></td><td data-l="Vast" style="text-align:center"><input type="checkbox" data-id="${a.id}" data-k="vast"${a.vast?' checked':''} aria-label="Vast bij inroosteren"></td><td data-l=""><button class="btn" data-del="${a.id}" aria-label="Verwijder">×</button></td></tr>`).join('')+`</tbody></table></div><datalist id="eigL">${[...new Set(D.acties.map(a=>a.eig).concat(eigList(),extList()))].map(e=>`<option value="${esc(e)}">`).join('')}</datalist><div class="row" style="margin-top:10px"><button class="btn" id="bAdd">+ Actie toevoegen</button></div>`}
 function vBes(){const B=D.acties.filter(a=>a.bes).sort((a,b)=>a.start-b.start);
   let s=`<div class="grid g2"><div><h3>Besluitmomenten voor de directie</h3><p class="note">Acties waarvoor een besluit of budget nodig is, op volgorde van start. Het besluit moet er liggen vóór de start.</p>`+(B.length?`<table><thead><tr><th>Uiterlijk</th><th>Actie</th><th>Eigenaar</th><th>Maat</th></tr></thead><tbody>`+B.map(a=>`<tr><td>${mLabel(Math.max(1,a.start-1))}</td><td>${esc(a.tekst)}</td><td>${esc(a.eig)}</td><td>${a.maat}</td></tr>`).join('')+'</tbody></table>':'<p class="note">Geen acties met een besluit gemarkeerd. Zet dit aan bij Plan bewerken.</p>')+`</div><div><h3>Mijlpalen: klaar voor de volgende fase als</h3><p class="note">Pas de criteria aan op de organisatie en vink af wat is bereikt.</p>`;
   D.fases.forEach(f=>{const M=D.mijl[f.key]||(D.mijl[f.key]=defMile[Math.min(faseIdx(f.key),2)].map(t=>({t,d:0}))),last=Math.max(0,...D.acties.filter(a=>a.fase===f.key).map(endOf));
@@ -603,16 +628,16 @@ function vBes(){const B=D.acties.filter(a=>a.bes).sort((a,b)=>a.start-b.start);
   return s+'</div></div>'}
 /* === ADVIES BIJ KNELPUNTEN EN RISICO'S VAN EIGENAARSCHAP === */
 function advies(){const L=loadOf(),out=[],xn=extList()[0],fr=(a,e)=>(shares(a).find(s=>s[0]===e)||[0,0])[1];
-  Object.entries(L).forEach(([e,o])=>{const cp=capOf(e),months=Object.keys(o).map(Number).filter(m=>o[m]>cp+0.01).sort((x,y)=>x-y);if(!months.length)return;
-    const excess=months.reduce((s,m)=>s+o[m]-cp,0),pk=Math.max(...months.map(m=>o[m]));
+  Object.entries(L).forEach(([e,o])=>{const cp=capOf(e),months=Object.keys(o).map(Number).filter(m=>o[m]>capOf(e,m)+0.01).sort((x,y)=>x-y);if(!months.length)return;
+    const excess=months.reduce((s,m)=>s+o[m]-capOf(e,m),0),pk=Math.max(...months.map(m=>o[m]));
     const acts=D.acties.map(a=>{const f=fr(a,e);if(!f)return null;const dur=Math.max(1,a.dur),d=D.dag[a.maat]*f/dur,inM=months.filter(m=>m>=a.start&&m<=endOf(a));return inM.length?{a,f,d,dur,inM,w:d*inM.length}:null}).filter(Boolean).sort((x,y)=>y.w-x.w).slice(0,2);
     const opts=[];
     acts.forEach(x=>{const a=x.a,days=D.dag[a.maat]*x.f;
-      for(let dd=x.dur+1;dd<=x.dur+12;dd++){const d2=days/dd;let ok=true;for(let m=a.start;m<a.start+dd;m++){const base=(o[m]||0)-((m>=a.start&&m<=endOf(a))?x.d:0);if(base+d2>cp+0.01){ok=false;break}}
+      for(let dd=x.dur+1;dd<=x.dur+12;dd++){const d2=days/dd;let ok=true;for(let m=a.start;m<a.start+dd;m++){const base=(o[m]||0)-((m>=a.start&&m<=endOf(a))?x.d:0);if(base+d2>capOf(e,m)+0.01){ok=false;break}}
         if(ok){opts.push({k:'Oprekken',txt:`Rek "${a.tekst}" op van ${x.dur} naar ${dd} maanden: ${f1(d2)} in plaats van ${f1(x.d)} dagen per maand voor ${e}`,apply:()=>{a.dur=dd;a.vast=true}});break}}
-      const maxEx=Math.max(...x.inM.map(m=>o[m]-cp)),need=100*maxEx*x.dur/D.dag[a.maat],pc=Math.max(5,Math.min(Math.round(x.f*100),Math.ceil(need/5)*5)),mv=D.dag[a.maat]*pc/100;
+      const maxEx=Math.max(...x.inM.map(m=>o[m]-capOf(e,m))),need=100*maxEx*x.dur/D.dag[a.maat],pc=Math.max(5,Math.min(Math.round(x.f*100),Math.ceil(need/5)*5)),mv=D.dag[a.maat]*pc/100;
       if(!isExt(e))opts.push({k:'Inleen',txt:`Zet ${pc}% van "${a.tekst}" (${f1(mv)} dagen, circa ${eur(mv*tarief())}) over op ${xn}`,apply:()=>moveShare(a,e,xn,pc)});
-      const per=mv/x.dur,cands=eigList().filter(r=>r!==e&&!isExt(r)&&!/niet toegewezen|directie|^mt$|bestuur/i.test(r)).map(r=>{let mf=Infinity;for(let m=a.start;m<=endOf(a);m++)mf=Math.min(mf,capOf(r)-((L[r]||{})[m]||0));return{r,mf}}).filter(c=>c.mf>=per-0.01).sort((p,q)=>q.mf-p.mf);
+      const per=mv/x.dur,cands=eigList().filter(r=>r!==e&&!isExt(r)&&!/niet toegewezen|directie|^mt$|bestuur/i.test(r)).map(r=>{let mf=Infinity;for(let m=a.start;m<=endOf(a);m++)mf=Math.min(mf,capOf(r,m)-((L[r]||{})[m]||0));return{r,mf}}).filter(c=>c.mf>=per-0.01).sort((p,q)=>q.mf-p.mf);
       if(cands[0])opts.push({k:'Herverdelen',txt:`Laat ${cands[0].r} ${pc}% van "${a.tekst}" uitvoeren: ${cands[0].r} heeft minstens ${f1(cands[0].mf)} dagen per maand ruimte, nodig is ${f1(per)}`,apply:()=>moveShare(a,e,cands[0].r,pc)})});
     out.push({e,months,excess,pk,cp,opts})});
   return out}
@@ -629,7 +654,7 @@ function vOpt(){const A=advies(),R=risicos(),X=extStats();
   s+=`<h3>Eigenaarschap</h3>`+(R.length?`<ul style="margin:6px 0 16px;padding-left:18px;display:grid;gap:6px">${R.map(x=>`<li><span class="chip ${x.t==='Geen eigenaar'?'bad':'warn'}">${esc(x.t)}</span> ${esc(x.txt)}</li>`).join('')}</ul>`:`<p class="note" style="margin-bottom:16px">Geen signalen: elke actie heeft een eigenaar en de inspanning is redelijk gespreid.</p>`);
   s+=`<h3>Knelpunten in capaciteit</h3>`;
   if(!A.length)s+=`<p class="note">Geen knelpunten: niemand zit boven de beschikbare dagen per maand.</p>`;
-  A.forEach((p,i)=>{s+=`<div class="card" style="margin-top:10px"><b>${esc(p.e)}</b> <span class="note">· ${p.months.length} ${p.months.length===1?'maand':'maanden'} boven ${f1(p.cp)} d/mnd (${esc(p.months.slice(0,6).map(mLabel).join(', '))}${p.months.length>6?' …':''}), piek ${f1(p.pk)}, in totaal ${f1(p.excess)} dagen te veel</span>${p.opts.length?`<ul style="margin:8px 0 0;padding:0;list-style:none">${p.opts.map((o,j)=>`<li class="opt"><span class="chip">${esc(o.k)}</span><span class="opt-t">${esc(o.txt)}</span><button class="btn sm" data-opt="${i}:${j}">Pas toe</button></li>`).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen automatische optie gevonden; kies een andere eigenaar of verklein de actie in Plan bewerken.</p>`}</div>`});
+  A.forEach((p,i)=>{s+=`<div class="card" style="margin-top:10px"><b>${esc(p.e)}</b> <span class="note">· ${p.months.length} ${p.months.length===1?'maand':'maanden'} boven de beschikbare dagen (basis ${f1(p.cp)} d/mnd) (${esc(p.months.slice(0,6).map(mLabel).join(', '))}${p.months.length>6?' …':''}), piek ${f1(p.pk)}, in totaal ${f1(p.excess)} dagen te veel</span>${p.opts.length?`<ul style="margin:8px 0 0;padding:0;list-style:none">${p.opts.map((o,j)=>`<li class="opt"><span class="chip">${esc(o.k)}</span><span class="opt-t">${esc(o.txt)}</span><button class="btn sm" data-opt="${i}:${j}">Pas toe</button></li>`).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen automatische optie gevonden; kies een andere eigenaar of verklein de actie in Plan bewerken.</p>`}</div>`});
   if(X.days)s+=`<p class="note" style="margin-top:14px"><b>Inleen en extern:</b> ${f1(X.days)} dagen, circa ${eur(X.cost)} bij ${eur(tarief())} per dag.</p>`;
   return s}
 /* === FUNCTIE: render, instellingen, navigatie === */
@@ -639,7 +664,7 @@ function render(){document.body.dataset.view=view;document.body.dataset.mode=mod
   $('#impSum').textContent=D.acties.length?`${D.acties.length} acties in ${D.fases.length} fasen ingelezen`:'Nog geen roadmap ingelezen';
   if(mode==='mgmt'){renderMg();return}
   if(!D.acties.length)return;
-  fillStart();$('#sCap').value=D.cap;$('#dS').value=D.dag.S;$('#dM').value=D.dag.M;$('#dL').value=D.dag.L;$('#dXL').value=D.dag.XL;$('#sBeh').checked=D.behoud!==false;$('#sOv').value=D.overlap||0;$('#sExt').value=extList().join(', ');$('#sTar').value=tarief();$('#sCapX').value=D.capExt>0?D.capExt:20;
+  fillStart();$('#sCap').value=D.cap;$('#dS').value=D.dag.S;$('#dM').value=D.dag.M;$('#dL').value=D.dag.L;$('#dXL').value=D.dag.XL;$('#sBeh').checked=D.behoud!==false;$('#sOv').value=D.overlap||0;$('#sVolg').value=D.volgorde==='klassiek'?'klassiek':'slim';$('#bepList').innerHTML=bepHtml();bindBep();$('#sExt').value=extList().join(', ');$('#sTar').value=tarief();$('#sCapX').value=D.capExt>0?D.capExt:20;
   $('#setSum').textContent=`Start ${startTxt()} · ${D.cap} d/mnd per eigenaar · S ${D.dag.S} · M ${D.dag.M} · L ${D.dag.L} · XL ${D.dag.XL} dagen`;
   tiles();document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.v===view;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
   $('#view').innerHTML={fase:vFase,eig:vEig,tot:vTot,plan:vPlan,opt:vOpt,bes:vBes}[view]();bind()}
@@ -650,8 +675,10 @@ function bind(){
   document.querySelectorAll('[data-kleur]').forEach(el=>el.onclick=()=>{D.kleur=el.dataset.kleur;save();render()});
   document.querySelectorAll('[data-cape]').forEach(el=>el.onchange=()=>{D.capE=D.capE||{};const v=parseFloat(String(el.value).replace(',','.'));if(v>0)D.capE[el.dataset.cape]=v;else delete D.capE[el.dataset.cape];save();render()});
   document.querySelectorAll('[data-k]').forEach(el=>el.onchange=()=>{const a=D.acties.find(x=>x.id===el.dataset.id),k=el.dataset.k;a[k]=k==='uit'?parseUit(el.value,a.eig):(el.type==='checkbox'?el.checked:(['start','dur'].includes(k)?Math.max(1,+el.value||1):el.value));let ign=[];if(k==='uit')ign=uitIgn.slice();if(k==='eig'){const b=fmtUit(a);a.uit=parseUit(b,a.eig);ign=uitIgn.slice()}if(k==='maat'){a.maatBron='hand';if(!a.vast)a.dur=D.mnd[a.maat]}if(k==='start'||k==='dur')a.vast=true;save();render();if(ign.length){const t='Genegeerd bij Uitvoering: '+ign.join('; ')+'.';$('#msg').textContent=t;const inp=document.querySelector(`[data-id="${a.id}"][data-k="uit"]`);if(inp){const s=document.createElement('div');s.className='note';s.setAttribute('role','status');s.style.cssText='color:var(--be-warn);max-width:240px;white-space:normal';s.textContent=t;inp.parentNode.appendChild(s)}}else if(k==='uit')$('#msg').textContent=a.uit.length?'Uitvoering vastgelegd; de eigenaar houdt '+(100-a.uit.reduce((s,x)=>s+x.p,0))+'%.':'';});
-  document.querySelectorAll('[data-del]').forEach(el=>el.onclick=()=>{D.acties=D.acties.filter(x=>x.id!==el.dataset.del);D.acties.forEach(x=>{if(x.na===el.dataset.del)x.na=''});save();render()});
-  const add=$('#bAdd');if(add)add.onclick=()=>{const n=Math.max(0,...D.acties.map(a=>+a.id.slice(1)))+1,f=D.fases[0];D.acties.push({id:'a'+n,fase:f.key,tekst:'Nieuwe actie',eig:'Niet toegewezen',laag:'',prio:'',maat:'M',maatBron:'hand',start:f.w[0],dur:2,na:'',bes:false,vast:true});save();render()};
+  document.querySelectorAll('[data-del]').forEach(el=>el.onclick=()=>{D.acties=D.acties.filter(x=>x.id!==el.dataset.del);D.acties.forEach(x=>{x.nas=(x.nas||[]).filter(i=>i!==el.dataset.del)});save();render()});
+  document.querySelectorAll('[data-padd]').forEach(el=>el.onchange=()=>{if(!el.value)return;const a=byIdF(el.dataset.padd);a.nas=(a.nas||[]).concat(el.value);save();render();$('#msg').textContent='Voorganger toegevoegd; klik op Plan automatisch inroosteren om de volgorde door te voeren.'});
+  document.querySelectorAll('[data-pdel]').forEach(el=>el.onclick=()=>{const [i,j]=el.dataset.pdel.split(':'),a=byIdF(i);a.nas=(a.nas||[]).filter(x=>x!==j);save();render()});
+  const add=$('#bAdd');if(add)add.onclick=()=>{const n=Math.max(0,...D.acties.map(a=>+a.id.slice(1)))+1,f=D.fases[0];D.acties.push({id:'a'+n,fase:f.key,tekst:'Nieuwe actie',eig:'Niet toegewezen',laag:'',prio:'',maat:'M',maatBron:'hand',start:f.w[0],dur:2,nas:[],bes:false,vast:true});save();render()};
   document.querySelectorAll('[data-opt]').forEach(el=>el.onclick=()=>{const [i,j]=el.dataset.opt.split(':').map(Number),o=((advies()[i]||{}).opts||[])[j];if(o){o.apply();save();render()}});
   document.querySelectorAll('[data-mf]').forEach(el=>el.onchange=()=>{D.mijl[el.dataset.mf][+el.dataset.mi].d=el.checked?1:0;save()});
   document.querySelectorAll('[data-mt]').forEach(el=>el.onchange=()=>{D.mijl[el.dataset.mt][+el.dataset.mi].t=el.value;save()});
@@ -666,6 +693,12 @@ $('#sCap').onchange=e=>{D.cap=Math.max(1,+e.target.value||8);save();render()};
 $('#bPlan').onclick=()=>{const v=replan();save();render();$('#msg').textContent='Plan opnieuw ingeroosterd'+(v?`; ${v} vaste ${v===1?'actie':'acties'} behouden.`:'.')};
 $('#sBeh').onchange=e=>{D.behoud=e.target.checked;save()};
 $('#sExt').onchange=e=>{D.ext=e.target.value.split(',').map(x=>x.trim()).filter(Boolean);save();render()};$('#sTar').onchange=e=>{D.tarief=Math.max(0,+e.target.value||0);save();render()};$('#sCapX').onchange=e=>{D.capExt=Math.max(1,+e.target.value||20);save();render()};
+$('#sVolg').onchange=e=>{D.volgorde=e.target.value;save();$('#msg').textContent='Volgorde aangepast; klik op Plan automatisch inroosteren om hem door te voeren.'};
+function bepHtml(){const N=Math.max(planHorizon(),24),mo=(v)=>Array.from({length:N},(_,i)=>`<option value="${i+1}"${i+1===v?' selected':''}>${esc(mYr(i+1))}</option>`).join(''),own=[...new Set(eigList())];
+  return (D.beperk||[]).map((r,i)=>`<div class="bep"><select data-bk="${i}:e" aria-label="Eigenaar"><option value="">Alle eigenaren</option>${own.map(e=>`<option value="${esc(e)}"${e===r.e?' selected':''}>${esc(e)}</option>`).join('')}</select><label>van <select data-bk="${i}:van">${mo(r.van)}</select></label><label>t/m <select data-bk="${i}:tot">${mo(r.tot)}</select></label><label><input type="number" min="0" max="30" step="0.5" value="${r.d}" data-bk="${i}:d" style="width:64px" aria-label="Dagen per maand"> d/mnd</label><input type="text" value="${esc(r.r||'')}" placeholder="Reden, bijv. zomervakantie" data-bk="${i}:r" aria-label="Reden"><button class="btn" data-bdel="${i}" aria-label="Verwijder beperking">×</button></div>`).join('')}
+function bindBep(){document.querySelectorAll('[data-bk]').forEach(el=>el.onchange=()=>{const [i,k]=el.dataset.bk.split(':'),r=D.beperk[+i];r[k]=['van','tot'].includes(k)?+el.value:k==='d'?Math.max(0,+String(el.value).replace(',','.')||0):el.value;if(r.tot<r.van){if(k==='van')r.tot=r.van;else r.van=r.tot}save();render();$('#msg').textContent='Beschikbaarheid aangepast; knelpunten en belasting zijn bijgewerkt. Klik op Plan automatisch inroosteren om acties te verschuiven.'});
+  document.querySelectorAll('[data-bdel]').forEach(el=>el.onclick=()=>{D.beperk.splice(+el.dataset.bdel,1);save();render()})}
+$('#bBepAdd').onclick=()=>{D.beperk=D.beperk||[];D.beperk.push({e:'',van:1,tot:1,d:4,r:''});save();render()};
 $('#sOv').onchange=e=>{D.overlap=Math.max(0,Math.min(12,Math.round(+e.target.value||0)));save();render()};
 $('#bSchat').onclick=()=>{const r=schatAll(),v=replan();save();render();$('#msg').textContent=`${r.n} ${r.n===1?'actie':'acties'} ingeschat${r.h?`, ${r.h} handmatig gekozen behouden`:''}; plan opnieuw ingeroosterd${v?`, ${v} vast`:''}.`};
 $('#bDemo').onclick=()=>{demo();render();setImp(false)};
@@ -677,7 +710,7 @@ function doImport(txt){const m=importRows(parseTable(txt));$('#impMsg').textCont
 $('#bImp').onclick=()=>doImport($('#tPaste').value);
 $('#fFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>doImport(String(r.result));r.readAsText(f)};
 /* export */
-function rowsPlan(){const dep=id=>(D.acties.find(x=>x.id===id)||{}).tekst||'';return [['Fase','Periode','Actie','Eigenaar','Uitvoering','Laag','Maat','Dagen','Start','Duur (mnd)','Einde','Na actie','Besluit directie']].concat(D.acties.slice().sort((a,b)=>faseIdx(a.fase)-faseIdx(b.fase)||a.start-b.start).map(a=>{const f=D.fases[faseIdx(a.fase)];return [f.naam,f.per,a.tekst,a.eig,fmtUit(a),a.laag,a.maat,D.dag[a.maat],mLabel(a.start),a.dur,mLabel(endOf(a)),dep(a.na),a.bes?'ja':'']}))}
+function rowsPlan(){const dep=id=>(D.acties.find(x=>x.id===id)||{}).tekst||'';return [['Fase','Periode','Actie','Eigenaar','Uitvoering','Laag','Maat','Dagen','Start','Duur (mnd)','Einde','Na actie','Besluit directie']].concat(D.acties.slice().sort((a,b)=>faseIdx(a.fase)-faseIdx(b.fase)||a.start-b.start).map(a=>{const f=D.fases[faseIdx(a.fase)];return [f.naam,f.per,a.tekst,a.eig,fmtUit(a),a.laag,a.maat,D.dag[a.maat],mLabel(a.start),a.dur,mLabel(endOf(a)),preds(a).map(dep).join(' | '),a.bes?'ja':'']}))}
 const csv=rows=>'﻿'+rows.map(r=>r.map(v=>{v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')).join('\r\n');
 let DL=null;try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}catch(e){}
 $('#bCsv').onclick=async()=>{const t=csv(rowsPlan()),n='implementatieplan.csv',m=$('#msg');
@@ -696,14 +729,14 @@ const mYr=m=>{if(!D.start)return mLabel(m);const [y,mo]=D.start.split('-').map(N
 const mSpan=(s,e)=>s===e?mYr(s):mYr(s)+' – '+mYr(e);
 function mgModel(){
   const k=kpiData(),L=k.L,es=eigList().filter(e=>!isExt(e)),H=Math.max(1,k.last),byId=Object.fromEntries(D.acties.map(a=>[a.id,a]));
-  const capSum=es.reduce((s,e)=>s+capOf(e),0),avail=capSum*H,ownTot=es.reduce((s,e)=>s+Object.values(L[e]||{}).reduce((x,y)=>x+y,0),0);
-  const over=[];Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>capOf(e)+0.01)over.push({e,m:+m,v,cap:capOf(e)})}));
-  const conf=D.acties.filter(a=>a.na&&byId[a.na]&&a.start<=endOf(byId[a.na])).map(a=>({a,dep:byId[a.na]}));
+  const capSum=es.reduce((s,e)=>s+capOf(e),0),avail=es.reduce((s,e)=>{let t=0;for(let m=1;m<=H;m++)t+=capOf(e,m);return s+t},0),ownTot=es.reduce((s,e)=>s+Object.values(L[e]||{}).reduce((x,y)=>x+y,0),0);
+  const over=[];Object.entries(L).forEach(([e,o])=>Object.entries(o).forEach(([m,v])=>{if(v>capOf(e,+m)+0.01)over.push({e,m:+m,v,cap:capOf(e,+m)})}));
+  const conf=D.acties.flatMap(a=>badDeps(a).map(dep=>({a,dep})));
   const outside=D.acties.filter(a=>{const f=D.fases[faseIdx(a.fase)];return a.start<f.w[0]||endOf(a)>f.w[1]});
   const bes=D.acties.filter(a=>a.bes).sort((a,b)=>a.start-b.start);
   const rank=p=>/hoog|1/i.test(p)?0:/midden|2/i.test(p)?1:/laag|3/i.test(p)?2:1,mw={XL:0,L:1,M:2,S:3};
   const fases=D.fases.map((f,i)=>{const A=D.acties.filter(a=>a.fase===f.key),ms=D.mijl[f.key]||defMile[Math.min(i,2)].map(t=>({t,d:0}));
-    const ov=new Set();A.forEach(a=>{shares(a).forEach(([r])=>{for(let m=a.start;m<=endOf(a);m++)if(((L[r]||{})[m]||0)>capOf(r)+0.01)ov.add(r+'|'+m)})});
+    const ov=new Set();A.forEach(a=>{shares(a).forEach(([r])=>{for(let m=a.start;m<=endOf(a);m++)if(((L[r]||{})[m]||0)>capOf(r,m)+0.01)ov.add(r+'|'+m)})});
     const cf=conf.filter(c=>c.a.fase===f.key).length,ou=outside.filter(a=>a.fase===f.key).length;
     return{f,i,A,dagen:A.reduce((s,a)=>s+D.dag[a.maat],0),s:A.length?Math.min(...A.map(a=>a.start)):0,e:A.length?Math.max(...A.map(endOf)):0,
       key:A.slice().sort((a,b)=>(b.bes?1:0)-(a.bes?1:0)||rank(a.prio)-rank(b.prio)||mw[a.maat]-mw[b.maat]||a.start-b.start).slice(0,3),
@@ -723,7 +756,7 @@ function mgKpis(M){const{k}=M,ut=Math.round(M.util*100);
    t('Directiebesluiten',M.bes.length,M.bes.length?`acties waarvoor een besluit nodig is`:'geen besluit gemarkeerd',M.bes.length?'warn':'')+`</div>`}
 
 function mgBeeld(M){const{k}=M,pl=(n,s,m)=>n===1?s:m;
-  const feit=`Het plan bevat ${D.acties.length} acties in ${D.fases.length} fasen, loopt ${k.last} maanden en vraagt ${nf0.format(k.tot)} dagen inspanning${M.ext.days?`, waarvan ${nf0.format(M.ext.days)} dagen inleen (circa ${eur(M.ext.cost)})`:''}.`;
+  const feit=`Het plan bevat ${D.acties.length} acties in ${D.fases.length} fasen, loopt ${k.last} maanden en vraagt ${nf0.format(k.tot)} dagen inspanning${M.ext.days?`, waarvan ${nf0.format(M.ext.days)} dagen inleen (circa ${eur(M.ext.cost)})`:''}.${(D.beperk||[]).length?` In de capaciteit is rekening gehouden met ${D.beperk.length} ${D.beperk.length===1?'periode':'periodes'} met beperkte beschikbaarheid${D.beperk.some(r=>r.r)?' ('+esc(D.beperk.filter(r=>r.r).map(r=>r.r).slice(0,3).join(', '))+')':''}.`:''}`;
   const rs=[];if(M.over.length)rs.push(`in ${new Set(M.over.map(o=>o.m)).size} ${pl(new Set(M.over.map(o=>o.m)).size,'maand','maanden')} staat een eigenaar boven de beschikbare capaciteit (piek ${f1(k.peak)} d/mnd, ${esc(k.pe)})`);
   if(M.conf.length)rs.push(`${M.conf.length} ${pl(M.conf.length,'actie start','acties starten')} voordat de voorgaande actie klaar is`);
   if(M.outside.length)rs.push(`${M.outside.length} ${pl(M.outside.length,'actie ligt','acties liggen')} buiten de periode van de eigen fase`);
@@ -741,13 +774,13 @@ function mgFases(M){
     <h4>Mijlpalen</h4><ul>${x.ms.map(t=>`<li class="ms">${esc(t)}</li>`).join('')}</ul>
     <div class="kn ${kn?(x.ov||x.cf?'bad':'warn'):'ok'}">${kn?txt:'Geen knelpunten'}</div><div class="mf-hint">${mgFase===x.f.key?'Klik om de acties te verbergen':'Klik voor de onderliggende acties'}</div></button>`}).join('');
   let det='';const x=M.fases.find(y=>y.f.key===mgFase);
-  if(x)det=`<div class="m-detail"><h3>Acties in ${esc(x.f.naam)}</h3><table class="m-tb"><thead><tr><th>Actie</th><th>Eigenaar</th><th>Periode</th><th>Inspanning</th><th></th></tr></thead><tbody>${x.A.slice().sort((a,b)=>a.start-b.start).map(a=>{const dep=M.byId[a.na],bad=dep&&a.start<=endOf(dep);return `<tr><td>${esc(a.tekst)}</td><td>${esc(a.eig)}</td><td>${esc(mSpan(a.start,endOf(a)))}</td><td>${a.maat} · ${D.dag[a.maat]} d</td><td>${a.bes?'<span class="chip dec">◆ besluit</span> ':''}${bad?'<span class="chip bad">afhankelijkheid niet gehaald</span>':''}</td></tr>`}).join('')}</tbody></table></div>`;
+  if(x)det=`<div class="m-detail"><h3>Acties in ${esc(x.f.naam)}</h3><table class="m-tb"><thead><tr><th>Actie</th><th>Eigenaar</th><th>Periode</th><th>Inspanning</th><th></th></tr></thead><tbody>${x.A.slice().sort((a,b)=>a.start-b.start).map(a=>{const bad=badDeps(a).length>0;return `<tr><td>${esc(a.tekst)}</td><td>${esc(a.eig)}</td><td>${esc(mSpan(a.start,endOf(a)))}</td><td>${a.maat} · ${D.dag[a.maat]} d</td><td>${a.bes?'<span class="chip dec">◆ besluit</span> ':''}${bad?'<span class="chip bad">afhankelijkheid niet gehaald</span>':''}</td></tr>`}).join('')}</tbody></table></div>`;
   return `<div class="m-fases">${cards}</div>${det}`}
 
 function mgChart(M){
   const es=mgEig&&M.es.includes(mgEig)?[mgEig]:M.es,H=M.H,W=1000,Ht=290,l=46,r=10,t=16,b=34,pw=W-l-r,ph=Ht-t-b;
-  const cap=es.reduce((s,e)=>s+capOf(e),0);
-  const pl=[],ov=[];for(let m=1;m<=H;m++){let p=0,o=0;es.forEach(e=>{const v=(M.L[e]||{})[m]||0;p+=v;o+=Math.max(0,v-capOf(e))});pl.push(p);ov.push(o)}
+  const capM=[];for(let m=1;m<=H;m++)capM.push(es.reduce((s,e)=>s+capOf(e,m),0));const cap=Math.max(0,...capM),capMin=Math.min(...capM);
+  const pl=[],ov=[];for(let m=1;m<=H;m++){let p=0,o=0;es.forEach(e=>{const v=(M.L[e]||{})[m]||0;p+=v;o+=Math.max(0,v-capOf(e,m))});pl.push(p);ov.push(o)}
   const ymax=Math.max(cap,...pl)*1.12||1,step=ymax<=12?2:ymax<=30?5:10,top=Math.ceil(ymax/step)*step,Y=v=>t+ph-(v/top)*ph,bw=pw/H;
   let s=`<svg class="m-svg" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Geplande inspanning en beschikbare capaciteit per maand">`;
   for(let v=0;v<=top;v+=step)s+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v?'#EDF1F5':'#DDE3EA'}"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end" font-size="11">${v}</text>`;
@@ -756,12 +789,13 @@ function mgChart(M){
     if(o>0)s+=`<rect x="${x}" y="${Y(p)}" width="${w}" height="${Y(w0)-Y(p)}" fill="#B42318" rx="1.5"><title>${esc(mLabel(i+1))}: ${f1(o)} d boven capaciteit</title></rect>`;
     if(p>0&&H<=24)s+=`<text x="${x+w/2}" y="${Y(p)-4}" text-anchor="middle" font-size="10.5" style="fill:${o>0?'#B42318':'#4A5B6E'}">${f1(p)}</text>`;
     if(H<=24||i%2===0)s+=`<text x="${x+w/2}" y="${Ht-14}" text-anchor="middle" font-size="10.5">${esc(mLabel(i+1))}</text>`}
-  s+=`<line x1="${l}" x2="${W-r}" y1="${Y(cap)}" y2="${Y(cap)}" stroke="#4A5B6E" stroke-width="1.6" stroke-dasharray="6 4"/><text x="${W-r}" y="${Y(cap)-6}" text-anchor="end" font-size="11" font-weight="600">Beschikbaar ${f1(cap)} d/mnd</text>`;
+  {let d='',px=l;for(let m=1;m<=H;m++){const x0=l+(m-1)*bw,x1=l+m*bw,y=Y(capM[m-1]);d+=(m===1?`M${x0},${y}`:`L${x0},${y}`)+`L${x1},${y}`}
+   s+=`<path d="${d}" fill="none" stroke="#4A5B6E" stroke-width="1.6" stroke-dasharray="6 4"/><text x="${W-r}" y="${Y(capM[H-1])-6}" text-anchor="end" font-size="11" font-weight="600">Beschikbaar ${cap===capMin?f1(cap)+' d/mnd':'tot '+f1(cap)+' d/mnd'}</text>`}
   s+=`<text x="${l}" y="10" font-size="10.5">dagen per maand</text></svg>`;
   const nOv=ov.filter(v=>v>0.01).length,pk=Math.max(0,...pl),pm=pl.indexOf(pk)+1;
   const sel=`<label>Eigenaar <select id="mgEig"><option value="">Alle eigenaren</option>${M.es.map(e=>`<option value="${esc(e)}"${e===mgEig?' selected':''}>${esc(e)}</option>`).join('')}</select></label>`;
   return `<div class="m-cap"><div class="m-cap-bar">${sel}<div class="m-leg"><span><i style="background:#193657"></i>Gepland</span><span><i style="background:#B42318"></i>Boven capaciteit</span><span><i class="ln"></i>Beschikbaar</span></div></div>${s}
-   <p class="note">${mgEig?esc(mgEig)+': ':''}drukste maand ${esc(mLabel(pm))} met ${f1(pk)} dagen tegenover ${f1(cap)} beschikbaar. ${nOv?`In ${nOv} ${nOv===1?'maand':'maanden'} wordt de beschikbare capaciteit overschreden.`:'In geen enkele maand wordt de beschikbare capaciteit overschreden.'}</p></div>`}
+   <p class="note">${mgEig?esc(mgEig)+': ':''}drukste maand ${esc(mLabel(pm))} met ${f1(pk)} dagen tegenover ${f1(capM[pm-1])} beschikbaar in die maand. ${nOv?`In ${nOv} ${nOv===1?'maand':'maanden'} wordt de beschikbare capaciteit overschreden.`:'In geen enkele maand wordt de beschikbare capaciteit overschreden.'}</p></div>`}
 
 function mgBesluiten(M){const R=[];
   M.bes.forEach(a=>R.push({o:0,c:'dec',t:'Directiebesluit',a:a.tekst,e:a.eig,p:mSpan(a.start,endOf(a)),r:`Besluit of budget nodig vóór de start; uiterlijk ${mLong(Math.max(1,a.start-1))}.`,s:a.start}));
