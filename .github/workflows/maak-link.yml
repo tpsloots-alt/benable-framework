@@ -18,6 +18,7 @@ on:
         options:
           - /inwarmte/
           - /projectorganisaties/
+          - /warmtebedrijf/
       domein:
         description: 'Domein'
         required: true
