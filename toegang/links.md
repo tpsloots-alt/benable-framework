@@ -11,3 +11,4 @@ Wordt automatisch bijgewerkt door de knoppen onder *Actions*. De links zelf staa
 | 12-11-2026 | Tom | /inwarmte/ | 26-11-2026 | f403e811 | ingetrokken 12-11-2026 |
 | 12-11-2026 | Emile Eleveld | /inwarmte/ | 16-11-2026 | f5302f67 | actief |
 | 12-11-2026 | Peter Ballast | /projectorganisaties/ | 16-11-2026 | bbbbb4f1 | actief |
+| 13-11-2026 | Jan Willem Zwang | /inwarmte/ | 17-11-2026 | cd746dfa | actief |
