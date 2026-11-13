@@ -724,7 +724,7 @@ const layers=[
  {n:2,name:'Business drivers',q:'Waarom?',owner:'Business control met bedrijfsleiding en projectleiding',tab:'uren',rows:[['Capaciteit','FTE, bezettingsgraad, verzuim'],['Tarief','Gerealiseerd uurtarief, tariefrealisatie'],['Projectuitvoering','Prognose bij gereedkomen, nog te maken kosten, margeverloop, budgetuitputting t.o.v. gereed'],['Meer- en minderwerk','Vastlegging en facturatie'],['Inkoop','Materiaal, onderaanneming, inleen'],['Orderportefeuille','Orderinstroom, werkvoorraad, scoringskans'],['Cash','Termijnschema, onderhanden werk, DSO']]},
  {n:3,name:'KPI\'s en prestaties',q:'Presteren we?',owner:'Business control (KPI-set), lijn (prestatie)',tab:'kpis',rows:[['Uren en capaciteit','Bezettingsgraad, uurtarief, inleenratio'],['Projectresultaat','DCM, TCM, margeverloop, overschrijdingen'],['Onderhanden werk','Nog te factureren, ouderdom'],['Commercie','Werkvoorraad, scoringskans'],['Financieel','EBITDA, kasstroom, DSO']]},
  {n:4,name:'Sturing',q:'Wat gaan we doen?',owner:'Directie en bedrijfsleiding',tab:'sturing',rows:[['Wekelijks','Capaciteitsoverleg: inzet personeel en inleen'],['Maandelijks','Projectreview per projectleider; business review MT'],['Per aanvraag','Besluit wel of niet inschrijven, margenorm'],['Per kwartaal','Portefeuillereview: segmenten en opdrachtgevers']]}];
-let curLayer=1;
+let curLayer=3;
 function renderLayers(){
  $('#layers').innerHTML=[3,2,1,0].map(i=>{const l=layers[i];return `<button class="layer${i===curLayer?' on':''}" data-i="${i}"><span class="no">L${l.n}</span><span><b>${l.name}</b><p>“${l.q}”</p></span><span class="pill p-mut">${l.owner.split(/[,(]/)[0].trim()}</span></button>`}).join('');
  const l=layers[curLayer];

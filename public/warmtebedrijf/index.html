@@ -1162,7 +1162,7 @@ const layers=[
   rows:[['Commercie','Tariefvoorstellen, productaanbod, acquisitie'],['Inkoop en bron','Inkoopstrategie, contractvernieuwing, piekvoorziening, verduurzaming'],['Operations','Procesverbetering, datakwaliteit, achterstanden'],['Financieel','Kostenbeheersing, werkkapitaal, prioritering investeringen']],
   out:'Besluiten, acties en een geactualiseerde Best Estimate.'}
 ];
-let curLayer=0;
+let curLayer=3;
 function renderLayers(){
   const order=[3,2,1,0];
   $('#layers').innerHTML=order.map(i=>{const l=layers[i];return `<button class="layer${i===curLayer?' on':''}" data-i="${i}"><span class="no">L${l.n}</span><span><b>${l.name}</b><p>“${l.q}”</p></span><span class="pill p-mut">${l.owner.split(/[,(]/)[0].trim()}</span></button>`}).join('')+
