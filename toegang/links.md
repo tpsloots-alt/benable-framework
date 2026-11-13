@@ -13,3 +13,4 @@ Wordt automatisch bijgewerkt door de knoppen onder *Actions*. De links zelf staa
 | 12-11-2026 | Peter Ballast | /projectorganisaties/ | 16-11-2026 | bbbbb4f1 | actief |
 | 13-11-2026 | Jan Willem Zwang | /inwarmte/ | 17-11-2026 | cd746dfa | actief |
 | 13-11-2026 | Jelle de Haan | /warmtebedrijf/ | 18-11-2026 | f9828acb | actief |
+| 13-11-2026 | Emile Eleveld | /inwarmte/ | 18-11-2026 | 6860c14e | actief |
