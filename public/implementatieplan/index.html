@@ -197,6 +197,11 @@ td.neg,.neg{color:var(--be-bad);font-weight:700}
 .load.mid{background:var(--be-warn-50);color:var(--be-warn)}.load.hi{background:var(--be-bad-50);color:var(--be-bad)}.load.z{background:transparent;color:var(--be-ink-3)}
 .gl.lrow{background:var(--be-bg);min-height:34px;font-weight:600;color:var(--be-ink-2)}
 
+/* 3.7b opties bij knelpunten */
+.opt{display:grid;grid-template-columns:92px 1fr auto;gap:var(--sp-2) var(--sp-3);align-items:start;padding:10px 0;border-top:1px solid var(--be-line-soft)}
+.opt:first-child{border-top:0}
+.opt .chip{justify-self:start;margin-top:2px}.opt-t{min-width:0;line-height:1.45}
+@media (max-width:700px){.opt{grid-template-columns:1fr;gap:6px}.opt .btn{justify-self:start}}
 /* 3.8 managementmodus (leest dezelfde gegevens als Plan bewerken; geen eigen berekeningen) */
 .modebar{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
 .modeseg{display:inline-flex;border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-surface);padding:2px}
@@ -614,7 +619,7 @@ function vOpt(){const A=advies(),R=risicos(),X=extStats();
   s+=`<h3>Eigenaarschap</h3>`+(R.length?`<ul style="margin:6px 0 16px;padding-left:18px;display:grid;gap:6px">${R.map(x=>`<li><span class="chip ${x.t==='Geen eigenaar'?'bad':'warn'}">${esc(x.t)}</span> ${esc(x.txt)}</li>`).join('')}</ul>`:`<p class="note" style="margin-bottom:16px">Geen signalen: elke actie heeft een eigenaar en de inspanning is redelijk gespreid.</p>`);
   s+=`<h3>Knelpunten in capaciteit</h3>`;
   if(!A.length)s+=`<p class="note">Geen knelpunten: niemand zit boven de beschikbare dagen per maand.</p>`;
-  A.forEach((p,i)=>{s+=`<div class="card" style="margin-top:10px"><b>${esc(p.e)}</b> <span class="note">· ${p.months.length} ${p.months.length===1?'maand':'maanden'} boven ${f1(p.cp)} d/mnd (${esc(p.months.slice(0,6).map(mLabel).join(', '))}${p.months.length>6?' …':''}), piek ${f1(p.pk)}, in totaal ${f1(p.excess)} dagen te veel</span>${p.opts.length?`<ul style="margin:8px 0 0;padding:0;list-style:none;display:grid;gap:8px">${p.opts.map((o,j)=>`<li style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap"><span class="chip">${esc(o.k)}</span><span style="flex:1;min-width:220px">${esc(o.txt)}</span><button class="btn sm" data-opt="${i}:${j}">Pas toe</button></li>`).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen automatische optie gevonden; kies een andere eigenaar of verklein de actie in Plan bewerken.</p>`}</div>`});
+  A.forEach((p,i)=>{s+=`<div class="card" style="margin-top:10px"><b>${esc(p.e)}</b> <span class="note">· ${p.months.length} ${p.months.length===1?'maand':'maanden'} boven ${f1(p.cp)} d/mnd (${esc(p.months.slice(0,6).map(mLabel).join(', '))}${p.months.length>6?' …':''}), piek ${f1(p.pk)}, in totaal ${f1(p.excess)} dagen te veel</span>${p.opts.length?`<ul style="margin:8px 0 0;padding:0;list-style:none">${p.opts.map((o,j)=>`<li class="opt"><span class="chip">${esc(o.k)}</span><span class="opt-t">${esc(o.txt)}</span><button class="btn sm" data-opt="${i}:${j}">Pas toe</button></li>`).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen automatische optie gevonden; kies een andere eigenaar of verklein de actie in Plan bewerken.</p>`}</div>`});
   if(X.days)s+=`<p class="note" style="margin-top:14px"><b>Inleen en extern:</b> ${f1(X.days)} dagen, circa ${eur(X.cost)} bij ${eur(tarief())} per dag.</p>`;
   return s}
 /* === FUNCTIE: render, instellingen, navigatie === */
