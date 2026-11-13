@@ -37,4 +37,4 @@ window.RM_CFG={naam:'inwarmte',key:()=>'inw_rm_v1',fases:RM_FASES,lagen:RM_LAGEN
   'C-B1':'deels','C-B2':'niet','C-B3':'niet','C-R1':'ok','C-R2':'deels','C-R3':'deels','C-R4':'ok','C-R5':'ok','C-R6':'niet','C-R7':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
   'C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'niet','C-D1':'niet','C-D2':'deels',
   'I-M1':'ok','I-M2':'deels','I-P1':'deels','I-P2':'niet','I-P3':'deels','I-P4':'niet','I-R1':'ok','I-R2':'deels','I-R3':'niet','I-R4':'niet','I-R5':'niet',
-  'I-O1':'niet','I-O2':'niet','I-O3':'deels','I-O4':'niet','I-O5':'niet','I-O6':'niet','I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
+  'I-O1':'niet','I-O2':'niet','I-O3':'deels','I-O4':'niet','I-O5':'niet','I-O6':'niet','C-L1':'niet','C-L2':'deels','C-L3':'niet','C-L4':'deels','C-L5':'ok','C-L6':'niet','C-L7':'niet','C-L8':'niet','C-L9':'niet','C-L10':'deels','C-L11':'ok','I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};

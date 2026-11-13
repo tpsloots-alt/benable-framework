@@ -599,13 +599,22 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
 <!-- 09 STUURCYCLUS -->
 <section class="view" id="v-cyclus">
   <h1>Stuurcyclus en rapportages</h1>
-  <p class="lede">Het ritme van sturing past bij de omvang van de organisatie. Kies een profiel of stel de onderdelen zelf in; de kalender en de rapportages volgen.</p>
+  <p class="lede" style="max-width:110ch">Stel zelf samen hoe het warmtebedrijf stuurt. Begin met een profiel en zet daarna aan of uit wat past: elk overleg en elke rapportage heeft een schakelaar, een frequentie en een eigenaar. Een rapportage zonder besluit waarvoor hij dient, is een kandidaat om uit te zetten. Je keuzes blijven bewaard in je browser.</p>
   <div class="card form" id="cycForm" style="grid-template-columns:repeat(4,minmax(0,1fr));align-items:end"></div>
+  <div class="grid g4" id="cycTiles" style="margin-top:16px"></div>
   <div class="card" style="margin-top:16px">
-    <h2>Kalender <span id="calYear"></span></h2>
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Kalender <span id="calYear"></span></h2><div class="row"><button class="btn" id="cycAddItem">+ Eigen moment</button></div></div>
+    <p class="note" style="margin-top:6px">Zet een regel uit en hij verdwijnt uit de kalender. Bij jaarlijks kies je de maand. Doelwerkdag maandafsluiting (uit 02 Financiële basis): <b id="cycWd"></b>.</p>
     <div class="tablewrap"><table id="cal" class="cal"></table></div>
   </div>
-  <h2 style="margin:22px 0 12px">Rapportages</h2>
+  <div class="card" style="margin-top:16px">
+    <h2>Opleveringen per maand</h2>
+    <div class="chart" id="cycLoad"></div>
+    <p class="note">Aantal rapportages dat die maand wordt opgeleverd, op basis van wat aanstaat. Een drukke maand is een signaal om rapportages samen te voegen of te verschuiven.</p>
+  </div>
+  <div class="row" style="justify-content:space-between;margin:22px 0 8px;flex-wrap:wrap;gap:8px"><h2 style="margin:0">Rapportages</h2>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><label class="note" for="repFilter" style="margin:0">Doelgroep</label><select id="repFilter" style="width:auto"></select><button class="btn" id="cycAddRep">+ Eigen rapportage</button><button class="btn" id="cycCsv">Exporteer (csv)</button><button class="btn" id="cycReset">Standaard herstellen</button></div></div>
+  <p class="note" id="cycMsg" style="margin:0 0 8px"></p>
   <div class="grid g3" id="reports"></div>
 </section>
 
@@ -1425,36 +1434,92 @@ function renderRaci(){const R=getRaci();const cyc=['R','A','C','I',''];
 }
 
 /* ---------- 09 STUURCYCLUS ---------- */
-const profiles={klein:{l:'Klein (< 10.000 aansl.)',mbr:4,dag:false,week:false},middel:{l:'Middel (10.000–50.000)',mbr:8,dag:false,week:true},groot:{l:'Groot (> 50.000)',mbr:12,dag:true,week:true}};
-const getCyc=()=>Object.assign({prof:'middel',mbr:8,dag:false,week:true,start:1},store.get('wbc_cyc',{}));
+const profiles={klein:{l:'Klein (< 10.000 aansl.)',mbr:'kwartaal',dag:false,week:false},middel:{l:'Middel (10.000–50.000)',mbr:'8x',dag:false,week:true},groot:{l:'Groot (> 50.000)',mbr:'maandelijks',dag:true,week:true}};
+const FREQ=[['dagelijks','Dagelijks'],['wekelijks','Wekelijks'],['maandelijks','Maandelijks'],['8x','8× per jaar'],['kwartaal','Per kwartaal'],['jaarlijks','Jaarlijks']];
+const MND=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const DOELEN=['Directie','MT','Partners','Bank','Accountant','Intern'];
+const cycMonths=(f,m)=>({dagelijks:[0,1,2,3,4,5,6,7,8,9,10,11],wekelijks:[0,1,2,3,4,5,6,7,8,9,10,11],maandelijks:[0,1,2,3,4,5,6,7,8,9,10,11],'8x':[0,1,2,3,5,7,9,10],kwartaal:[2,5,8,11],jaarlijks:[(m||1)-1]}[f]||[]);
+const cycDef=()=>({prof:'middel',
+ items:[
+  {id:'k1',naam:'Dagelijks inkoopresultaat',on:false,freq:'dagelijks',eig:'Inkoop en opwek',wd:''},
+  {id:'k2',naam:'Wekelijkse operationele KPI\'s',on:true,freq:'wekelijks',eig:'Operations',wd:''},
+  {id:'k3',naam:'Maandafsluiting en afwijkingsanalyse',on:true,freq:'maandelijks',eig:'Financial control',wd:5},
+  {id:'k4',naam:'Omzetverantwoording: levering en projectrealisatie',on:true,freq:'maandelijks',eig:'Business control',wd:8},
+  {id:'k5',naam:'Business review en Best Estimate',on:true,freq:'8x',eig:'Directie',wd:10},
+  {id:'k6',naam:'Overleg met partners (corporaties, VvE)',on:true,freq:'kwartaal',eig:'Commercie',wd:15},
+  {id:'k7',naam:'Overleg met financier',on:true,freq:'kwartaal',eig:'Financial control',wd:15},
+  {id:'k8',naam:'Meerjarenplan en scenario\'s',on:true,freq:'jaarlijks',mnd:6,eig:'Directie',wd:''},
+  {id:'k9',naam:'Begroting volgend jaar',on:true,freq:'jaarlijks',mnd:10,eig:'Business control',wd:''},
+  {id:'k10',naam:'Jaarrekening en controle accountant',on:true,freq:'jaarlijks',mnd:3,eig:'Financial control',wd:''}],
+ reps:[
+  {id:'r1',naam:'Business review (MBR)',omschr:'Resultaten, verklaring van afwijkingen, Best Estimate en actielijst.',doel:['Directie','MT'],freq:'8x',eig:'Business control',wd:10,kpi:'Kern-KPI\'s, FIN-01 t/m FIN-11',besluit:'Bijsturen op afwijkingen en vaststellen acties',on:true},
+  {id:'r2',naam:'Management P&L',omschr:'Warmtemarge, OPEX, EBITDA en EBIT tegenover begroting, vorig jaar en Best Estimate.',doel:['MT'],freq:'maandelijks',eig:'Business control',wd:8,kpi:'FIN-01, FIN-04, FIN-05, FIN-07, FIN-08',besluit:'Sturen op resultaat per maand',on:true},
+  {id:'r3',naam:'Omzetverantwoording',omschr:'Omzet uit warmtelevering en projectrealisatie, verdiend tegenover gefactureerd, omzetlek.',doel:['Directie','MT','Accountant'],freq:'maandelijks',eig:'Financial control',wd:8,kpi:'KWA-07, KWA-08, PRJ-05',besluit:'Aantonen volledigheid omzet en bijsturen op lekken',on:true},
+  {id:'r4',naam:'Kasstroom en werkkapitaal',omschr:'Kasstroom uit operatie, debiteuren, voorschotten, overlopende posten en liquiditeit.',doel:['Directie','Bank'],freq:'8x',eig:'Financial control',wd:10,kpi:'FIN-11, OPS-05, OPS-06',besluit:'Liquiditeit en financieringsruimte bewaken',on:true},
+  {id:'r5',naam:'Investerings- en activeringsrapportage',omschr:'Voortgang investeringen tegenover budget, activering eigen uren en start afschrijving.',doel:['Directie','Accountant'],freq:'kwartaal',eig:'Financial control',wd:15,kpi:'FIN-10, PRJ-03, PRJ-05, PRJ-06',besluit:'Go/no-go en bijsturing op budget per project',on:true},
+  {id:'r6',naam:'Partnerrapportage per entiteit',omschr:'Resultaat en voortgang per entiteit voor corporaties, VvE en andere partners.',doel:['Partners'],freq:'kwartaal',eig:'Business control',wd:15,kpi:'FIN-08, DUU-03',besluit:'Afspraken met partners en afstemming over tarieven',on:true},
+  {id:'r7',naam:'Financiersrapportage en covenants',omschr:'Kerncijfers, covenantberekening en voortgang van investeringen voor de financier.',doel:['Bank','Directie'],freq:'kwartaal',eig:'Financial control',wd:15,kpi:'FIN-08, FIN-12',besluit:'Naleving covenants en toegang tot financiering',on:true},
+  {id:'r8',naam:'Energiebalans collectieve netten',omschr:'Ingevoerde tegenover geleverde en gefactureerde warmte, netverlies.',doel:['Intern'],freq:'maandelijks',eig:'Operations',wd:6,kpi:'DUU-06, KWA-05',besluit:'Netverliezen en tariefherziening',on:true},
+  {id:'r9',naam:'IT-rapportage',omschr:'Kosten beheer en verandering per systeem, geactiveerde ontwikkeling.',doel:['Intern'],freq:'maandelijks',eig:'IT-manager of directie',wd:10,kpi:'KOS-06, FIN-10',besluit:'',on:true},
+  {id:'r10',naam:'Jaarrekening-pakket voor de accountant',omschr:'Aansluitingen, cut-off, activering en toelichtingen voor de jaarrekeningcontrole.',doel:['Accountant'],freq:'jaarlijks',mnd:3,eig:'Financial control',wd:'',kpi:'',besluit:'Jaarrekening en verklaring',on:true}]});
+const getCyc=()=>{const d=cycDef(),s=store.get('wbc_cyc2',null);return s&&s.items&&s.reps?s:d};
+const setCyc=c=>store.set('wbc_cyc2',c);
+const fsel=(v,cls,id)=>`<select class="${cls}" data-id="${id}" style="width:auto;min-width:110px">${FREQ.map(f=>`<option value="${f[0]}"${f[0]===v?' selected':''}>${f[1]}</option>`).join('')}</select>`;
+const msel=(v,cls,id)=>`<select class="${cls}" data-id="${id}" style="width:auto" aria-label="Maand">${MND.map((m,i)=>`<option value="${i+1}"${(v||1)===i+1?' selected':''}>${m}</option>`).join('')}</select>`;
+let cycFilter='alle';
+function cycNext(c,pre){return pre+(Math.max(0,...c.items.concat(c.reps).map(x=>+String(x.id).replace(/\D/g,'')||0))+1)}
 function renderCyc(){
-  const c=getCyc();
-  $('#cycForm').innerHTML=`<div class="field"><label for="cProf">Profiel organisatie</label><select id="cProf">${Object.entries(profiles).map(([k,p])=>`<option value="${k}"${k===c.prof?' selected':''}>${p.l}</option>`).join('')}<option value="eigen"${c.prof==='eigen'?' selected':''}>Eigen instelling</option></select></div>
-   <div class="field"><label for="cMbr">Business review en Best Estimate</label><select id="cMbr">${[[12,'Maandelijks'],[8,'8× per jaar'],[4,'Per kwartaal']].map(o=>`<option value="${o[0]}"${o[0]===c.mbr?' selected':''}>${o[1]}</option>`).join('')}</select></div>
-   <label class="chk"><input type="checkbox" id="cDag"${c.dag?' checked':''}> Dagelijks inkoopresultaat</label>
-   <label class="chk"><input type="checkbox" id="cWeek"${c.week?' checked':''}> Wekelijkse operationele KPI's</label>`;
-  const save=o=>{store.set('wbc_cyc',Object.assign(getCyc(),o));renderCyc()};
-  $('#cProf').onchange=e=>{const p=profiles[e.target.value];save(p?{prof:e.target.value,mbr:p.mbr,dag:p.dag,week:p.week}:{prof:'eigen'})};
-  $('#cMbr').onchange=e=>save({prof:'eigen',mbr:+e.target.value});$('#cDag').onchange=e=>save({prof:'eigen',dag:e.target.checked});$('#cWeek').onchange=e=>save({prof:'eigen',week:e.target.checked});
-  const yr=new Date().getFullYear()+1;$('#calYear').textContent=yr;
-  const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
-  const mbrMonths={12:[0,1,2,3,4,5,6,7,8,9,10,11],8:[0,1,2,3,5,7,9,10],4:[0,3,6,9]}[c.mbr];
-  const rowsC=[['Dagelijks inkoopresultaat',m=>c.dag?'•':''],['Wekelijkse KPI-update',m=>c.week?'•':''],['Maandafsluiting en afwijkingsanalyse',m=>'•'],['Business review + Best Estimate',m=>mbrMonths.includes(m)?'MBR':''],['Kasstroom en werkkapitaal',m=>mbrMonths.includes(m)?'•':''],['Investerings- en activeringsrapportage',m=>[2,5,8,11].includes(m)?'•':''],['Rapportage aan derden',m=>[2,5,8,11].includes(m)?'•':(m===3?'jaar':'')],['Meerjarenplan en scenario\'s',m=>[5,6].includes(m)?'MJP':''],['Begroting volgend jaar',m=>[8,9,10].includes(m)?'BEGR':'']];
-  $('#cal').innerHTML=`<thead><tr><th>Onderdeel</th>${months.map(m=>`<th style="text-align:center">${m}</th>`).join('')}</tr></thead><tbody>`+rowsC.map(r=>`<tr><td>${r[0]}</td>${months.map((m,i)=>{const v=r[1](i);return `<td style="text-align:center">${v?`<span class="calc ${v==='•'?'':'big'}">${v}</span>`:''}</td>`}).join('')}</tr>`).join('')+'</tbody>';
-  renderReps(c);
+  const c=getCyc(),wdT=getBasis().wd;
+  $('#cycForm').innerHTML=`<div class="field"><label for="cProf">Startpunt: profiel organisatie</label><select id="cProf">${Object.entries(profiles).map(([k,p])=>`<option value="${k}"${k===c.prof?' selected':''}>${p.l}</option>`).join('')}<option value="eigen"${c.prof==='eigen'?' selected':''}>Eigen instelling</option></select></div><p class="note" style="grid-column:span 3;margin:0">Een profiel zet de frequentie van de business review en de dagelijkse en wekelijkse momenten. Alles daarna pas je zelf aan; het profiel wordt dan Eigen instelling.</p>`;
+  $('#cProf').onchange=e=>{const p=profiles[e.target.value];const n=getCyc();if(p){n.prof=e.target.value;n.items.find(x=>x.id==='k1').on=p.dag;n.items.find(x=>x.id==='k2').on=p.week;n.items.find(x=>x.id==='k5').freq=p.mbr;n.reps.filter(r=>['r1','r4'].includes(r.id)).forEach(r=>r.freq=p.mbr)}else n.prof='eigen';setCyc(n);renderCyc()};
+  const upd=fn=>{const n=getCyc();fn(n);n.prof='eigen';setCyc(n);renderCyc()};
+  const yr=new Date().getFullYear()+1;$('#calYear').textContent=yr;$('#cycWd').textContent='werkdag '+wdT;
+  $('#cal').innerHTML=`<thead><tr><th>Aan</th><th>Onderdeel</th><th>Frequentie</th><th>Eigenaar</th>${MND.map(m=>`<th style="text-align:center">${m}</th>`).join('')}<th></th></tr></thead><tbody>`+c.items.map(x=>{const mo=cycMonths(x.freq,x.mnd);return `<tr style="${x.on?'':'opacity:.45'}"><td><input type="checkbox" class="ciOn" data-id="${x.id}"${x.on?' checked':''} aria-label="Aan: ${x.naam}"></td><td>${x.naam}</td><td>${fsel(x.freq,'ciFreq',x.id)}${x.freq==='jaarlijks'?' '+msel(x.mnd,'ciMnd',x.id):''}</td><td><input type="text" class="ciEig" data-id="${x.id}" value="${(x.eig||'').replace(/"/g,'&quot;')}" placeholder="Eigenaar" style="width:130px" aria-label="Eigenaar ${x.naam}"></td>${MND.map((m,i)=>{const v=x.on&&mo.includes(i);return `<td style="text-align:center">${v?`<span class="calc ${['dagelijks','wekelijks','maandelijks'].includes(x.freq)?'':'big'}">${['dagelijks','wekelijks','maandelijks'].includes(x.freq)?'•':'●'}</span>`:''}</td>`}).join('')}<td>${x.custom?`<button class="btn ciDel" data-id="${x.id}" aria-label="Verwijder ${x.naam}">×</button>`:''}</td></tr>`}).join('')+'</tbody>';
+  document.querySelectorAll('.ciOn').forEach(el=>el.onchange=()=>upd(n=>{n.items.find(x=>x.id===el.dataset.id).on=el.checked}));
+  document.querySelectorAll('.ciFreq').forEach(el=>el.onchange=()=>upd(n=>{n.items.find(x=>x.id===el.dataset.id).freq=el.value}));
+  document.querySelectorAll('.ciMnd').forEach(el=>el.onchange=()=>upd(n=>{n.items.find(x=>x.id===el.dataset.id).mnd=+el.value}));
+  document.querySelectorAll('.ciEig').forEach(el=>el.onchange=()=>upd(n=>{n.items.find(x=>x.id===el.dataset.id).eig=el.value}));
+  document.querySelectorAll('.ciDel').forEach(el=>el.onclick=()=>upd(n=>{n.items=n.items.filter(x=>x.id!==el.dataset.id)}));
+  $('#cycAddItem').onclick=()=>{upd(n=>{n.items.push({id:cycNext(n,'k'),naam:'Eigen moment',on:true,freq:'maandelijks',eig:'',wd:'',custom:1})})};
+  renderReps(c,upd,wdT);
 }
-function renderReps(c){
-  const fr={12:'Maandelijks',8:'8× per jaar',4:'Per kwartaal'}[c.mbr];
-  const reps=[
-   ['Business review (MBR)','Financiële en operationele resultaten, verklaring van afwijkingen, Best Estimate en actielijst.','Directie / MT',fr,'Kern-KPI\'s, FIN-01 t/m FIN-11','Presentatie met onderliggend rekenbestand'],
-   ['Management P&L','Warmtemarge, OPEX, EBITDA en EBIT tegenover begroting, vorig jaar en Best Estimate.','Managementteam','Maandelijks','FIN-01, FIN-04, FIN-05, FIN-07, FIN-08','Rekenbestand of BI-rapport'],
-   ['Kasstroom en werkkapitaal','Kasstroom uit operatie, debiteuren, voorschotten, overlopende posten en liquiditeit.','Directie, finance',fr,'FIN-11, OPS-05, OPS-06','Presentatie of BI-rapport'],
-   ['Rapportage aan derden','Aandeelhouder, financier, toezichthouder en partners in gezamenlijke entiteiten.','Externe partijen','Per kwartaal en jaarlijks','FIN-08, FIN-12, PRJ-03, DUU-03','Volgens eisen ontvanger'],
-   ['IT-rapportage','Kosten beheer en verandering per systeem, geactiveerde ontwikkeling.','IT-management, finance','Maandelijks','KOS-06, FIN-10','Rekenbestand of BI-rapport'],
-   ['Investerings- en activeringsrapportage','Voortgang investeringen tegenover plan, activering en start afschrijving.','Directie, financial control','Per kwartaal','FIN-10, PRJ-03','Rekenbestand'],
-   ['Energiebalans','Ingekochte/opgewekte tegenover geleverde en gefactureerde warmte, netverliezen.','Finance, operations, inkoop','Maandelijks','DUU-06, KWA-05','Rekenbestand met vaste tabbladen per stap']];
-  $('#reports').innerHTML=reps.map(r=>`<div class="card rep"><h3 style="margin:0">${r[0]}</h3><p style="margin:0;font-size:13.5px">${r[1]}</p><dl><dt>Doelgroep</dt><dd>${r[2]}</dd><dt>Frequentie</dt><dd>${r[3]}</dd><dt>KPI's</dt><dd>${r[4]}</dd><dt>Vorm</dt><dd>${r[5]}</dd></dl></div>`).join('');
+function renderReps(c,upd,wdT){
+  const on=c.reps.filter(r=>r.on),nOpen=on.filter(r=>!r.besluit.trim()).length,nEig=on.filter(r=>!r.eig.trim()).length;
+  const conf=on.filter(r=>r.wd!==''&&+r.wd<=wdT&&['maandelijks','8x','kwartaal','jaarlijks'].includes(r.freq));
+  const load=Array(12).fill(0);on.forEach(r=>cycMonths(r.freq,r.mnd).forEach(m=>load[m]++));
+  const mx=Math.max(...load),busy=MND[load.indexOf(mx)];
+  $('#cycTiles').innerHTML=tile('Rapportages aan',`${on.length} van ${c.reps.length}`,`${c.items.filter(x=>x.on).length} van ${c.items.length} momenten in de kalender`)
+   +tile('Drukste maand',busy,`${mx} opleveringen`)
+   +tile('Zonder besluit of gebruiker',String(nOpen),nOpen?'kandidaat om uit te zetten':'alle rapportages hebben een doel',nOpen?'neg':'')
+   +tile('Eigenaar ontbreekt of te vroeg',String(nEig+conf.length),conf.length?`${conf.length} opgeleverd vóór werkdag ${wdT+1}`:`${nEig} zonder eigenaar`,nEig+conf.length?'neg':'');
+  {const W=720,H=130,bw=W/12;let s='';load.forEach((v,i)=>{const hh=mx?v/mx*80:0;s+=`<rect x="${i*bw+8}" y="${100-hh}" width="${bw-16}" height="${hh}" rx="3" fill="${v===mx&&mx?'var(--accent)':'var(--cool)'}"/><text x="${i*bw+bw/2}" y="${96-hh}" text-anchor="middle" class="vl">${v}</text><text x="${i*bw+bw/2}" y="118" text-anchor="middle" class="vl">${MND[i]}</text>`});$('#cycLoad').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Opleveringen per maand">${s}</svg>`}
+  const sel=$('#repFilter');sel.innerHTML='<option value="alle">Alle doelgroepen</option>'+DOELEN.map(d=>`<option value="${d}"${cycFilter===d?' selected':''}>${d}</option>`).join('');sel.value=cycFilter;sel.onchange=()=>{cycFilter=sel.value;renderCyc()};
+  const list=c.reps.filter(r=>cycFilter==='alle'||r.doel.includes(cycFilter));
+  $('#reports').innerHTML=list.map(r=>{const warn=[];if(r.on&&!r.besluit.trim())warn.push('Geen besluit of gebruiker benoemd');if(r.on&&!r.eig.trim())warn.push('Eigenaar ontbreekt');if(r.on&&conf.includes(r))warn.push(`Oplevering op werkdag ${r.wd}: de maandafsluiting is pas op werkdag ${wdT} klaar`);
+   return `<div class="card rep" style="${r.on?'':'opacity:.5'}"><div class="row" style="justify-content:space-between;align-items:flex-start"><h3 style="margin:0">${r.naam}</h3><label class="chk" style="white-space:nowrap"><input type="checkbox" class="rpOn" data-id="${r.id}"${r.on?' checked':''}> Aan</label></div><p style="margin:0;font-size:13.5px">${r.omschr}</p>
+   <div class="row" style="gap:4px;flex-wrap:wrap">${DOELEN.map(d=>`<button class="pill rpDoel ${r.doel.includes(d)?'p-ont':'p-mut'}" data-id="${r.id}" data-d="${d}" aria-pressed="${r.doel.includes(d)}">${d}</button>`).join('')}</div>
+   <dl><dt>Frequentie</dt><dd>${fsel(r.freq,'rpFreq',r.id)}${r.freq==='jaarlijks'?' '+msel(r.mnd,'rpMnd',r.id):''}</dd><dt>Eigenaar</dt><dd><input type="text" class="rpEig" data-id="${r.id}" value="${r.eig.replace(/"/g,'&quot;')}" placeholder="Wie levert op?"></dd><dt>Werkdag</dt><dd><input type="number" class="rpWd" data-id="${r.id}" min="1" max="25" value="${r.wd}" style="width:70px"></dd><dt>Besluit</dt><dd><input type="text" class="rpBes" data-id="${r.id}" value="${r.besluit.replace(/"/g,'&quot;')}" placeholder="Welk besluit hangt hieraan?"></dd>${r.kpi?`<dt>KPI's</dt><dd>${r.kpi}</dd>`:''}</dl>
+   ${warn.length?`<div class="note" style="color:var(--warn)">${warn.join(' · ')}</div>`:''}${r.custom?`<button class="btn rpDel" data-id="${r.id}">Verwijder</button>`:''}</div>`}).join('')||'<p class="note">Geen rapportages voor deze doelgroep.</p>';
+  const get=(n,id)=>n.reps.find(x=>x.id===id);
+  document.querySelectorAll('.rpOn').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).on=el.checked}));
+  document.querySelectorAll('.rpDoel').forEach(el=>el.onclick=()=>upd(n=>{const r=get(n,el.dataset.id);r.doel=r.doel.includes(el.dataset.d)?r.doel.filter(d=>d!==el.dataset.d):r.doel.concat(el.dataset.d)}));
+  document.querySelectorAll('.rpFreq').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).freq=el.value}));
+  document.querySelectorAll('.rpMnd').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).mnd=+el.value}));
+  document.querySelectorAll('.rpEig').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).eig=el.value}));
+  document.querySelectorAll('.rpWd').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).wd=el.value===''?'':+el.value}));
+  document.querySelectorAll('.rpBes').forEach(el=>el.onchange=()=>upd(n=>{get(n,el.dataset.id).besluit=el.value}));
+  document.querySelectorAll('.rpDel').forEach(el=>el.onclick=()=>upd(n=>{n.reps=n.reps.filter(x=>x.id!==el.dataset.id)}));
+  $('#cycAddRep').onclick=()=>upd(n=>{n.reps.push({id:cycNext(n,'r'),naam:'Eigen rapportage',omschr:'Naam, doelgroep en besluit zelf invullen.',doel:['Intern'],freq:'maandelijks',eig:'',wd:'',kpi:'',besluit:'',on:true,custom:1})});
+  $('#cycReset').onclick=()=>{if(!$('#cycReset').dataset.sure){$('#cycReset').dataset.sure=1;$('#cycMsg').textContent='Klik nogmaals om alle eigen keuzes te wissen.';setTimeout(()=>{delete $('#cycReset').dataset.sure;$('#cycMsg').textContent=''},4000);return}store.set('wbc_cyc2',null);cycFilter='alle';renderCyc()};
+  $('#cycCsv').onclick=cycExport;
 }
+let cycDL=null;try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{cycDL=d}).catch(()=>{})}catch(e){}
+async function cycExport(){const c=getCyc(),q=v=>{v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  const rows=[['Type','Onderdeel','Aan','Frequentie','Maand','Eigenaar','Werkdag','Doelgroep','Besluit']].concat(c.items.map(x=>['Kalender',x.naam,x.on?'ja':'nee',x.freq,x.mnd?MND[x.mnd-1]:'',x.eig,x.wd,'','']),c.reps.map(r=>['Rapportage',r.naam,r.on?'ja':'nee',r.freq,r.mnd?MND[r.mnd-1]:'',r.eig,r.wd,r.doel.join(', '),r.besluit]));
+  const txt='﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n'),name='stuurcyclus-rapportages.csv',m=$('#cycMsg');
+  if(cycDL){try{await cycDL.save({filename:name,data:txt});m.textContent='Bestand opgeslagen.'}catch(e){m.textContent=e&&e.code==='declined'?'Opslaan geannuleerd.':'Opslaan lukt hier niet.'}return}
+  if(window.claude){m.textContent='Opslaan lukt in deze weergave niet.';return}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);m.textContent='Bestand gedownload.'}catch(e){m.textContent='Downloaden lukt hier niet.'}}
 
 /* ---------- 10 DATAMODEL ---------- */
 const COA=[['8000','Opbrengsten levering warmte (variabel)','Commerciële marge'],['8010','Opbrengsten vastrecht en meterhuur','Vastrecht en meterhuur'],['8100','Aansluitbijdragen en huur afleversets','Nevendiensten'],['8110','Service- en onderhoudscontracten','Nevendiensten'],['8900','Correcties voorgaande jaren en herzieningen','Overige margecomponenten'],['7000','Inkoop warmte van derden','Inkoopmarge'],['7010','Elektriciteit opwekinstallaties','Inkoopmarge'],['7020','Gas en CO₂ opwekinstallaties','Inkoopmarge'],['7030','Bronwarmte (WKO, aquathermie, restwarmte)','Inkoopmarge'],['7090','Toegerekende kostenbijdrage (intern)','Resultaat kostenbijdrage'],['4000','Personeelskosten','Personeelskosten'],['4050','Inhuur','Personeelskosten'],['4300','Onderhoud net en installaties','Overige directe kosten'],['4400','Marketing en acquisitie','Overige directe kosten'],['4500','IT beheer en licenties','IT-kosten'],['4800','Doorbelastingen en managementfees','Indirecte kosten'],['4900','Afschrijvingen net en installaties','Afschrijvingen projecten'],['4910','Afschrijvingen IT en overig','Afschrijvingen overig'],['0100','Activa in aanbouw','Balans – investeringen'],['1300','Debiteuren','Balans – werkkapitaal'],['1350','Voorschotten en nog te factureren','Balans – werkkapitaal']];
@@ -1540,6 +1605,17 @@ const RM_CORE=[
  {id:'C-O1',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Bevoegdhedenmatrix met drempelbedragen is vastgesteld',actie:'Bevoegdhedenmatrix vaststellen',eig:'Directie',fase:1},
  {id:'C-O2',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Rollen van financial control, business control en lijn zijn vastgelegd (RACI)',actie:'RACI per kernproces vastleggen',eig:'Finance',fase:1},
  {id:'C-Y1',tab:'cyclus',laag:4,groep:'Stuurcyclus',norm:'Stuurcyclus en rapportagekalender zijn vastgesteld en bekend',actie:'Stuurcyclus en rapportagekalender vaststellen en publiceren',eig:'Business control',fase:0},
+ {id:'C-L1',tab:'sturing',laag:4,groep:'Besluiten',norm:'Besluiten uit de business review staan in een besluitenlijst met eigenaar en datum',actie:'Besluitenlijst met eigenaar en datum invoeren',eig:'Directie',fase:0},
+ {id:'C-L2',tab:'sturing',laag:4,groep:'Besluiten',norm:'De forecast (Best Estimate) wordt maandelijks bijgewerkt en gebruikt in het MT-overleg',actie:'Maandelijkse forecast invoeren en agenderen in het MT',eig:'Business control',fase:1},
+ {id:'C-L3',tab:'sturing',laag:4,groep:'Besluiten',norm:'Een afwijking boven de drempel leidt aantoonbaar tot een actie of besluit',actie:'Drempels voor afwijkingen vaststellen en koppelen aan de actielijst',eig:'Business control',fase:1},
+ {id:'C-L4',tab:'sturing',laag:4,groep:'Maandpakket',norm:'De directie krijgt elke maand één vast pakket (resultaat, kasstroom, investeringen) op een afgesproken werkdag',actie:'Vast maandpakket voor de directie samenstellen en op vaste werkdag opleveren',eig:'Business control',fase:0},
+ {id:'C-L5',tab:'organisatie',laag:4,groep:'Besluitvorming',norm:'Investeringsbesluiten boven de drempel gaan via een vaste go/no-go met de directie',actie:'Go/no-go-procedure met drempel voor investeringen vastleggen',eig:'Directie',fase:0},
+ {id:'C-L6',tab:'organisatie',laag:4,groep:'Besluitvorming',norm:'Er is een vaste escalatieroute voor afwijkingen en risico\'s',actie:'Escalatieroute voor afwijkingen en risico\'s vastleggen',eig:'Directie',fase:1},
+ {id:'C-L7',tab:'organisatie',laag:4,groep:'Continuïteit',norm:'Voor kritieke rapportage-eigenaren is een plaatsvervanger aangewezen',actie:'Plaatsvervanging voor kritieke rapportage-eigenaren regelen',eig:'Financial control',fase:1},
+ {id:'C-L8',tab:'cyclus',laag:4,groep:'Rapportagepakket',norm:'Het rapportagepakket is per doelgroep vastgesteld en elke rapportage heeft een gebruiker en een besluit waarvoor hij dient',actie:'Rapportagepakket per doelgroep vaststellen, met besluit per rapportage',eig:'Business control',fase:0},
+ {id:'C-L9',tab:'cyclus',laag:4,groep:'Rapportagepakket',norm:'Rapportages zonder gebruiker worden minstens jaarlijks geschrapt',actie:'Jaarlijkse opschoning van rapportages invoeren',eig:'Business control',fase:2},
+ {id:'C-L10',tab:'cyclus',laag:4,groep:'Externe rapportage',norm:'Rapportages aan partners en financiers (bank, covenants, andere partners) volgen een vaste kalender',actie:'Kalender voor partner- en financiersrapportage opstellen, inclusief covenants',eig:'Financial control',fase:1},
+ {id:'C-L11',tab:'cyclus',laag:4,groep:'Jaarcyclus',norm:'De jaarcyclus (begroting, kwartaalforecast, jaarrekening met accountant) staat in de kalender',actie:'Jaarcyclus in de kalender vastleggen',eig:'Business control',fase:1},
  {id:'C-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Eén bron per gegeven; bronsystemen en koppelingen zijn beschreven',actie:'Bronnen en koppelingen beschrijven; één bron per gegeven afspreken',eig:'IT / finance',fase:1},
  {id:'C-D2',tab:'datamodel',laag:1,groep:'Data',norm:'Standaarddimensies (project, entiteit, kostenplaats) zijn verplicht bij het boeken',actie:'Verplichte dimensies instellen in het financieel pakket',eig:'Financial control',fase:1}
 ];
@@ -1584,7 +1660,7 @@ window.RM_CFG={naam:'warmtebedrijf',key:()=>'wbc_rm_v1',fases:RM_FASES,lagen:RM_
   'C-B1':'deels','C-B2':'niet','C-B3':'niet','C-R1':'ok','C-R2':'deels','C-R3':'deels','C-R4':'ok','C-R5':'ok','C-R6':'niet','C-R7':'deels','C-B4':'ok','C-B5':'niet','C-P1':'deels','C-P2':'niet','C-P3':'niet',
   'C-K1':'niet','C-K2':'niet','C-K3':'niet','C-S1':'deels','C-S2':'niet','C-O1':'ok','C-O2':'deels','C-Y1':'niet','C-D1':'niet','C-D2':'deels',
   'I-M1':'ok','I-M2':'deels','I-P1':'deels','I-P2':'niet','I-P3':'deels','I-P4':'niet','I-R1':'ok','I-R2':'deels','I-R3':'niet','I-R4':'niet','I-R5':'niet',
-  'I-O1':'niet','I-O2':'niet','I-O3':'deels','I-O4':'niet','I-O5':'niet','I-O6':'niet','I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
+  'I-O1':'niet','I-O2':'niet','I-O3':'deels','I-O4':'niet','I-O5':'niet','I-O6':'niet','C-L1':'niet','C-L2':'deels','C-L3':'niet','C-L4':'deels','C-L5':'ok','C-L6':'niet','C-L7':'niet','C-L8':'niet','C-L9':'niet','C-L10':'deels','C-L11':'ok','I-K1':'niet','I-S1':'deels','I-S2':'niet','I-D1':'niet'})};
 
 /* B.Enable · module Vastleggen → Verbeterroadmap (generiek, voor alle frameworks)
    Verwacht window.RM_CFG = {

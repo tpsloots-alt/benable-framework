@@ -34,6 +34,7 @@ R("x.naam==='Conrad'",f"x.naam==='{mp['Conrad']}'",1)
 T=[("<title>B.Enable · Control Framework · InWarmte</title>","<title>B.Enable · Control Framework · Warmtebedrijf (casus)</title>"),
  ("<small>voor InWarmte · werkversie</small>","<small>casus warmtebedrijf · ter feedback</small>"),
  ('<h1 style="font-size:1.35rem">Waar InWarmte op moet sturen</h1>','<h1 style="font-size:1.35rem">Waar het warmtebedrijf op moet sturen</h1>'),
+ ("Stel zelf samen hoe InWarmte stuurt.","Stel zelf samen hoe het warmtebedrijf stuurt."),
  ("De omzet van InWarmte komt uit","De omzet van het warmtebedrijf komt uit"),
  ("Het resultaat van InWarmte hangt af van drie dingen","Het resultaat van het warmtebedrijf hangt af van drie dingen"),
  ("Dit framework maakt die stappen concreet voor InWarmte:","Dit framework maakt die stappen concreet voor een warmtebedrijf:"),
