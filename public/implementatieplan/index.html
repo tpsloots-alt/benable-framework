@@ -552,17 +552,17 @@ function parseTable(txt){txt=txt.replace(/^﻿/,'');const first=txt.split(/\r?\n
 function windowOf(per,idx){const m=String(per||'').match(/(\d+)\s*[–\-]\s*(\d+)/);return m?[+m[1]+1,+m[2]]:[idx*6+1,idx*6+6]}
 function importRows(rows){if(rows.length<2)return 'Geen regels gevonden.';
   const hd=rows[0].map(x=>x.trim().toLowerCase());const col=n=>hd.findIndex(h=>h===n||h.startsWith(n));
-  const c={fase:col('fase'),per:col('periode'),laag:col('laag'),act:col('actie'),eig:col('eigenaar'),prio:col('prioriteit'),nv0:col('niveau nu'),nv1:col('niveau na'),uit:col('uitvo')};
+  const c={fase:col('fase'),per:col('periode'),laag:col('laag'),act:col('actie'),eig:col('eigenaar'),prio:col('prioriteit'),nv0:col('niveau nu'),nv1:col('niveau na'),bes:(()=>{const x=col('directiebesluit');return x>=0?x:col('besluit')})(),uit:col('uitvo')};
   if(c.act<0)return 'De kolom Actie ontbreekt in de eerste regel.';
   const fases=[],A=[];
   rows.slice(1).forEach(r=>{const t=(r[c.act]||'').trim();if(!t)return;
     const fn=c.fase>=0?(r[c.fase]||'').trim():'',pr=c.per>=0?(r[c.per]||'').trim():'';
     const key=(fn||'Fase 1')+'|'+pr;let fi=fases.findIndex(f=>f.key===key);
     if(fi<0){fases.push({key,naam:fn||'Fase 1',per:pr});fi=fases.length-1}
-    const nv=c0=>{if(c0<0)return null;const v=parseInt((r[c0]||'').trim());return v>=0&&v<=4?v:null};A.push({fk:key,nv0:nv(c.nv0),nv1:nv(c.nv1),tekst:t,eig:c.eig>=0?(r[c.eig]||'').trim():'',laag:c.laag>=0?(r[c.laag]||'').trim():'',prio:c.prio>=0?(r[c.prio]||'').trim():'',uitS:c.uit>=0?(r[c.uit]||'').trim():''})});
+    const nv=c0=>{if(c0<0)return null;const v=parseInt((r[c0]||'').trim());return v>=0&&v<=4?v:null};A.push({fk:key,nv0:nv(c.nv0),nv1:nv(c.nv1),besS:c.bes>=0?(r[c.bes]||'').trim():null,tekst:t,eig:c.eig>=0?(r[c.eig]||'').trim():'',laag:c.laag>=0?(r[c.laag]||'').trim():'',prio:c.prio>=0?(r[c.prio]||'').trim():'',uitS:c.uit>=0?(r[c.uit]||'').trim():''})});
   if(!A.length)return 'Geen acties gevonden.';
   fases.forEach((f,i)=>{f.w=windowOf(f.per,i);f.w0=f.w.slice()});fases.sort((a,b)=>a.w[0]-b.w[0]);
-  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,nv0:a.nv0,nv1:a.nv1,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,nas:[],bes:/directie|mt|bestuur/i.test(a.eig)}));
+  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,nv0:a.nv0,nv1:a.nv1,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,nas:[],bes:a.besS!=null?/^(ja|j|x|1|true|yes)$/i.test(a.besS):/directie|mt|bestuur/i.test(a.eig)}));
   D.mijl={};D.demo=false;schatAll();replan();save();return ''}
 function replan(){const rank=p=>/hoog|1/i.test(p)?0:/midden|2/i.test(p)?1:/laag|3/i.test(p)?2:1,load={},MW={S:0,M:1,L:2,XL:3};
   const addLoad=(a,s,dur)=>shares(a).forEach(([r,f])=>{const dag=D.dag[a.maat]*f/dur;for(let m=s;m<s+dur;m++){(load[r]=load[r]||{})[m]=((load[r]||{})[m]||0)+dag}});
