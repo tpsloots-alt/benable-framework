@@ -152,6 +152,10 @@ textarea{width:100%;min-height:96px;font-family:var(--mono);font-size:12px}
 .m-crit{margin:6px 0 0;padding:0;list-style:none;font-size:13.5px}.m-crit li{padding:2px 0}.m-crit li.ok{color:var(--be-good)}
 .m-tb.m-up th{width:210px;text-transform:none;letter-spacing:0;font:600 13px var(--body);color:var(--be-ink);vertical-align:top}
 .m-bijl summary{cursor:pointer;color:var(--be-navy);font-weight:600;font-size:13.5px}
+.m-scen{margin-top:var(--sp-3)}.m-scen h3{font-size:15px}
+.m-sc th:not(:first-child),.m-sc td:not(:first-child){text-align:right;white-space:nowrap}
+.m-sc .cur{background:var(--be-navy-50);font-weight:600}
+@media print{.m-scen{break-inside:avoid}}
 .chip.voorstel{background:#fff;border:1px dashed var(--be-orange);color:var(--be-orange-700);cursor:pointer;font:inherit;font-size:11px;padding:1px 8px;border-radius:99px}
 .chip.kt{background:#FBEBE3;color:#A93A0E;font-weight:600}
 .chip.dec{background:var(--be-orange-50);color:var(--be-orange-700)}
@@ -1004,6 +1008,26 @@ function mgUitgangspunten(M){const A=D.acties,nb=A.filter(beoordeeld).length,nde
     r('Directiebesluiten',M.bes.length?`${M.bes.length} besluiten, waarvan ${M.bes.filter(besVoorstel).length} nog een voorstel. Uiterlijk de maand vóór de start van de actie.`:'Geen directiebesluiten gemarkeerd.'),
     r('Afronding',`In dit overzicht zijn dagen afgerond op 5 en bedragen op € 1.000. De exacte planning staat in het planbestand.`)];
   return `<section class="m-sec m-p7"><div class="m-q">Bijlage 2</div><h2>Uitgangspunten <small>Indicatieve planning op basis van onderstaande aannames</small></h2><div class="m-detail" style="margin-top:0"><table class="m-tb m-up"><tbody>${rows.join('')}</tbody></table></div></section>`}
+/* === SCENARIO'S (ronde 4) ===
+   Drie vaste varianten van de eigen capaciteit, berekend op een kopie van het plan met dezelfde inroosterregels.
+   Het eigen plan blijft ongemoeid; er wordt niets opgeslagen. */
+function scenario(fac){const orig=D;let out;
+  try{D=JSON.parse(JSON.stringify(orig));D.cap=D.cap*fac;Object.keys(D.capE||{}).forEach(e=>{if(!isExt(e))D.capE[e]*=fac});(D.beperk||[]).forEach(b=>{if(!b.e||!isExt(b.e))b.d=b.d*fac});
+    replan();const k=kpiData(),O=ontwData(Math.max(1,k.last)),X=extStats();
+    out={fac,last:k.last,peak:k.peak,kn:k.over+k.conf,ext:X.days?X.cost:0,verl:D.acties.filter(a=>a.verl).length,lagen:O.rows.map(R=>({k:R.k,end:R.end,done:R.done})),niv:O.niv}}
+  finally{D=orig}
+  return out}
+function mgScen(M){if(!D.acties.length)return '';const S=[0.75,1,1.25].map(scenario),nm=['Krap (75%)','Huidig (100%)','Ruim (125%)'];
+  const hasExt=S.some(s=>s.ext>0),rows=[];
+  rows.push(['Einde uitvoering',S.map(s=>`${esc(mYr(s.last))} <span class="note">(${s.last} mnd)</span>`)]);
+  rows.push(['Hoogste belasting per persoon',S.map(s=>`circa ${nf0.format(s.peak)} d/mnd`)]);
+  rows.push(['Knelpunten',S.map(s=>s.kn?`<span class="neg">${s.kn}</span>`:'0')]);
+  rows.push(['Verlengde acties',S.map(s=>String(s.verl))]);
+  if(hasExt)rows.push(['Externe kosten',S.map(s=>s.ext?'circa '+rdE(s.ext):'–')]);
+  (S[1].lagen||[]).forEach((L,i)=>rows.push([`${esc(L.k)}<div class="note">${S[1].niv?`voorwaarden niveau ${L.end} gereed`:'voorwaarden gereed'}</div>`,S.map(s=>{const x=(s.lagen||[]).find(y=>y.k===L.k);return x?esc(mYr(x.done)):'–'})]));
+  const cur=M.k.last,diff=cur!==S[1].last,dl=S[0].last-S[1].last,dr=S[1].last-S[2].last;
+  const inz=`${dl>0?`Met een kwart minder eigen capaciteit loopt de uitvoering ${dl} ${dl===1?'maand':'maanden'} langer${S[0].verl>S[1].verl?` en worden meer acties verlengd`:''}. `:'Een kwart minder eigen capaciteit verlengt de uitvoering niet. '}${dr>0?`Met een kwart meer is het plan ${dr} ${dr===1?'maand':'maanden'} eerder klaar.`:'Meer capaciteit verkort de looptijd niet: die wordt bepaald door de duur van de acties, de volgorde en de fasepoorten.'}`;
+  return `<div class="m-detail m-scen"><h3>Scenario's: wat als er meer of minder eigen capaciteit is?</h3><p class="note" style="margin:2px 0 8px">Dezelfde acties en inroosterregels, met 75%, 100% of 125% van de beschikbare dagen van de eigen mensen (ook in de periodes met beperkte beschikbaarheid). Inleen en vaste acties blijven gelijk.</p><table class="m-tb m-sc"><thead><tr><th></th>${nm.map((n,i)=>`<th${i===1?' class="cur"':''}>${n}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td>${r[1].map((v,i)=>`<td${i===1?' class="cur"':''}>${v}</td>`).join('')}</tr>`).join('')}</tbody></table><p style="margin:10px 0 0;font-size:14px">${inz}</p><p class="note" style="margin-top:6px"><b>Let op:</b> meer capaciteit versnelt de uitvoering van acties, niet automatisch de ontwikkeling van de organisatie. Fasepoorten zoals drie maandafsluitingen op rij vragen kalendertijd, en een niveau is pas bereikt na toetsing.${diff?` Het getoonde plan eindigt in ${esc(mYr(cur))}; opnieuw inroosteren met de huidige capaciteit geeft ${esc(mYr(S[1].last))}, omdat er handmatige aanpassingen in het plan zitten.`:''}</p></div>`}
 function renderMg(){const el=$('#mg');
   if(!D.acties.length){el.innerHTML=`<div class="m-empty"><div class="m-brand">B.Enable | Control Framework</div><h2>Nog geen implementatieoverzicht</h2><p>Er is nog geen roadmap ingelezen. Lees in Plan bewerken een roadmap in; het overzicht voor de directie wordt daarna automatisch opgebouwd.</p><button class="btn pri" data-mode="edit">Naar Plan bewerken</button></div>`;bindMg();return}
   const M=mgModel(),today=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
@@ -1013,7 +1037,7 @@ function renderMg(){const el=$('#mg');
    <section class="m-sec"><h2>Managementconclusie</h2>${mgBeeld(M)}</section>
    ${mgOntw(M)}
    <section class="m-sec m-p3"><div class="m-q">Vraag 4 · Welke verbeteracties maken dat mogelijk?</div><h2>Roadmap op hoofdlijnen <small>Klik op een fase voor de mijlpalen en de onderliggende acties</small></h2>${mgFases(M)}</section>
-   <section class="m-sec m-p4"><div class="m-q">Vraag 5 · Wat vraagt dit aan tijd en capaciteit?</div><h2>Tijd en capaciteit <small>Gepland tegenover beschikbaar, per maand</small></h2>${mgChart(M)}</section>
+   <section class="m-sec m-p4"><div class="m-q">Vraag 5 · Wat vraagt dit aan tijd en capaciteit?</div><h2>Tijd en capaciteit <small>Gepland tegenover beschikbaar, per maand</small></h2>${mgChart(M)}${mgScen(M)}</section>
    <section class="m-sec m-p5"><div class="m-q">Vraag 6 · Welke besluiten moet het management nemen?</div><h2>Besluiten en aandachtspunten</h2>${mgBesluiten(M)}</section>
    ${mgActielijst()}
    ${mgUitgangspunten(M)}
