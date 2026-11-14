@@ -423,23 +423,6 @@ body.pres .m-sec{margin-top:36px}
     <section class="panel" id="setPanel">
       <button class="panel-h" id="bSet" aria-expanded="false" aria-controls="setBody"><h2>Planinstellingen</h2><span class="sum" id="setSum"></span><span class="chev" aria-hidden="true">▾</span></button>
       <div id="setBody" class="panel-b" hidden>
-        <div class="fields">
-          <div class="field">Startmaand plan<div class="inl"><select id="sMo" aria-label="Maand"></select><select id="sYr" aria-label="Jaar"></select></div></div>
-          <div class="field">Standaard beschikbaar per eigenaar<div class="inl"><input type="number" id="sCap" min="1" max="22" style="width:76px"> dagen per maand</div></div>
-          <div class="field" style="grid-column:span 2">Inspanning per maat<div class="inl" style="flex-wrap:nowrap;white-space:nowrap">S <input type="number" id="dS" min="1" style="width:56px"> M <input type="number" id="dM" min="1" style="width:56px"> L <input type="number" id="dL" min="1" style="width:56px"> XL <input type="number" id="dXL" min="1" style="width:56px"> dagen</div></div>
-          <div class="field">Bij automatisch inroosteren<div class="inl"><label class="inl"><input type="checkbox" id="sBeh"> vaste acties behouden</label></div></div>
-          <div class="field">Volgorde bij inroosteren<div class="inl"><select id="sVolg" aria-label="Volgorde bij inroosteren"><option value="slim">Slim: kritiek pad en snelle winst</option><option value="klassiek">Klassiek: laag, dan prioriteit</option></select></div></div>
-          <div class="field">Overlap tussen fases<div class="inl"><input type="number" id="sOv" min="0" max="12" style="width:64px"> maanden</div></div>
-          <div class="field">Externe partijen (inleen)<div class="inl"><input type="text" id="sExt" placeholder="Inleen" style="width:150px" aria-label="Namen van externe partijen, gescheiden door komma's"></div></div>
-          <div class="field">Tarief extern<div class="inl">€ <input type="number" id="sTar" min="0" step="10" style="width:72px"> per dag</div></div>
-          <div class="field">Beschikbaar per externe partij<div class="inl"><input type="number" id="sCapX" min="1" max="60" style="width:64px"> dagen per maand</div></div>
-          <div class="field"><span>&nbsp;</span><button class="btn" id="bSchat" title="Schat per actie de zwaarte (S, M, L of XL) op basis van de omschrijving">Schat zwaarte van acties</button></div>
-          <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
-        </div>
-        <div style="margin-top:18px"><h3 style="font-size:13.5px">Beschikbaarheid per periode <span class="note" style="font-weight:400">· vakantie, jaarafsluiting of piekdrukte</span></h3>
-          <div id="bepList"></div>
-          <div class="row" style="margin-top:8px"><button class="btn" id="bBepAdd">+ Beperking toevoegen</button></div>
-          <p class="note">Dagen per maand in die periode; 0 is afwezig. Zie de toelichting hieronder.</p></div>
         <details class="uitleg"><summary>Toelichting bij de planinstellingen</summary>
           <div class="uitleg-b">
             <div><h4>Automatisch inroosteren</h4>
@@ -470,6 +453,24 @@ body.pres .m-sec{margin-top:36px}
               <li>Een maat die je zelf kiest blijft behouden.</li>
             </ul></div>
           </div></details>
+        <div class="fields">
+          <div class="field">Startmaand plan<div class="inl"><select id="sMo" aria-label="Maand"></select><select id="sYr" aria-label="Jaar"></select></div></div>
+          <div class="field">Standaard beschikbaar per eigenaar<div class="inl"><input type="number" id="sCap" min="1" max="22" style="width:76px"> dagen per maand</div></div>
+          <div class="field" style="grid-column:span 2">Inspanning per maat<div class="inl" style="flex-wrap:nowrap;white-space:nowrap">S <input type="number" id="dS" min="1" style="width:56px"> M <input type="number" id="dM" min="1" style="width:56px"> L <input type="number" id="dL" min="1" style="width:56px"> XL <input type="number" id="dXL" min="1" style="width:56px"> dagen</div></div>
+          <div class="field">Bij automatisch inroosteren<div class="inl"><label class="inl"><input type="checkbox" id="sBeh"> vaste acties behouden</label></div></div>
+          <div class="field">Volgorde bij inroosteren<div class="inl"><select id="sVolg" aria-label="Volgorde bij inroosteren"><option value="slim">Slim: kritiek pad en snelle winst</option><option value="klassiek">Klassiek: laag, dan prioriteit</option></select></div></div>
+          <div class="field">Overlap tussen fases<div class="inl"><input type="number" id="sOv" min="0" max="12" style="width:64px"> maanden</div></div>
+          <div class="field">Externe partijen (inleen)<div class="inl"><input type="text" id="sExt" placeholder="Inleen" style="width:150px" aria-label="Namen van externe partijen, gescheiden door komma's"></div></div>
+          <div class="field">Tarief extern<div class="inl">€ <input type="number" id="sTar" min="0" step="10" style="width:72px"> per dag</div></div>
+          <div class="field">Beschikbaar per externe partij<div class="inl"><input type="number" id="sCapX" min="1" max="60" style="width:64px"> dagen per maand</div></div>
+          <div class="field"><span>&nbsp;</span><button class="btn" id="bSchat" title="Schat per actie de zwaarte (S, M, L of XL) op basis van de omschrijving">Schat zwaarte van acties</button></div>
+          <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
+        </div>
+        <div style="margin-top:18px"><h3 style="font-size:13.5px">Beschikbaarheid per periode <span class="note" style="font-weight:400">· vakantie, jaarafsluiting of piekdrukte</span></h3>
+          <div id="bepList"></div>
+          <div class="row" style="margin-top:8px"><button class="btn" id="bBepAdd">+ Beperking toevoegen</button></div>
+          <p class="note">Dagen per maand in die periode; 0 is afwezig. Zie de toelichting bovenaan.</p></div>
+        
       </div>
     </section>
 
