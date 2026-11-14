@@ -213,7 +213,7 @@ td.neg,.neg{color:var(--be-bad);font-weight:700}
 .uitleg-b{padding:4px 14px 12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 var(--sp-5)}
 .uitleg-b h4{margin:12px 0 4px;font:700 11px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--be-ink-3)}
 .uitleg-b ul{margin:0;padding-left:18px;font-size:var(--fs-sm);color:var(--be-ink-2)}.uitleg-b li{margin:3px 0;line-height:1.45}
-@media print{.uitleg{display:none}}
+@media print{.uitleg{display:none}.m-ontw{break-inside:avoid}}
 /* 3.8 managementmodus (leest dezelfde gegevens als Plan bewerken; geen eigen berekeningen) */
 .modebar{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
 .modeseg{display:inline-flex;border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-surface);padding:2px}
@@ -406,7 +406,7 @@ body.pres .m-sec{margin-top:36px}
       <button class="btn" id="bTog" aria-expanded="true" aria-controls="impBody">Inklappen ▴</button>
     </div>
     <div id="impBody" class="panel-b">
-      <p class="note">Gebruik de export of de knop Kopieer roadmap uit een B.Enable-framework, of een eigen csv/Excel-selectie met kolommen als Fase, Periode, Laag, Actie, Eigenaar en Prioriteit. Alleen Actie is verplicht.</p>
+      <p class="note">Gebruik de export of de knop Kopieer roadmap uit een B.Enable-framework, of een eigen csv/Excel-selectie met kolommen als Fase, Periode, Laag, Actie, Eigenaar en Prioriteit. Alleen Actie is verplicht. De export van de zelfscan bevat ook Niveau nu en Niveau na; daarmee toont de Managementmodus de ontwikkeling per laag.</p>
       <div class="grid g2" style="margin-top:12px">
         <div><label class="note" for="fFile">Kies een csv-bestand</label><br><input type="file" id="fFile" accept=".csv,.txt,.tsv" style="margin-top:6px"></div>
         <div><label class="note" for="tPaste">Of plak de tabel (uit Excel of Kopieer roadmap)</label><textarea id="tPaste" placeholder="Fase;Periode;Laag;Actie;Eigenaar;Prioriteit…" style="margin-top:6px"></textarea><div class="row" style="margin-top:8px"><button class="btn pri" id="bImp">Inlezen</button><span class="note" id="impMsg"></span></div></div>
@@ -538,17 +538,17 @@ function parseTable(txt){txt=txt.replace(/^﻿/,'');const first=txt.split(/\r?\n
 function windowOf(per,idx){const m=String(per||'').match(/(\d+)\s*[–\-]\s*(\d+)/);return m?[+m[1]+1,+m[2]]:[idx*6+1,idx*6+6]}
 function importRows(rows){if(rows.length<2)return 'Geen regels gevonden.';
   const hd=rows[0].map(x=>x.trim().toLowerCase());const col=n=>hd.findIndex(h=>h===n||h.startsWith(n));
-  const c={fase:col('fase'),per:col('periode'),laag:col('laag'),act:col('actie'),eig:col('eigenaar'),prio:col('prioriteit'),uit:col('uitvo')};
+  const c={fase:col('fase'),per:col('periode'),laag:col('laag'),act:col('actie'),eig:col('eigenaar'),prio:col('prioriteit'),nv0:col('niveau nu'),nv1:col('niveau na'),uit:col('uitvo')};
   if(c.act<0)return 'De kolom Actie ontbreekt in de eerste regel.';
   const fases=[],A=[];
   rows.slice(1).forEach(r=>{const t=(r[c.act]||'').trim();if(!t)return;
     const fn=c.fase>=0?(r[c.fase]||'').trim():'',pr=c.per>=0?(r[c.per]||'').trim():'';
     const key=(fn||'Fase 1')+'|'+pr;let fi=fases.findIndex(f=>f.key===key);
     if(fi<0){fases.push({key,naam:fn||'Fase 1',per:pr});fi=fases.length-1}
-    A.push({fk:key,tekst:t,eig:c.eig>=0?(r[c.eig]||'').trim():'',laag:c.laag>=0?(r[c.laag]||'').trim():'',prio:c.prio>=0?(r[c.prio]||'').trim():'',uitS:c.uit>=0?(r[c.uit]||'').trim():''})});
+    const nv=c0=>{if(c0<0)return null;const v=parseInt((r[c0]||'').trim());return v>=0&&v<=4?v:null};A.push({fk:key,nv0:nv(c.nv0),nv1:nv(c.nv1),tekst:t,eig:c.eig>=0?(r[c.eig]||'').trim():'',laag:c.laag>=0?(r[c.laag]||'').trim():'',prio:c.prio>=0?(r[c.prio]||'').trim():'',uitS:c.uit>=0?(r[c.uit]||'').trim():''})});
   if(!A.length)return 'Geen acties gevonden.';
   fases.forEach((f,i)=>{f.w=windowOf(f.per,i);f.w0=f.w.slice()});fases.sort((a,b)=>a.w[0]-b.w[0]);
-  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,nas:[],bes:/directie|mt|bestuur/i.test(a.eig)}));
+  D.fases=fases;D.acties=A.map((a,i)=>({id:'a'+(i+1),fase:a.fk,nv0:a.nv0,nv1:a.nv1,tekst:a.tekst,eig:a.eig||'Niet toegewezen',uit:parseUit(a.uitS,a.eig||'Niet toegewezen'),laag:a.laag,prio:a.prio,maat:'M',start:fases.find(f=>f.key===a.fk).w[0],dur:2,nas:[],bes:/directie|mt|bestuur/i.test(a.eig)}));
   D.mijl={};D.demo=false;schatAll();replan();save();return ''}
 function replan(){const rank=p=>/hoog|1/i.test(p)?0:/midden|2/i.test(p)?1:/laag|3/i.test(p)?2:1,load={};
   const addLoad=(a,s,dur)=>shares(a).forEach(([r,f])=>{const dag=D.dag[a.maat]*f/dur;for(let m=s;m<s+dur;m++){(load[r]=load[r]||{})[m]=((load[r]||{})[m]||0)+dag}});
@@ -850,6 +850,42 @@ function mgBesluiten(M){const R=[];
   const ok=risks.length?'':`<div class="m-ok">Geen aandachtspunten gesignaleerd: het plan past binnen de beschikbare capaciteit, alle afhankelijkheden worden gehaald en alle acties vallen binnen hun fase.</div>`;
   return (tb?`<div class="m-detail" style="margin-top:0">${tb}</div>`:'')+ok}
 
+function mgOntw(M){const F=D.fases,n=F.length,H=M.H,Hc=H+1,groups={};
+  D.acties.forEach(a=>{const k=(a.laag||'').trim()||'Zonder laag';(groups[k]=groups[k]||[]).push(a)});
+  let keys=Object.keys(groups).sort((a,b)=>(parseInt(a)||99)-(parseInt(b)||99)||a.localeCompare(b));
+  if(keys.length<2&&keys[0]==='Zonder laag')return '';
+  /* Twee leeswijzen: met gemeten niveaus uit de zelfscan (kolommen Niveau nu / Niveau na) of, zonder die kolommen, per afgeronde fase. */
+  const niv=D.acties.some(a=>a.nv1>0),top=niv?4:n;
+  if(niv)keys=keys.filter(k=>groups[k].some(a=>a.nv1>0));
+  if(!keys.length)return '';
+  const lerp=t=>{const a=[217,226,236],b=[25,54,87];return 'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')'};
+  const lvC=k=>k===0?'#EDF1F5':lerp(top===1?1:(k-1)/(top-1)*0.85+0.15),dark=k=>k>0&&(top===1||(k-1)/(top-1)>0.3);
+  const lvT=k=>niv?'Niveau '+k:k===0?'Vertrekpunt':F[k-1].naam+' afgerond',lvS=k=>niv?'N'+k:k===0?'Start':F[k-1].naam.split(' ')[0]+' ✓';
+  const rows=keys.map(k=>{const A=groups[k],tr=[];let start=null;
+    if(niv){const B=A.filter(a=>a.nv1>0);start=Math.min(...B.map(a=>a.nv0>=0?a.nv0:a.nv1-1));[...new Set(B.map(a=>a.nv1))].sort((x,y)=>x-y).forEach(lv=>{if(lv>start)tr.push({lv,m:Math.max(...B.filter(a=>a.nv1<=lv).map(endOf))})})}
+    else F.forEach((f,i)=>{const X=A.filter(a=>faseIdx(a.fase)===i);if(!X.length)return;if(start===null)start=i;tr.push({lv:i+1,m:Math.max(...X.map(endOf))})});
+    for(let i=1;i<tr.length;i++)tr[i].m=Math.max(tr[i].m,tr[i-1].m);
+    const segs=[];let cur=start,from=0;tr.forEach(t=>{if(t.m>from)segs.push({lv:cur,a:from,b:t.m});cur=t.lv;from=Math.max(from,t.m)});segs.push({lv:cur,a:from,b:Hc});
+    return{k,n:A.length,start,end:cur,segs,tr,done:tr.length?tr[tr.length-1].m:0}}).filter(R=>R.tr.length);
+  if(!rows.length)return '';
+  const W=1000,l=200,r=12,top0=40,rh=50,pw=W-l-r,Ht=top0+rows.length*rh+8,X=m=>l+m/Hc*pw;
+  let s=`<svg class="m-svg" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Geplande ontwikkeling per laag over de looptijd van het plan">`;
+  F.forEach((f,i)=>{const a=X(f.w[0]-1),b=X(Math.min(f.w[1],H));s+=`<rect x="${a}" y="0" width="${Math.max(0,b-a)}" height="18" fill="${faseC(f.key)}" opacity=".14"/><rect x="${a}" y="0" width="3" height="18" fill="${faseC(f.key)}"/>${b-a>40?`<text x="${a+9}" y="13" font-size="11" font-weight="600">${esc(b-a>f.naam.length*6.4+16?f.naam:'Fase '+(i+1))}</text>`:''}`});
+  const step=H<=18?3:H<=36?6:12;for(let m=0;m<=H;m+=step){s+=`<line x1="${X(m)}" x2="${X(m)}" y1="22" y2="${Ht-4}" stroke="#EDF1F5"/>`;if(m<H)s+=`<text x="${X(m)+3}" y="33" font-size="10.5">${esc(mYr(m+1))}</text>`}
+  rows.forEach((R,i)=>{const y=top0+i*rh;
+    s+=`<text x="0" y="${y+17}" font-size="12.5" font-weight="600" style="fill:#16283C">${esc(R.k.length>28?R.k.slice(0,27)+'…':R.k)}</text><text x="0" y="${y+32}" font-size="10.5">${niv?`van niveau ${R.start} naar ${R.end}`:`${R.n} ${R.n===1?'actie':'acties'}`} · klaar ${esc(mYr(R.done))}</text>`;
+    R.segs.forEach(g=>{const a=X(g.a),b=X(g.b),w=b-a,fl=dark(g.lv)?'#fff':'#193657';
+      s+=`<rect x="${a+1}" y="${y+4}" width="${Math.max(0,w-2)}" height="30" rx="3" fill="${lvC(g.lv)}"${g.lv===0?' stroke="#DDE3EA"':''}><title>${esc(R.k)}: ${esc(lvT(g.lv))} (${esc(mYr(g.a+1))} – ${esc(mYr(Math.min(g.b,H)))})</title></rect>`;
+      const t=lvT(g.lv),t2=lvS(g.lv);if(w>t.length*6.4+14)s+=`<text x="${a+9}" y="${y+23}" font-size="11.5" font-weight="600" style="fill:${fl}">${esc(t)}</text>`;else if(w>t2.length*6.6+12)s+=`<text x="${a+7}" y="${y+23}" font-size="11.5" font-weight="600" style="fill:${fl}">${esc(t2)}</text>`});
+    R.tr.forEach(t=>{s+=`<path d="M${X(t.m)} ${y+1}l5 5-5 5-5-5z" fill="#C74612"><title>${esc(lvT(t.lv))}${niv?' bereikt':''} eind ${esc(mYr(t.m))}</title></path>`})});
+  s+='</svg>';
+  const lvs=niv?[0,1,2,3,4]:[0].concat(F.map((_,i)=>i+1));
+  const leg=lvs.map(k=>`<span><i style="background:${lvC(k)};${k===0?'border:1px solid #DDE3EA':''}"></i>${esc(lvT(k))}</span>`).join('')+`<span><i style="background:#C74612;transform:rotate(45deg);width:9px;height:9px"></i>${niv?'Niveau bereikt':'Fase afgerond'}</span>`;
+  const last=rows.slice().sort((a,b)=>b.done-a.done)[0],first=rows.slice().sort((a,b)=>a.tr[0].m-b.tr[0].m)[0],pre=rows.filter(x=>x.start>0);
+  const txt=niv?`${esc(first.k)} zet als eerste een stap (${esc(lvT(first.tr[0].lv))} eind ${esc(mYr(first.tr[0].m))}). ${esc(last.k)} is als laatste klaar (eind ${esc(mYr(last.done))}). ${rows.map(R=>`${esc(R.k)}: van ${R.start} naar ${R.end}`).join(' · ')}.`
+    :`${esc(first.k)} zet als eerste een stap (${esc(lvT(first.tr[0].lv))} eind ${esc(mYr(first.tr[0].m))}). ${esc(last.k)} is als laatste klaar (eind ${esc(mYr(last.done))}).${pre.length?` Voor ${esc(pre.map(x=>x.k).join(', '))} staan geen acties in de eerste fase; die fase geldt daar als vertrekpunt.`:''}`;
+  const lees=niv?'Leeswijzer: het vertrekpunt is het niveau uit de zelfscan (eigen inschatting). Een laag bereikt een niveau zodra alle acties voor dat niveau klaar zijn. Dit is de geplande ontwikkeling, geen meting achteraf.':'Leeswijzer: een laag bereikt een stap zodra alle acties van die laag in die fase klaar zijn. Dit is de geplande ontwikkeling volgens de roadmap, geen gemeten volwassenheid.';
+  return `<section class="m-sec m-ontw"><h2>Ontwikkeling van de organisatie <small>${niv?'Van welk niveau naar welk niveau, per laag':'Welke stap elke laag zet, en wanneer'}</small></h2><div class="m-cap"><div class="m-cap-bar"><div class="m-leg" style="margin-left:0">${leg}</div></div>${s}<p class="note">${txt}</p><p class="note">${lees}</p></div></section>`}
 function renderMg(){const el=$('#mg');
   if(!D.acties.length){el.innerHTML=`<div class="m-empty"><div class="m-brand">B.Enable | Control Framework</div><h2>Nog geen implementatieoverzicht</h2><p>Er is nog geen roadmap ingelezen. Lees in Plan bewerken een roadmap in; het overzicht voor de directie wordt daarna automatisch opgebouwd.</p><button class="btn pri" data-mode="edit">Naar Plan bewerken</button></div>`;bindMg();return}
   const M=mgModel(),today=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
@@ -857,6 +893,7 @@ function renderMg(){const el=$('#mg');
    <dl class="m-meta">${D.klant?`<dt>Klant</dt><dd>${esc(D.klant)}</dd>`:''}<dt>Rapportagedatum</dt><dd>${today}</dd><dt>Planperiode</dt><dd>${esc(mLong(1))} – ${esc(mLong(M.H))}</dd><dt>Status plan</dt><dd class="st"><span class="dot ${M.status[0]}"></span>${esc(M.status[1])}</dd>${D.demo?'<dt>Basis</dt><dd>Voorbeeldroadmap · fictief</dd>':''}</dl></header>
    ${mgKpis(M)}
    <section class="m-sec"><h2>Managementbeeld</h2>${mgBeeld(M)}</section>
+   ${mgOntw(M)}
    <section class="m-sec m-p2"><h2>Roadmap op hoofdlijnen <small>Klik op een fase voor de onderliggende acties</small></h2>${mgFases(M)}</section>
    <section class="m-sec m-p3"><h2>Capaciteit en haalbaarheid <small>Gepland tegenover beschikbaar, per maand</small></h2>${mgChart(M)}</section>
    <section class="m-sec m-p4"><h2>Besluiten en aandachtspunten</h2>${mgBesluiten(M)}</section>
