@@ -1,29 +1,20 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<link rel="icon" type="image/svg+xml" data-brand="1" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%231E3A5F%22/%3E%3Ctext%20x%3D%2227%22%20y%3D%2248%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2246%22%20fill%3D%22%23fff%22%3EB%3C/text%3E%3Ccircle%20cx%3D%2249%22%20cy%3D%2243%22%20r%3D%225.5%22%20fill%3D%22%23F0773A%22/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" data-brand="1" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23193657%22/%3E%3Ctext%20x%3D%2227%22%20y%3D%2248%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2246%22%20fill%3D%22%23fff%22%3EB%3C/text%3E%3Ccircle%20cx%3D%2249%22%20cy%3D%2243%22%20r%3D%225.5%22%20fill%3D%22%23F0773A%22/%3E%3C/svg%3E">
 <meta charset="utf-8">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>B.Enable · Implementatieplan Control Framework</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* BRAND:START · gegenereerd uit B.Enable huisstijl v0.2 · niet met de hand wijzigen */
+/* Altijd licht (huisstijl: modus) */
+/* BRAND:START · gegenereerd uit B.Enable huisstijl v0.3 · niet met de hand wijzigen */
 :root{
-  --bg:#F3F5F8; --panel:#FFFFFF; --ink:#14263A; --muted:#566577; --line:#D5DBE2; --accent:#C2410C; --accent-soft:#FBE5D8; --cool:#1E3A5F; --cool-soft:#DDE7F2; --primary:#1E3A5F; --good:#1C7C4A; --good-soft:#DCF1E4; --warn:#8F5E00; --warn-soft:#FBEFD2; --bad:#B42318; --bad-soft:#FBE0DD;
+  --bg:#F5F7FA; --panel:#FFFFFF; --ink:#16283C; --muted:#4A5B6E; --line:#DDE3EA; --accent:#C74612; --accent-soft:#FBEBE3; --cool:#193657; --cool-soft:#EAF0F6; --primary:#193657; --good:#1F7A4D; --good-soft:#E3F3EA; --warn:#8A5A00; --warn-soft:#FBF0D6; --bad:#B42318; --bad-soft:#FCE5E2;
   --display:"Archivo", 'Helvetica Neue', Arial, sans-serif; --body:"IBM Plex Sans", 'Segoe UI', Arial, sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --radius:8px;
+  --radius:10px;
   color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0E1620; --panel:#16212D; --ink:#E6ECF2; --muted:#98A6B5; --line:#2A3743; --accent:#F0773A; --accent-soft:#3A2216; --cool:#7FA8D6; --cool-soft:#16303F; --primary:#7FA8D6; --good:#4CC283; --good-soft:#143323; --warn:#E3A93A; --warn-soft:#3A2C10; --bad:#F07068; --bad-soft:#3D1A18;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0E1620; --panel:#16212D; --ink:#E6ECF2; --muted:#98A6B5; --line:#2A3743; --accent:#F0773A; --accent-soft:#3A2216; --cool:#7FA8D6; --cool-soft:#16303F; --primary:#7FA8D6; --good:#4CC283; --good-soft:#143323; --warn:#E3A93A; --warn-soft:#3A2C10; --bad:#F07068; --bad-soft:#3D1A18;
-  color-scheme:dark;
 }
 /* BRAND:END */
 /* ==========================================================================
@@ -155,7 +146,8 @@ textarea{width:100%;min-height:96px;font-family:var(--mono);font-size:12px}
 .m-scen{margin-top:var(--sp-3)}.m-scen h3{font-size:15px}
 .m-sc th:not(:first-child),.m-sc td:not(:first-child){text-align:right;white-space:nowrap}
 .m-sc .cur{background:var(--be-navy-50);font-weight:600}
-@media print{.m-scen{break-inside:avoid}}
+@media print{.m-scen{break-before:page;break-inside:avoid}}
+.uitgebreid{margin-top:var(--sp-4);border-top:1px solid var(--be-line-soft);padding-top:var(--sp-3)}.uitgebreid>summary{cursor:pointer;font:600 var(--fs-sm) var(--body);color:var(--be-navy)}
 .chip.voorstel{background:#fff;border:1px dashed var(--be-orange);color:var(--be-orange-700);cursor:pointer;font:inherit;font-size:11px;padding:1px 8px;border-radius:99px}
 .chip.kt{background:#FBEBE3;color:#A93A0E;font-weight:600}
 .chip.dec{background:var(--be-orange-50);color:var(--be-orange-700)}
@@ -234,8 +226,8 @@ td.neg,.neg{color:var(--be-bad);font-weight:700}
 .modeseg button{font:600 13px var(--body);padding:7px 16px;border:0;border-radius:4px;background:transparent;color:var(--be-ink-2);cursor:pointer}
 .modeseg button:hover{color:var(--be-navy)}
 .modeseg button.on{background:var(--be-navy);color:#fff}
-.modebar .mb-r{margin-left:auto;display:none;gap:var(--sp-2);align-items:center;flex-wrap:wrap}
-body[data-mode=mgmt] .modebar .mb-r{display:flex}
+.modebar .mb-r{margin-left:auto;display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap}
+body:not([data-mode=mgmt]) .modebar .mg-only{display:none!important}
 body[data-mode=mgmt] .top,body[data-mode=mgmt] #impCard,body[data-mode=mgmt] #app{display:none!important}
 body[data-mode=edit] #mg{display:none}
 #mg{display:block}
@@ -401,7 +393,7 @@ body.pres .m-sec{margin-top:36px}
 
   <!-- modus -->
   <div class="modebar noprint"><div class="modeseg" role="group" aria-label="Modus"><button data-mode="edit" id="mEdit" class="on">Plan bewerken</button><button data-mode="mgmt" id="mMgmt">Managementmodus</button></div>
-    <div class="mb-r"><label class="note" style="display:flex;gap:6px;align-items:center">Status rapport <select id="sRapSt"><option value="concept">Concept</option><option value="definitief">Definitief</option></select></label><button class="btn" id="bPres">Presentatiemodus</button><button class="btn pri" id="bPdf">Exporteer managementrapport (PDF)</button></div></div>
+    <div class="mb-r"><label class="note mg-only" style="display:flex;gap:6px;align-items:center">Status rapport <select id="sRapSt"><option value="concept">Concept</option><option value="definitief">Definitief</option></select></label><button class="btn mg-only" id="bPres">Presentatiemodus</button><button class="btn pri" id="bPdf">Managementrapport (PDF)</button></div></div>
   <button class="btn pres-exit" id="bExit">Sluit presentatie</button>
 
   <!-- header -->
@@ -477,7 +469,7 @@ body.pres .m-sec{margin-top:36px}
               <li><b>Directiebesluit</b>: een besluit of budget dat vóór de start van de actie nodig is.</li>
               <li><b>Voorgesteld besluit</b>: door de tool gemarkeerd (op eigenaar of uit de roadmap); telt als bevestigd zodra jij het bevestigt.</li>
               <li><b>Toets</b>: het moment waarop de criteria van een fase worden beoordeeld; het plan rekent met "acties klaar", een fase is pas behaald na toetsing.</li>
-              <li><b>Vertrekpunt</b>: het niveau per laag, ingeschat met de zelfscan of vastgesteld in de nulmeting (instelling hierboven).</li>
+              <li><b>Vertrekpunt</b>: het niveau per laag, ingeschat met de zelfscan of vastgesteld in de nulmeting (onder Uitgebreide instellingen).</li>
               <li><b>Fase</b>: Snelle verbeteringen, Basis op orde, Doorontwikkeling.</li>
               <li><b>Knelpunt</b>: een maand waarin iemand boven de beschikbare dagen zit, of een actie die start voordat een voorganger klaar is.</li>
             </ul></div>
@@ -486,18 +478,22 @@ body.pres .m-sec{margin-top:36px}
           <div class="field">Startmaand plan<div class="inl"><select id="sMo" aria-label="Maand"></select><select id="sYr" aria-label="Jaar"></select></div></div>
           <div class="field">Standaard beschikbaar per eigenaar<div class="inl"><input type="number" id="sCap" min="1" max="22" style="width:76px"> dagen per maand</div></div>
           <div class="field" style="grid-column:span 2">Inspanning per maat<div class="inl" style="flex-wrap:nowrap;white-space:nowrap">S <input type="number" id="dS" min="1" style="width:56px"> M <input type="number" id="dM" min="1" style="width:56px"> L <input type="number" id="dL" min="1" style="width:56px"> XL <input type="number" id="dXL" min="1" style="width:56px"> dagen</div></div>
+          <div class="field"><span>&nbsp;</span><button class="btn" id="bSchat" title="Schat per actie de maat (S, M, L of XL) op basis van de omschrijving">Schat maat</button></div>
+          <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
+        </div>
+        <details class="uitgebreid"><summary>Uitgebreide instellingen <span class="note">· vertrekpunt, overlap, inleen en beschikbaarheid per periode</span></summary>
+        <div class="fields">
           <div class="field">Vertrekpunt per laag<div class="inl"><select id="sBron" aria-label="Bron van het vertrekpunt"><option value="scan">Ingeschat (zelfscan)</option><option value="nulmeting">Vastgesteld (nulmeting)</option></select><input type="date" id="sBronD" aria-label="Datum nulmeting" style="width:150px"></div></div>
           <div class="field">Overlap tussen fases<div class="inl"><input type="number" id="sOv" min="0" max="12" style="width:64px"> maanden</div></div>
           <div class="field">Externe partijen (inleen)<div class="inl"><input type="text" id="sExt" placeholder="Inleen" style="width:150px" aria-label="Namen van externe partijen, gescheiden door komma's"></div></div>
           <div class="field">Tarief extern<div class="inl">€ <input type="number" id="sTar" min="0" step="10" style="width:72px"> per dag</div></div>
           <div class="field">Beschikbaar per externe partij<div class="inl"><input type="number" id="sCapX" min="1" max="60" style="width:64px"> dagen per maand</div></div>
-          <div class="field"><span>&nbsp;</span><button class="btn" id="bSchat" title="Schat per actie de maat (S, M, L of XL) op basis van de omschrijving">Schat maat</button></div>
-          <div class="field"><span>&nbsp;</span><button class="btn pri" id="bPlan">Plan automatisch inroosteren</button></div>
         </div>
         <div style="margin-top:18px"><h3 style="font-size:13.5px">Beschikbaarheid per periode <span class="note" style="font-weight:400">· vakantie, jaarafsluiting of piekdrukte</span></h3>
           <div id="bepList"></div>
           <div class="row" style="margin-top:8px"><button class="btn" id="bBepAdd">+ Beperking toevoegen</button></div>
           <p class="note">Dagen per maand in die periode; 0 is afwezig. Zie de toelichting bovenaan.</p></div>
+        </details>
         
       </div>
     </section>
@@ -506,7 +502,7 @@ body.pres .m-sec{margin-top:36px}
     <section class="panel">
       <div class="toolbar">
         <nav class="tabs" id="tabs" aria-label="Weergave"><button data-v="fase" class="on">Tijdlijn per fase</button><button data-v="eig">Tijdlijn per eigenaar</button><button data-v="tot">Inspanning per eigenaar</button><button data-v="plan">Actielijst</button><button data-v="opt">Knelpunten en opties</button><button data-v="bes">Besluiten en mijlpalen</button></nav>
-        <div class="tb-act noprint"><span class="note" id="msg" aria-live="polite"></span><button class="btn" id="bPrint" title="Open de Managementmodus en sla het managementrapport op als pdf">Managementrapport (PDF)</button><button class="btn" id="bCopy">Kopieer plan</button><button class="btn pri" id="bCsv">Exporteer csv</button></div>
+        <div class="tb-act noprint"><span class="note" id="msg" aria-live="polite"></span><button class="btn" id="bCopy">Kopieer plan</button><button class="btn pri" id="bCsv">Exporteer csv</button></div>
       </div>
       <div class="view-b" id="view"></div>
     </section>
@@ -775,7 +771,7 @@ function render(){document.body.dataset.view=view;document.body.dataset.mode=mod
   $('#impSum').textContent=D.acties.length?`${D.acties.length} acties in ${D.fases.length} fases ingelezen`:'Nog geen roadmap ingelezen';
   if(mode==='mgmt'){$('#sRapSt').value=D.rapSt==='definitief'?'definitief':'concept';renderMg();return}
   if(!D.acties.length)return;
-  fillStart();$('#sCap').value=D.cap;$('#dS').value=D.dag.S;$('#dM').value=D.dag.M;$('#dL').value=D.dag.L;$('#dXL').value=D.dag.XL;$('#sOv').value=D.overlap||0;$('#sBron').value=D.bronNiv==='nulmeting'?'nulmeting':'scan';$('#sBronD').value=D.bronDatum||'';$('#sBronD').style.display=D.bronNiv==='nulmeting'?'':'none';$('#bepList').innerHTML=bepHtml();bindBep();$('#sExt').value=extList().join(', ');$('#sTar').value=tarief();$('#sCapX').value=D.capExt>0?D.capExt:20;
+  fillStart();$('#sCap').value=D.cap;$('#dS').value=D.dag.S;$('#dM').value=D.dag.M;$('#dL').value=D.dag.L;$('#dXL').value=D.dag.XL;$('#sOv').value=D.overlap||0;$('#sBron').value=D.bronNiv==='nulmeting'?'nulmeting':'scan';$('#sBronD').value=D.bronDatum||'';$('#sBronD').style.display=D.bronNiv==='nulmeting'?'':'none';$('#bepList').innerHTML=bepHtml();{const u=document.querySelector('.uitgebreid');if(u&&!u.dataset.init){u.dataset.init=1;u.open=!!((D.beperk||[]).length||+D.overlap||D.bronNiv==='nulmeting'||(D.ext&&D.ext.join()!=='Inleen'))}}bindBep();$('#sExt').value=extList().join(', ');$('#sTar').value=tarief();$('#sCapX').value=D.capExt>0?D.capExt:20;
   $('#setSum').textContent=`Start ${startTxt()} · ${D.cap} d/mnd per eigenaar · S ${D.dag.S} · M ${D.dag.M} · L ${D.dag.L} · XL ${D.dag.XL} dagen`;
   tiles();document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.v===view;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
   $('#view').innerHTML={fase:vFase,eig:vEig,tot:vTot,plan:vPlan,opt:vOpt,bes:vBes}[view]();bind()}
@@ -817,7 +813,6 @@ $('#bSchat').onclick=()=>{const r=schatAll(),v=replan();save();render();$('#msg'
 $('#bDemo').onclick=()=>{demo();render();setImp(false)};
 $('#bClear').onclick=()=>{if(!$('#bClear').dataset.s){$('#bClear').dataset.s=1;const nietOp=D.acties.length&&!(D.bestandOp&&D.bestandOp>=(D.gewijzigd||0));$('#bClear').textContent=nietOp?'Niet opgeslagen als bestand. Klik nogmaals om toch te wissen':'Klik nogmaals om te wissen';if(nietOp)$('#impMsg').textContent='Tip: sla het plan eerst op met Plan opslaan; wissen kun je niet ongedaan maken.';setTimeout(()=>{delete $('#bClear').dataset.s;$('#bClear').textContent='Alles wissen'},3500);return}D=fresh();save();$('#bClear').textContent='Alles wissen';delete $('#bClear').dataset.s;render();setImp(true)};
 function setImp(open){$('#impBody').style.display=open?'':'none';const b=$('#bTog');b.textContent=open?'Inklappen ▴':'Uitklappen ▾';b.setAttribute('aria-expanded',open)}
-$('#bPrint').onclick=()=>exportPdf();
 $('#bTog').onclick=()=>setImp($('#impBody').style.display==='none');
 function doImport(txt){const m=importRows(parseTable(txt));$('#impMsg').textContent=m||`${D.acties.length} acties ingelezen in ${D.fases.length} fases.`;if(!m){view='fase';render();setImp(false)}}
 $('#bImp').onclick=()=>doImport($('#tPaste').value);
