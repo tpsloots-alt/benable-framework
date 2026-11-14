@@ -206,6 +206,14 @@ td.neg,.neg{color:var(--be-bad);font-weight:700}
 .bep{display:grid;grid-template-columns:minmax(130px,1.2fr) auto auto auto minmax(140px,1.6fr) auto;gap:8px 12px;align-items:center;margin-top:8px}
 .bep label{display:flex;gap:6px;align-items:center;font-size:var(--fs-sm);color:var(--be-ink-2);white-space:nowrap}
 @media (max-width:700px){.bep{grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid var(--be-line-soft)}.bep>select:first-child,.bep>input[type=text]{grid-column:1/-1}.bep select,.bep input{width:100%!important}}
+/* 3.7d toelichting planinstellingen */
+.uitleg{margin-top:var(--sp-4);border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-bg)}
+.uitleg summary{cursor:pointer;padding:9px 12px;font:600 var(--fs-sm) var(--body);color:var(--be-navy)}
+.uitleg[open] summary{border-bottom:1px solid var(--be-line)}
+.uitleg-b{padding:4px 14px 12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 var(--sp-5)}
+.uitleg-b h4{margin:12px 0 4px;font:700 11px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--be-ink-3)}
+.uitleg-b ul{margin:0;padding-left:18px;font-size:var(--fs-sm);color:var(--be-ink-2)}.uitleg-b li{margin:3px 0;line-height:1.45}
+@media print{.uitleg{display:none}}
 /* 3.8 managementmodus (leest dezelfde gegevens als Plan bewerken; geen eigen berekeningen) */
 .modebar{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
 .modeseg{display:inline-flex;border:1px solid var(--be-line);border-radius:var(--r-sm);background:var(--be-surface);padding:2px}
@@ -431,8 +439,37 @@ body.pres .m-sec{margin-top:36px}
         <div style="margin-top:18px"><h3 style="font-size:13.5px">Beschikbaarheid per periode <span class="note" style="font-weight:400">· vakantie, jaarafsluiting of piekdrukte</span></h3>
           <div id="bepList"></div>
           <div class="row" style="margin-top:8px"><button class="btn" id="bBepAdd">+ Beperking toevoegen</button></div>
-          <p class="note">Per regel geef je aan hoeveel dagen per maand een eigenaar (of iedereen) in die periode beschikbaar is; 0 dagen is volledig afwezig. De regel vervangt voor die maanden de standaardcapaciteit, maar verhoogt die nooit. Inroosteren, belasting, knelpunten en de Managementmodus rekenen ermee. Periodes volgen de maanden van het plan; wijzig je de startmaand, controleer dan de regels.</p></div>
-        <p class="note">Inroosteren zet elke actie op het vroegste moment waarop de eigenaar nog capaciteit heeft en nadat alle acties waar hij van afhangt klaar zijn. Bij de volgorde Slim gaan acties met een lange keten erachter (kritiek pad) en snelle winst (hoge prioriteit, maat S of M) voor; Klassiek houdt laag en prioriteit aan. Een fase start pas als de acties van de vorige fase klaar zijn (minus de gekozen overlap); de periodes uit de roadmap zijn dus een indicatie en de geplande periode volgt het plan. Bij Uitvoering geef je per actie een deel aan uitvoerders (bijv. IT 60%, Inleen 20%); de rest blijft bij de eigenaar en elke partij draagt alleen zijn eigen deel van de belasting. Externe partijen (standaard Inleen) tellen niet mee in de eigen capaciteitsbenutting en leveren een kostenindicatie op. Op het tabblad Knelpunten en opties staan oplossingen voor overbelasting. Wat je zelf in Plan bewerken aanpast (start of duur) of aanvinkt bij Vast, blijft staan zolang Vaste acties behouden aan staat. Schat zwaarte kiest S, M, L of XL op basis van de omschrijving (trefwoorden, uitvoering door IT, breed bereik); een maat die je zelf kiest blijft behouden.</p>
+          <p class="note">Dagen per maand in die periode; 0 is afwezig. Zie de toelichting hieronder.</p></div>
+        <details class="uitleg"><summary>Toelichting bij de planinstellingen</summary>
+          <div class="uitleg-b">
+            <div><h4>Automatisch inroosteren</h4>
+            <ul>
+              <li>Elke actie komt op het vroegste moment waarop de eigenaar capaciteit heeft en alle voorgangers klaar zijn.</li>
+              <li><b>Slim</b>: acties met een lange keten erachter (kritiek pad) en snelle winst (prioriteit Hoog, maat S of M) gaan voor.</li>
+              <li><b>Klassiek</b>: eerst de laag, dan de prioriteit.</li>
+              <li>Een fase start pas als de vorige klaar is, min de gekozen overlap. De periodes uit de roadmap zijn een indicatie; de geplande periode volgt het plan.</li>
+              <li>Vaste acties (aangevinkt bij Vast, of zelf aangepaste start of duur) blijven staan zolang Vaste acties behouden aan staat.</li>
+            </ul></div>
+            <div><h4>Beschikbaarheid per periode</h4>
+            <ul>
+              <li>Per regel: eigenaar (of iedereen), van en t/m maand, dagen per maand en een reden.</li>
+              <li>De regel vervangt voor die maanden de standaardcapaciteit, maar verhoogt die nooit. 0 dagen is afwezig.</li>
+              <li>Inroosteren, belasting, knelpunten en de Managementmodus rekenen ermee.</li>
+              <li>Periodes zijn maanden van het plan. Wijzig je de startmaand, controleer dan de regels.</li>
+            </ul></div>
+            <div><h4>Uitvoerders en inleen</h4>
+            <ul>
+              <li>Bij Uitvoering geef je per actie een deel aan uitvoerders, bijvoorbeeld IT 60%, Inleen 20%. De rest blijft bij de eigenaar.</li>
+              <li>Elke partij draagt alleen zijn eigen deel van de belasting.</li>
+              <li>Externe partijen (standaard Inleen) tellen niet mee in de eigen capaciteitsbenutting en geven een kostenindicatie.</li>
+              <li>Oplossingen voor overbelasting staan op het tabblad Knelpunten en opties.</li>
+            </ul></div>
+            <div><h4>Zwaarte van acties</h4>
+            <ul>
+              <li>Schat zwaarte kiest S, M, L of XL op basis van de omschrijving (trefwoorden, uitvoering door IT, breed bereik).</li>
+              <li>Een maat die je zelf kiest blijft behouden.</li>
+            </ul></div>
+          </div></details>
       </div>
     </section>
 
