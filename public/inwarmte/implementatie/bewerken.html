@@ -778,6 +778,13 @@ function risicos(){const r=[],A=D.acties,noOwn=e=>!e||/^niet toegewezen$/i.test(
 function vOpt(){const A=advies(),R=risicos(),X=extStats();
   let s=`<p class="note" style="margin:0 0 12px">Hier staan de knelpunten in capaciteit met opties om ze op te lossen, en signalen over eigenaarschap. Een optie past alleen de betreffende actie aan; daarna zie je direct het effect. Een actie die je oprekt wordt vast gezet.</p>`;
   s+=`<h3>Eigenaarschap</h3>`+(R.length?`<ul style="margin:6px 0 16px;padding-left:18px;display:grid;gap:6px">${R.map(x=>`<li><span class="chip ${x.t==='Geen eigenaar'?'bad':'warn'}">${esc(x.t)}</span> ${esc(x.txt)}</li>`).join('')}</ul>`:`<p class="note" style="margin-bottom:16px">Geen signalen: elke actie heeft een eigenaar en de inspanning is redelijk gespreid.</p>`);
+  {const V=vertraging();s+=`<h3>Vertraging door capaciteit</h3>`;
+    if(!V.fases.length)s+=`<p class="note" style="margin-bottom:16px">Geen fase duurt veel langer dan in de roadmap doordat acties op capaciteit wachten.</p>`;
+    window.__vopt=[];V.fases.forEach(x=>{s+=`<div class="card" style="margin-top:10px"><b>Fase ${x.i+1} · ${esc(x.f.naam)}</b> <span class="note">· duurt ${x.werkelijk} maanden in plaats van ${x.gepland} (roadmap ${esc(x.f.per)}); de acties van ${esc(metEn(x.wie))} passen niet naast elkaar in hun beschikbare dagen en schuiven door</span></div>`});
+    if(V.fases.length){const wie=[...new Set(V.fases.flatMap(x=>x.wie))],seen=new Set(),os=[];
+      [wie].concat(wie.map(e=>[e])).forEach(g=>vertragingOpties(g).forEach(o=>{if(!seen.has(o.txt)){seen.add(o.txt);os.push(o)}}));
+      s+=`<div class="card" style="margin-top:10px"><b>Opties om de einddatum te vervroegen</b> <span class="note">· doorgerekend met dezelfde inroosterregels; Pas toe wijzigt het plan</span>`+(os.length?`<ul style="margin:8px 0 0;padding:0;list-style:none">${os.map(o=>{window.__vopt.push(o);return `<li class="opt"><span class="chip">${esc(o.k)}</span><span class="opt-t">${esc(o.txt)}</span><button class="btn sm" data-vopt="${window.__vopt.length-1}">Pas toe</button></li>`}).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen optie gevonden die de einddatum vervroegt; de duur wordt dan bepaald door fasepoorten en voorgangers.</p>`)+'</div>'}
+    s+='<div style="height:12px"></div>'}
   s+=`<h3>Knelpunten in capaciteit</h3>`;
   if(!A.length)s+=`<p class="note">Geen knelpunten: niemand zit boven de beschikbare dagen per maand.</p>`;
   A.forEach((p,i)=>{s+=`<div class="card" style="margin-top:10px"><b>${esc(p.e)}</b> <span class="note">· ${p.months.length} ${p.months.length===1?'maand':'maanden'} boven de beschikbare dagen (basis ${f1(p.cp)} d/mnd) (${esc(p.months.slice(0,6).map(mLabel).join(', '))}${p.months.length>6?' …':''}), piek ${f1(p.pk)}, in totaal ${f1(p.excess)} dagen te veel</span>${p.opts.length?`<ul style="margin:8px 0 0;padding:0;list-style:none">${p.opts.map((o,j)=>`<li class="opt"><span class="chip">${esc(o.k)}</span><span class="opt-t">${esc(o.txt)}</span><button class="btn sm" data-opt="${i}:${j}">Pas toe</button></li>`).join('')}</ul>`:`<p class="note" style="margin-top:6px">Geen automatische optie gevonden; kies een andere eigenaar of verklein de actie in Plan bewerken.</p>`}</div>`});
@@ -823,6 +830,7 @@ function bind(){
   document.querySelectorAll('[data-padd]').forEach(el=>el.onchange=()=>{if(!el.value)return;const a=byIdF(el.dataset.padd);a.nas=(a.nas||[]).concat(el.value);save();render();$('#msg').textContent='Voorganger toegevoegd; klik op Plan automatisch inroosteren om de volgorde door te voeren.'});
   document.querySelectorAll('[data-pdel]').forEach(el=>el.onclick=()=>{const [i,j]=el.dataset.pdel.split(':'),a=byIdF(i);a.nas=(a.nas||[]).filter(x=>x!==j);save();render()});
   const add=$('#bAdd');if(add)add.onclick=()=>{const n=Math.max(0,...D.acties.map(a=>+a.id.slice(1)))+1,f=D.fases[0];D.acties.push({id:'a'+n,fase:f.key,tekst:'Nieuwe actie',eig:'Niet toegewezen',laag:'',prio:'',maat:'M',maatBron:'hand',start:f.w[0],dur:2,nas:[],bes:false,vast:true});save();render()};
+  document.querySelectorAll('[data-vopt]').forEach(el=>el.onclick=()=>{const o=(window.__vopt||[])[+el.dataset.vopt];if(o){o.apply();save();render();$('#msg').textContent='Optie toegepast en opnieuw ingeroosterd.'}});
   document.querySelectorAll('[data-opt]').forEach(el=>el.onclick=()=>{const [i,j]=el.dataset.opt.split(':').map(Number),o=((advies()[i]||{}).opts||[])[j];if(o){o.apply();save();render()}});
   document.querySelectorAll('[data-mconf]').forEach(el=>el.onclick=()=>{const a=byIdF(el.dataset.mconf);if(a){a.maatBron='ok';save();render()}});
   document.querySelectorAll('[data-bconf]').forEach(el=>el.onclick=()=>{const a=byIdF(el.dataset.bconf);if(a){a.besBron='hand';save();render()}});
@@ -995,12 +1003,45 @@ function mgModel(){
   const status=kn?['bad','Bijsturing nodig: knelpunten in het plan']:(outside.length||bes.length)?['warn','Uitvoerbaar; besluiten en aandachtspunten staan open']:['ok','Uitvoerbaar binnen de beschikbare capaciteit'];
   return{k,L,es,H,avail,capSum,ownTot,ext,risks,adv,over,conf,outside,bes,fases,util,kn,kn_over,status,byId}}
 
+/* Wie bepaalt het tempo: eigen mensen op wie andere acties moeten wachten (startmaand bepaald door hun capaciteit).
+   Een actie spreidt haar dagen over een vaste doorlooptijd; past een tweede actie er niet naast, dan schuift die door. */
+function tempoOf(){const L=loadOf(),A=D.acties,H=Math.max(1,...A.map(endOf)),es=eigList().filter(e=>!isExt(e)&&!/^niet toegewezen$/i.test(e));
+  const per=es.map(e=>{const o=L[e]||{};let bezet=0,dg=0;for(let m=1;m<=H;m++){const v=o[m]||0;dg+=v;if(v>0.01)bezet++}return{e,bezet,dg,wacht:A.filter(a=>actief(a)&&a.rd&&a.rd.t==='capaciteit'&&a.rd.r===e).length}});
+  const tot=per.reduce((s,x)=>s+x.dg,0)||1,top=per.filter(x=>x.wacht>0).sort((a,b)=>b.wacht-a.wacht||b.dg-a.dg).slice(0,2);
+  const T=top.length?top:per.slice().sort((a,b)=>b.dg-a.dg).slice(0,1);
+  return{H,top:T,aandeel:T.reduce((s,x)=>s+x.dg,0)/tot,bepalend:top.length>0,per}}
+/* Vertraging door capaciteit: fases die veel langer duren dan in de roadmap, en wie daar vol zit. */
+function vertraging(){const T=tempoOf(),out=[];
+  D.fases.forEach((f,i)=>{const A=D.acties.filter(a=>faseIdx(a.fase)===i&&actief(a));if(!A.length||!f.w0)return;
+    const gepland=f.w0[1]-f.w0[0]+1,werkelijk=f.w[1]-f.w[0]+1;if(werkelijk<gepland*1.5||werkelijk-gepland<3)return;
+    const tel={};A.forEach(a=>{if(a.rd&&a.rd.t==='capaciteit'&&a.rd.r)tel[a.rd.r]=(tel[a.rd.r]||0)+1});
+    let wie=Object.entries(tel).sort((a,b)=>b[1]-a[1]).map(x=>x[0]).filter(e=>!isExt(e)).slice(0,2);if(!wie.length)wie=T.top.map(x=>x.e);
+    out.push({f,i,gepland,werkelijk,wie})});
+  return{T,fases:out}}
+const metEn=a=>a.length<2?(a[0]||''):a.slice(0,-1).join(', ')+' en '+a[a.length-1];
+/* Opties tegen vertraging, doorgerekend op een kopie: effect op de einddatum. */
+function simEinde(fn){const orig=D;let r=null;try{D=JSON.parse(JSON.stringify(orig));fn(D);replan();r=Math.max(...D.acties.map(endOf))}finally{D=orig}return r}
+function vertragingOpties(e){if(Array.isArray(e)&&e.length>1)return vertragingSamen(e);if(Array.isArray(e))e=e[0];const xn=extList()[0];
+  const T=tempoOf(),bezet=new Set(T.top.map(x=>x.e)),coll=T.per.filter(x=>x.e!==e&&!bezet.has(x.e)&&!/directie|^mt$|bestuur/i.test(x.e)).sort((a,b)=>a.dg-b.dg)[0],nu=capBase(e);
+  return varianten([30,50].map(pc=>({k:'Inleen',txt:`Zet ${pc}% van de acties van ${e} over op ${xn} (${f1(dagenVan([e],pc))} dagen, circa ${eur(dagenVan([e],pc)*tarief())})`,fn:d=>verplaats(d,[e],xn,pc)})))
+   .concat(coll?varianten([30,50].map(pc=>({k:'Herverdelen',txt:`Laat ${coll.e} ${pc}% van de acties van ${e} uitvoeren`,fn:d=>verplaats(d,[e],coll.e,pc)}))):[])
+   .concat(varianten([4,8].map(x=>({k:'Meer dagen',txt:`Geef ${e} ${f1(nu+x)} in plaats van ${f1(nu)} dagen per maand`,fn:d=>{d.capE=d.capE||{};d.capE[e]=nu+x}}))))}
+/* Varianten: een groter deel of meer dagen wordt alleen getoond als het duidelijk meer oplevert (≥ 3 maanden extra).
+   Pas vanaf ongeveer de helft kunnen twee acties van dezelfde persoon naast elkaar lopen; daar zit vaak de grote winst. */
+function varianten(lijst){const last=Math.max(...D.acties.map(endOf)),out=[];let best=last;
+  lijst.forEach(v=>{const ne=simEinde(v.fn);if(ne!=null&&ne<last&&(out.length===0||ne<=best-3)){best=ne;out.push({k:v.k,txt:`${v.txt}: einde ${mYr(ne)} in plaats van ${mYr(last)} (${last-ne} ${last-ne===1?'maand':'maanden'} eerder)`,apply:()=>{v.fn(D);replan()}})}});return out}
+const deelVan=(a,e,pc)=>Math.min(pc,Math.round((shares(a).find(s=>s[0]===e)||[0,0])[1]*100));
+function verplaats(d,es,naar,pc){es.forEach(e=>d.acties.filter(a=>actief(a)&&!a.vast&&deelVan(a,e,pc)>0).forEach(a=>moveShare(a,e,naar,deelVan(a,e,pc))))}
+const dagenVan=(es,pc)=>es.reduce((s,e)=>s+D.acties.filter(a=>actief(a)&&!a.vast&&deelVan(a,e,pc)>0).reduce((t,a)=>t+D.dag[a.maat]*deelVan(a,e,pc)/100,0),0);
+function vertragingSamen(es){const xn=extList()[0],nm=metEn(es);
+  return varianten([30,50].map(pc=>({k:'Inleen',txt:`Zet ${pc}% van de acties van ${nm} over op ${xn} (${f1(dagenVan(es,pc))} dagen, circa ${eur(dagenVan(es,pc)*tarief())})`,fn:d=>verplaats(d,es,xn,pc)})))
+   .concat(varianten([4,8].map(x=>({k:'Meer dagen',txt:`Geef ${nm} elk ${x} dagen per maand extra`,fn:d=>{d.capE=d.capE||{};es.forEach(e=>{d.capE[e]=capBase(e)+x})}}))))}
 function mgKpis(M){const{k}=M,ut=Math.round(M.util*100);
   const t=(l,v,s,c)=>`<div class="mk ${c||''}"><div class="mk-l">${l}</div><div class="mk-v">${v}</div><div class="mk-s">${s}</div></div>`;
   return `<div class="m-kpis">`+
    t('Verbeteracties',D.acties.length,`in ${D.fases.length} fases${D.acties.some(a=>a.gereed)?` · ${D.acties.filter(a=>a.gereed).length} gereed`:''}`)+
    t('Totale inspanning',`<small style="margin:0 4px 0 0">circa</small>${rd5(k.tot)}<small>dagen</small>`,`looptijd ${k.last} maanden`)+
-   t('Capaciteitsbenutting',`${ut}<small>%</small>`,`circa ${rd5(M.ownTot)} van ${rd5(M.avail)} eigen beschikbare dagen (${M.es.length} eigenaren, ${M.H} maanden)${M.ext.days?`; inleen telt niet mee`:''}`,k.over?'bad':ut>=85?'warn':'ok')+
+   (()=>{const T=tempoOf(),pc=Math.round(T.aandeel*100),nm=T.top.map(x=>esc(x.e)),wt=T.top.map(x=>x.wacht);return t('Wie bepaalt het tempo',`${pc}<small>% van het werk</small>`,`${metEn(nm)}${T.bepalend?` · ${metEn(wt.map(String))} acties wachten op ${wt.length>1?'hen':'deze persoon'}`:' · geen acties wachten op capaciteit'} · gemiddelde benutting ${ut}%${M.ext.days?', zonder inleen':''}`,T.bepalend&&pc>=50?'warn':'ok')})()+
    t('Knelpunten',M.kn,M.kn?`${M.over.length} overbelaste maanden · ${M.conf.length} afhankelijkheden niet gehaald`:'geen overbelasting en alle afhankelijkheden gehaald',M.kn?'bad':'ok')+
    t('Directiebesluiten',M.bes.length,M.bes.length?(M.bes.filter(besVoorstel).length?`waarvan ${M.bes.filter(besVoorstel).length} nog voorgesteld`:'acties waarvoor een besluit nodig is'):'geen besluit gemarkeerd',M.bes.length?'warn':'')+`</div>`}
 
@@ -1009,6 +1050,7 @@ function mgBeeld(M){const{k}=M,pl=(n,s,m)=>n===1?s:m;
   const rs=[];if(M.over.length)rs.push(`in ${new Set(M.over.map(o=>o.m)).size} ${pl(new Set(M.over.map(o=>o.m)).size,'maand','maanden')} staat een eigenaar boven de beschikbare capaciteit (piek circa ${nf0.format(k.peak)} d/mnd, ${esc(k.pe)})`);
   if(M.conf.length)rs.push(`${M.conf.length} ${pl(M.conf.length,'actie start','acties starten')} voordat de voorgaande actie klaar is`);
   if(M.outside.length)rs.push(`${M.outside.length} ${pl(M.outside.length,'actie ligt','acties liggen')} buiten de periode van de eigen fase`);
+  {const V=vertraging();V.fases.forEach(x=>rs.push(`fase ${x.i+1} (${esc(x.f.naam)}) duurt ${x.werkelijk} maanden in plaats van ${x.gepland}, omdat de acties van ${esc(metEn(x.wie))} na elkaar moeten; zie de opties bij Knelpunten`))}
   if(M.risks.length)rs.push(M.risks.map(x=>x.kort).join('; '));
   {const nb=D.acties.filter(beoordeeld).length;if(nb<D.acties.length/2)rs.push(`de inspanning van ${D.acties.length-nb} van de ${D.acties.length} acties is nog een automatische schatting, niet beoordeeld door de adviseur`)}
   const risk=rs.length?'Aandachtspunten: '+rs.join('; ')+'.':'Er zijn geen capaciteitsoverschrijdingen en alle afhankelijkheden worden gehaald.';
@@ -1053,6 +1095,7 @@ function mgBesluiten(M){const R=[];
   const byE={};M.over.forEach(x=>(byE[x.e]=byE[x.e]||[]).push(x));
   Object.entries(byE).forEach(([e,xs])=>{xs.sort((a,b)=>a.m-b.m);const mx=xs.reduce((p,c)=>c.v>p.v?c:p,xs[0]);R.push({o:2,c:'bad',t:'Capaciteit',a:`${xs.length} ${xs.length===1?'maand':'maanden'} boven capaciteit`,e,p:xs.map(x=>mYr(x.m)).join(', '),r:`Piek circa ${nf0.format(mx.v)} d/mnd in ${mLabel(mx.m)}, beschikbaar ${f1(mx.cap)} d/mnd.`,s:xs[0].m})});
   M.outside.forEach(a=>{const f=D.fases[faseIdx(a.fase)];R.push({o:3,c:'warn',t:'Buiten fase',a:a.tekst,e:a.eig,p:mSpan(a.start,endOf(a)),r:`Fase ${f.naam} loopt van ${mYr(f.w[0])} tot ${mYr(f.w[1])}.`,s:a.start})});
+  vertraging().fases.forEach(x=>{const o=vertragingOpties(x.wie)[0];R.push({o:2.5,c:'warn',t:'Vertraging',a:`Fase ${x.i+1} duurt ${x.werkelijk} maanden (roadmap ${x.gepland})`,e:metEn(x.wie),p:mSpan(x.f.w[0],x.f.w[1]),r:`De acties van ${metEn(x.wie)} passen niet naast elkaar in hun beschikbare dagen en schuiven door.${o?' Mogelijke oplossing: '+o.txt+'.':''}`,s:x.f.w[0]})});
   M.risks.forEach(x=>R.push({o:4,c:'warn',t:x.t,a:x.kort,e:'',p:'',r:x.txt,s:999}));
   if(M.ext.days)R.push({o:0.5,c:'dec',t:'Budget inleen',a:`circa ${rd5(M.ext.days)} dagen inleen`,e:'',p:'',r:`Indicatie circa ${rdE(M.ext.cost)} bij ${eur(tarief())} per dag; budget vooraf vaststellen.`,s:0});
   M.adv.forEach(p=>{if(p.opts[0]){const r=R.find(x=>x.t==='Capaciteit'&&x.e===p.e);if(r)r.r+=' Mogelijke oplossing: '+p.opts[0].txt+'.'}});
@@ -1114,7 +1157,7 @@ function mgUitgangspunten(M){const A=D.acties,nb=A.filter(beoordeeld).length,nde
   const r=(k,v)=>`<tr><th scope="row">${k}</th><td>${v}</td></tr>`;
   const rows=[
     r('Planperiode',`${esc(mLong(1))} tot en met ${esc(mLong(M.H))} (${M.H} maanden)${D.start?'':'; nog geen startmaand gekozen, daarom maandnummers'}.`),
-    r('Capaciteit',`Standaard ${D.cap} dagen per maand per eigenaar${afw.length?`; afwijkend: ${afw.map(([e,v])=>`${esc(e)} ${f1(v)}`).join(', ')}`:''}. Elke betrokkene draagt alleen zijn eigen deel van een actie.`),
+    r('Capaciteit',`Standaard ${D.cap} dagen per maand per eigenaar${afw.length?`; afwijkend: ${afw.map(([e,v])=>`${esc(e)} ${f1(v)}`).join(', ')}`:''}. Elke betrokkene draagt alleen zijn eigen deel van een actie. "Wie bepaalt het tempo" = eigen mensen op wie andere acties wachten, omdat een actie haar dagen over een vaste doorlooptijd spreidt en een tweede actie er niet naast past; gemiddelde benutting = geplande eigen dagen gedeeld door de beschikbare dagen van alle eigenaren over de hele looptijd.`),
     r('Beschikbaarheid per periode',(D.beperk||[]).length?D.beperk.map(b=>`${esc(b.e||'Alle eigenaren')} ${esc(mSpan(b.van,b.tot))}: ${f1(b.d)} d/mnd${b.r?` (${esc(b.r)})`:''}`).join('; ')+'.':'Geen beperkingen opgegeven (vakanties en jaarafsluiting niet apart verwerkt).'),
     r('Inspanning per maat',`S ${D.dag.S}, M ${D.dag.M}, L ${D.dag.L}, XL ${D.dag.XL} dagen; doorlooptijd S ${D.mnd.S}, M ${D.mnd.M}, L ${D.mnd.L}, XL ${D.mnd.XL} ${D.mnd.XL===1?'maand':'maanden'}. ${nb} van ${A.length} maten beoordeeld door de adviseur; de rest is een automatische schatting op basis van de omschrijving.${nv?` ${nv} ${nv===1?'actie is':'acties zijn'} verlengd omdat ze anders meer vragen dan de beschikbare dagen.`:''}`),
     r('Volgorde',`Eerst prioriteit (Hoog, Midden, Laag), dan acties waar andere acties op wachten, dan klein vóór groot, dan de laag. ${ndep?`${ndep} ${ndep===1?'afhankelijkheid':'afhankelijkheden'} tussen acties vastgelegd.`:'Geen afhankelijkheden tussen acties vastgelegd; de volgorde binnen een fase volgt alleen uit prioriteit en capaciteit.'}`),
@@ -1180,8 +1223,14 @@ $('#bPres').onclick=startPres;$('#bPdf').onclick=exportPdf;$('#bExit').onclick=e
 /* === FRAMEWORK: roadmap uit het tabblad Verbeterroadmap samenvoegen op actienummer ===
    Het framework bepaalt de inhoud (tekst, laag, fase, eigenaar, prioriteit, status); de planner de planning. */
 const PRN=['Hoog','Midden','Laag'];
-function fwVelden(x,B){const f=B.fases[x.fase]||B.fases[0];return{tekst:x.tekst,laag:`${x.laag} · ${B.lagen[x.laag-1]||''}`,fase:f[0]+'|'+f[1],eig:x.eig||'Niet toegewezen',prio:PRN[x.prio]||'Midden',gereed:x.stat===2,loopt:x.stat===1,norm:x.norm||'',tabNaam:x.tabNaam||'',bev:x.s,eigen:!!x.eigen}}
-const FWK=['tekst','laag','fase','eig','prio','gereed','loopt'];
+/* "Financial control / operations" of "Projectmanagement met commercie" = één eigenaar (het eerste deel) en uitvoerders
+   (de andere delen, gelijke delen van de inspanning). Namen krijgen de schrijfwijze die elders als eigenaar voorkomt. */
+const EIGSEP=/\s*(?:\/|&|\+|\bmet\b)\s*/i;
+function eigSplits(raw,B){const parts=String(raw||'').split(EIGSEP).map(s=>s.trim()).filter(Boolean);if(!parts.length)return{eig:'Niet toegewezen',uit:[]};
+  const naam=s=>{const l=s.toLowerCase(),c=(B&&B.acties||[]).map(x=>x.eig).find(e=>e&&!EIGSEP.test(e)&&e.toLowerCase()===l);return c||s.charAt(0).toUpperCase()+s.slice(1)};
+  const ps=[...new Set(parts.map(naam))],n=ps.length,p=Math.floor(100/n);return{eig:ps[0],uit:ps.slice(1).map(x=>({n:x,p}))}}
+function fwVelden(x,B){const f=B.fases[x.fase]||B.fases[0],sp=eigSplits(x.eig,B);return{tekst:x.tekst,laag:`${x.laag} · ${B.lagen[x.laag-1]||''}`,fase:f[0]+'|'+f[1],eig:sp.eig,eigRaw:x.eig||'',uitFw:sp.uit,prio:PRN[x.prio]||'Midden',gereed:x.stat===2,loopt:x.stat===1,norm:x.norm||'',tabNaam:x.tabNaam||'',bev:x.s,eigen:!!x.eigen}}
+const FWK=['tekst','laag','fase','eigRaw','prio','gereed','loopt'];
 function fwDiff(){const B=bron();if(!B)return null;const P=new Map(D.acties.filter(a=>a.src).map(a=>[a.src,a])),nw=[],ch=[],vv=[];
   B.acties.forEach(x=>{const a=P.get(x.id);if(!a){nw.push(x);return}const v=fwVelden(x,B);if(a.verv||FWK.some(k=>String(a[k]==null?'':a[k])!==String(v[k]==null?'':v[k])))ch.push(x)});
   const ids=new Set(B.acties.map(x=>x.id));D.acties.forEach(a=>{if(a.src&&!ids.has(a.src)&&!a.verv)vv.push(a)});
@@ -1191,8 +1240,8 @@ function fwToepassen(){const d=fwDiff();if(!d)return null;const B=d.B;
   /* fases uit het framework; bestaande geplande periodes blijven staan */
   const old=D.fases||[];D.fases=B.fases.map((f,i)=>{const key=f[0]+'|'+f[1],o=old.find(x=>x.key===key);return o||{key,naam:f[0],per:f[1],w:windowOf(f[1],i),w0:windowOf(f[1],i)}});
   let n=Math.max(0,...D.acties.map(a=>+String(a.id).slice(1)||0));
-  d.nw.forEach(x=>{const v=fwVelden(x,B),f=D.fases[faseIdx(v.fase)],a=Object.assign({id:'a'+(++n),src:x.id,maat:'M',start:f.w[0],dur:2,nas:[],uit:[],bes:/directie|mt|bestuur/i.test(v.eig)},v);const s=schat(a);a.maat=s.m;a.why=s.why;a.maatBron='schat';a.dur=D.mnd[a.maat];D.acties.push(a)});
-  d.ch.forEach(x=>{const a=D.acties.find(y=>y.src===x.id),v=fwVelden(x,B);if(a.eig!==v.eig)a.uit=parseUit(fmtUit(a),v.eig);Object.assign(a,v);delete a.verv});
+  d.nw.forEach(x=>{const v=fwVelden(x,B),f=D.fases[faseIdx(v.fase)],a=Object.assign({id:'a'+(++n),src:x.id,maat:'M',start:f.w[0],dur:2,nas:[],bes:/directie|mt|bestuur/i.test(v.eig)},v,{uit:v.uitFw.map(u=>({n:u.n,p:u.p}))});const s=schat(a);a.maat=s.m;a.why=s.why;a.maatBron='schat';a.dur=D.mnd[a.maat];D.acties.push(a)});
+  d.ch.forEach(x=>{const a=D.acties.find(y=>y.src===x.id),v=fwVelden(x,B);if((a.eigRaw==null?a.eig:a.eigRaw)!==v.eigRaw){const eigen=(a.uit||[]).filter(u=>!v.uitFw.some(w=>w.n===u.n)&&u.n!==v.eig);a.uit=parseUit(fmtUit({uit:v.uitFw.concat(eigen)}),v.eig)}const{uitFw,...rest}=v;Object.assign(a,rest);delete a.verv});
   d.vv.forEach(a=>{a.verv=1});
   D.fwNiv=B.niveaus;D.fwSync=Date.now();D.bronNiv='nulmeting';D.demo=false;D.fwDemo=!!B.demo;
   try{const k=localStorage.getItem('be_klant');if(k)D.klant=k}catch(e){}
