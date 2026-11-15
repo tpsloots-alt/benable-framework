@@ -100,6 +100,15 @@ Het implementatieplan staat per klant in de beveiligde map, bijvoorbeeld `public
 - `bewerken.html` is de **bewerkversie**: het volledige plan. De server levert dit bestand alleen na **pincode 2**, onder hetzelfde adres. Rechtstreeks openen kan niet.
 - Bouwen vanuit de planningstool: `python3 tools/implementatie/bouw.py implementatieplan.html public/inwarmte/implementatie/`
 - De roadmap-module moet `RM.export()` hebben: `python3 tools/implementatie/rm_export.py bron.html` (eenmalig per frameworkbron, vóór `lock.py`).
+- **Volgorde bij een nieuwe frameworkversie (InWarmte):**
+  ```
+  python3 tools/implementatie/rm_export.py inwarmte.html
+  python3 tools/implementatie/tabblad.py inwarmte.html
+  python3 tools/lock.py inwarmte.html public/inwarmte/index.html sturing,organisatie,cyclus,datamodel,roadmap,implementatie
+  node scripts/zet-pincode.mjs <pincode 1> public/inwarmte/index.html
+  python3 tools/implementatie/bouw.py implementatieplan.html public/inwarmte/implementatie/
+  ```
+  Voor een tweede klant (bijv. Projectorganisaties) dezelfde stappen met die map, en een eigen `PIN2_<MAP>` in Cloudflare.
 
 **Pincode 2** staat niet in de repo maar als geheime instelling in Cloudflare (`PIN2_INWARMTE` voor `/inwarmte/`). Zie `node scripts/zet-pincode2.mjs /inwarmte/ <pincode>`. Na een juiste pincode zet de server een cookie dat hoort bij die persoonlijke link en die map, geldig maximaal 10 uur of tot de link verloopt. Na 5 foute pogingen wacht de link 15 minuten (bijgehouden in de KV-opslag `TOEGANG`). Het gebruik van pincode 2 staat in het linkgebruik (`pin2`, `pin2Aantal`).
 
