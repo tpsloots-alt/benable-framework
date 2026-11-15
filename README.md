@@ -108,7 +108,7 @@ Het implementatieplan staat per klant in de beveiligde map, bijvoorbeeld `public
   node scripts/zet-pincode.mjs <pincode 1> public/inwarmte/index.html
   python3 tools/implementatie/bouw.py implementatieplan.html public/inwarmte/implementatie/
   ```
-  Voor een tweede klant (bijv. Projectorganisaties) dezelfde stappen met die map, en een eigen `PIN2_<MAP>` in Cloudflare.
+  Projectorganisaties: `tabblad.py projectorganisaties-rm.html projectorganisaties-rm.html 14` (tabblad 14, na Verbeterroadmap 13); per branche een eigen plan, het venster laadt opnieuw bij een andere branche. Warmtebedrijf (casus): tabblad 12, `lock.py … geen` (geen pincode 1). Elke map een eigen `PIN2_<MAP>` in Cloudflare: `PIN2_INWARMTE`, `PIN2_PROJECTORGANISATIES`, `PIN2_WARMTEBEDRIJF`.
 
 **Pincode 2** staat niet in de repo maar als geheime instelling in Cloudflare (`PIN2_INWARMTE` voor `/inwarmte/`). Zie `node scripts/zet-pincode2.mjs /inwarmte/ <pincode>`. Na een juiste pincode zet de server een cookie dat hoort bij die persoonlijke link en die map, geldig maximaal 10 uur of tot de link verloopt. Na 5 foute pogingen wacht de link 15 minuten (bijgehouden in de KV-opslag `TOEGANG`). Het gebruik van pincode 2 staat in het linkgebruik (`pin2`, `pin2Aantal`).
 

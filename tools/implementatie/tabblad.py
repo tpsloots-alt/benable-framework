@@ -16,7 +16,7 @@ h=h[:nav.end()]+'\n%s<!-- IMPL:NAV --><a href="#implementatie"><span>%s</span>Im
 sec='''<!-- IMPL:SECTIE -->
 <section class="view" id="v-implementatie">
   <h1>Implementatieplan</h1>
-  <p class="lede">Van verbeterroadmap naar uitvoering: wie doet wat en wanneer, wat dat vraagt aan capaciteit en welke besluiten nodig zijn. Het plan gebruikt de acties uit de verbeterroadmap (tabblad 11).</p>
+  <p class="lede">Van verbeterroadmap naar uitvoering: wie doet wat en wanneer, wat dat vraagt aan capaciteit en welke besluiten nodig zijn. Het plan gebruikt de acties uit de verbeterroadmap.</p>
   <div id="implHost"><p class="note">Het implementatieplan wordt geladen…</p></div>
 </section>
 <!-- /IMPL:SECTIE -->
@@ -27,10 +27,13 @@ v=re.search(r"const views=\[([^\]]*)'roadmap'",h);assert v,'routering niet gevon
 h=h[:v.end()]+",'implementatie'"+h[v.end():]
 css='\n#v-implementatie{max-width:1360px}\n#implHost iframe{width:100%;border:0;display:block;min-height:640px;background:transparent}\n'
 i=h.index('</style>');h=h[:i]+'/* IMPL:CSS */'+css+h[i:] if '/* IMPL:CSS */' not in h else h
-js=r'''/* IMPL:START tabblad Implementatieplan: eigen bestand in implementatie/ (lees- of bewerkversie, de server kiest); leest tabblad 11 via RM.export() */
+js=r'''/* IMPL:START tabblad Implementatieplan: eigen bestand in implementatie/ (lees- of bewerkversie, de server kiest); leest de verbeterroadmap via RM.export() */
 (function(){let fr=null;
   function fit(){try{const d=fr.contentDocument;if(!d||!d.body)return;const w=d.querySelector('.wrap')||d.body,h=Math.ceil(w.getBoundingClientRect().bottom+(d.defaultView.scrollY||0))+8;if(Math.abs(fr.offsetHeight-h)>4)fr.style.height=h+'px'}catch(e){}}
-  function laad(){if(fr||location.hash!=='#implementatie'||!window.RM||document.readyState!=='complete')return;const host=document.getElementById('implHost');if(!host)return;
+  let sleutel=null;
+  /* Frameworks met branches (Projectorganisaties): bij een andere branche hoort een ander plan; het venster laadt dan opnieuw. */
+  function wissel(){if(!window.RM||RM.__impl)return;RM.__impl=1;const r0=RM.refresh;RM.refresh=function(){const out=r0.apply(this,arguments);try{const k=RM.export().key;if(fr&&k!==sleutel){sleutel=k;fr.contentWindow.location.reload()}}catch(e){}return out}}
+  function laad(){wissel();if(fr||location.hash!=='#implementatie'||!window.RM||document.readyState!=='complete')return;const host=document.getElementById('implHost');if(!host)return;try{sleutel=RM.export().key}catch(e){}
     fr=document.createElement('iframe');fr.src='implementatie/';fr.title='Implementatieplan';fr.setAttribute('allow','fullscreen');fr.allowFullscreen=true;
     host.innerHTML='';host.appendChild(fr);
     fr.addEventListener('load',()=>{fit();try{new ResizeObserver(fit).observe(fr.contentDocument.body)}catch(e){}});setInterval(fit,1000)}
