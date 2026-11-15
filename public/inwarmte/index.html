@@ -305,6 +305,9 @@ tr.sum td{border-top:2px solid var(--be-navy)}
   .grid{gap:10px}
 }
 /* DESIGN:END */
+/* IMPL:CSS */
+#v-implementatie{max-width:1360px}
+#implHost iframe{width:100%;border:0;display:block;min-height:640px;background:transparent}
 
 /* LOCK:START presentatie-slot */
 section.view.locked{position:relative}
@@ -345,6 +348,9 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
     <a href="#cyclus"><span>09</span>Stuurcyclus en rapportages</a>
     <a href="#datamodel"><span>10</span>Datamodel</a>
     <a href="#roadmap"><span>11</span>Verbeterroadmap</a>
+    <!-- IMPL:NAV --><a href="#implementatie"><span>12</span>Implementatieplan</a><!-- /IMPL:NAV -->
+    
+    
     <a href="#begrippen"><span>A</span>Begrippen</a>
   </div>
   <div class="sidenote">Projectnamen, plaatsen, techniek en fase komen van inwarmte.nl. Aantallen aansluitingen, bedragen, entiteiten en partnerbelangen zijn fictief.</div>
@@ -761,6 +767,13 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
   <div id="rmRoad"></div>
 </section>
 
+<!-- IMPL:SECTIE -->
+<section class="view" id="v-implementatie">
+  <h1>Implementatieplan</h1>
+  <p class="lede">Van verbeterroadmap naar uitvoering: wie doet wat en wanneer, wat dat vraagt aan capaciteit en welke besluiten nodig zijn. Het plan gebruikt de acties uit de verbeterroadmap (tabblad 11).</p>
+  <div id="implHost"><p class="note">Het implementatieplan wordt geladen…</p></div>
+</section>
+<!-- /IMPL:SECTIE -->
 <!-- A BEGRIPPEN -->
 <section class="view" id="v-begrippen">
   <h1>Begrippen</h1>
@@ -785,7 +798,7 @@ const sgn=(v,f)=>(v>0?'+':v<0?'−':'')+f(Math.abs(v));
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
 /* ---------- ROUTING ---------- */
-const views=['overzicht','basis','marge','omzet','opwekking','realisatie','pl','kpis','sturing','organisatie','cyclus','datamodel','roadmap','begrippen'];
+const views=['overzicht','basis','marge','omzet','opwekking','realisatie','pl','kpis','sturing','organisatie','cyclus','datamodel','roadmap','implementatie','begrippen'];
 function route(){
   const h=location.hash.replace('#','');const v=views.includes(h)?h:'overzicht';
   views.forEach(x=>$('#v-'+x).classList.toggle('on',x===v));
@@ -1856,7 +1869,18 @@ function scan(){const host=$('#scan'),res=$('#scanRes');if(!host)return;const cr
   if(res){const f=N.find(n=>n.eff<3),gem=N.reduce((a,n)=>a+n.eff,0)/N.length,c=f?(crit[f.i]||['Laag '+(f.i+1),[]]):null;
    res.innerHTML=`<h2>Advies</h2>${!f?'<p>Alle lagen staan op niveau 3 of hoger. Richt je op doorontwikkeling en automatisering.</p>':`<p>Begin bij <b>${esc(c[0])}</b> (niveau ${f.eff}). Verbeteringen in hogere lagen leveren pas iets op als deze laag op orde is.</p><p class="note">Doelniveau per laag: 3.${c[1][Math.min(2,f.eff)]?' Volgende stap: '+esc(c[1][Math.min(2,f.eff)])+'.':''}</p><p class="note">De acties voor deze laag staan hieronder bovenaan in elke periode.</p>`}<p class="note">Gemiddelde volwassenheid: ${gem.toFixed(1).replace('.',',')} van 5.</p>`}}
 function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road();scan()}
-window.RM={refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}document.querySelectorAll('.rmPanel').forEach(c=>c.remove());all()}};
+/* RM:EXPORT */
+/* Levert de roadmap aan het implementatieplan. Alleen lezen: het plan verandert niets in het framework. */
+function rmExport(){const crit=window.__scanCrit||[],its=items();
+  return{versie:1,naam:C.naam,key:K,demo:!!D.demo,lagen:C.lagen.slice(),fases:C.fases.map(f=>f.slice()),
+   open:its.filter(x=>!st(x.id)).length,beoordeeld:its.filter(x=>st(x.id)).length,
+   niveaus:niveaus().map(n=>({laag:n.i+1,naam:C.lagen[n.i],eff:n.eff,afg:n.afg,man:n.man||null,b:n.b,crit:((crit[n.i]||[])[1]||[]).slice()})),
+   acties:acties().map(a=>({id:a.id,tekst:a.tekst,laag:a.laag,fase:+a.fase||0,eig:a.eig||'',prio:+a.prio||0,stat:+a.stat||0,s:a.s,eigen:!!a.eigen,norm:a.it?a.it.norm:'',groep:a.it?a.it.groep:'',tab:a.tab||'',tabNaam:a.tab?tabNaam(a.tab):'',o:a.o||''})),
+   vast:its.map(it=>({id:it.id,tabNaam:tabNaam(it.tab),laag:it.laag,groep:it.groep,norm:it.norm,s:st(it.id),o:(D.st[it.id]||{}).o||'',actie:it.actie}))}}
+/* Volledige stand van de vastleggingen, voor het versiebestand; laad() zet een opgeslagen stand terug. */
+const rmStaat=()=>JSON.parse(JSON.stringify(D));
+function rmLaad(d){if(!d||typeof d!=='object')return;D=Object.assign({st:{},act:{},extra:[]},d);save();document.querySelectorAll('.rmPanel').forEach(c=>c.remove());all()}
+window.RM={export:rmExport,staat:rmStaat,laad:rmLaad,refresh(){const k=C.key();if(k!==K){K=k;D=LS.get(K,null)||fresh(true)}document.querySelectorAll('.rmPanel').forEach(c=>c.remove());all()}};
 all();
 })();
 
@@ -1873,10 +1897,20 @@ all();
   window.addEventListener('hashchange',()=>setTimeout(crumb,0));crumb();
   $('#tbPrint').onclick=()=>{try{window.print()}catch(e){$('#tbMsg').textContent='Gebruik Ctrl+P (Cmd+P) om af te drukken of als pdf op te slaan.'}};
 })();
+/* IMPL:START tabblad Implementatieplan: eigen bestand in implementatie/ (lees- of bewerkversie, de server kiest); leest tabblad 11 via RM.export() */
+(function(){let fr=null;
+  function fit(){try{const d=fr.contentDocument;if(!d||!d.body)return;const w=d.querySelector('.wrap')||d.body,h=Math.ceil(w.getBoundingClientRect().bottom+(d.defaultView.scrollY||0))+8;if(Math.abs(fr.offsetHeight-h)>4)fr.style.height=h+'px'}catch(e){}}
+  function laad(){if(fr||location.hash!=='#implementatie'||!window.RM||document.readyState!=='complete')return;const host=document.getElementById('implHost');if(!host)return;
+    fr=document.createElement('iframe');fr.src='implementatie/';fr.title='Implementatieplan';fr.setAttribute('allow','fullscreen');fr.allowFullscreen=true;
+    host.innerHTML='';host.appendChild(fr);
+    fr.addEventListener('load',()=>{fit();try{new ResizeObserver(fit).observe(fr.contentDocument.body)}catch(e){}});setInterval(fit,1000)}
+  window.addEventListener('hashchange',laad);window.addEventListener('load',laad);laad();
+})();
+/* IMPL:END */
 
 /* LOCK:START presentatie-slot: geen beveiliging, alleen voor de presentatie */
 (function(){
-const LOCK_VIEWS=["sturing", "organisatie", "cyclus", "datamodel", "roadmap"];
+const LOCK_VIEWS=["sturing", "organisatie", "cyclus", "datamodel", "roadmap", "implementatie"];
 const LOCK_HASH="58b4eeafef5fb0038d776d2384ef7a7099eb239f25e5dca3ea91c0c73130c188";
 const KEY='be_unlock_'+location.pathname;
 let fails=0,waitUntil=0;
