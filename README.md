@@ -92,6 +92,19 @@ node scripts/zet-pincode.mjs 482913 public/inwarmte/index.html
 
 Commit en push daarna. In de sessie geef je de pincode mondeling of in de chat. Een geopend tabblad blijft open tot de bezoeker het browsertabblad sluit.
 
+## Implementatieplan in het framework (tabblad Implementatieplan)
+
+Het implementatieplan staat per klant in de beveiligde map, bijvoorbeeld `public/inwarmte/implementatie/`, en wordt in het framework als tabblad getoond. Het leest de verbeterroadmap uit tabblad 11.
+
+- `index.html` is de **leesversie** (pincode 1): alleen het managementoverzicht.
+- `bewerken.html` is de **bewerkversie**: het volledige plan. De server levert dit bestand alleen na **pincode 2**, onder hetzelfde adres. Rechtstreeks openen kan niet.
+- Bouwen vanuit de planningstool: `python3 tools/implementatie/bouw.py implementatieplan.html public/inwarmte/implementatie/`
+- De roadmap-module moet `RM.export()` hebben: `python3 tools/implementatie/rm_export.py bron.html` (eenmalig per frameworkbron, vóór `lock.py`).
+
+**Pincode 2** staat niet in de repo maar als geheime instelling in Cloudflare (`PIN2_INWARMTE` voor `/inwarmte/`). Zie `node scripts/zet-pincode2.mjs /inwarmte/ <pincode>`. Na een juiste pincode zet de server een cookie dat hoort bij die persoonlijke link en die map, geldig maximaal 10 uur of tot de link verloopt. Na 5 foute pogingen wacht de link 15 minuten (bijgehouden in de KV-opslag `TOEGANG`). Het gebruik van pincode 2 staat in het linkgebruik (`pin2`, `pin2Aantal`).
+
+Plan en vastleggingen staan in de browser van de gebruiker; delen gaat via het Excel-versiebestand (*Versie opslaan* / *Versie openen*, alleen met pincode 2).
+
 ## Een nieuwe versie van het framework plaatsen
 
 Exporteer de bijgewerkte pagina als HTML. Maak er dan een sitepagina met slot van:

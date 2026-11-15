@@ -35,6 +35,7 @@ async function registreer(env, p, request, soort) {
   r = r || { i: p.i, n: p.n, p: p.p, e: p.e, eerste: null, laatste: null, aantal: 0, regio: {}, pin: null };
   const nu = new Date().toISOString();
   if (soort === 'pin') { r.pin = r.pin || nu; r.pinLaatst = nu; }
+  else if (soort === 'pin2') { r.pin2 = r.pin2 || nu; r.pin2Laatst = nu; r.pin2Aantal = (r.pin2Aantal || 0) + 1; }
   else {
     const cf = request.cf || {};
     const regio = [cf.country, cf.region || cf.city].filter(Boolean).join(' · ') || 'onbekend';
@@ -55,6 +56,45 @@ async function beheer(request, env) {
     cursor = l.list_complete ? null : l.cursor;
   } while (cursor);
   return Response.json(uit, { headers: { 'Cache-Control': 'no-store' } });
+}
+
+// ---------- Pincode 2: volledig invullen van het implementatieplan ----------
+// De pincode staat per klant als geheime instelling in Cloudflare: PIN2_<MAP>, bijv. PIN2_INWARMTE voor /inwarmte/.
+// Na een juiste pincode zet de server een cookie (gebonden aan de link en de map, geldig PIN2_UREN uur of tot de link verloopt).
+// Met dat cookie levert de server onder <map>implementatie/ de bewerkversie (bewerken.html), anders de leesversie (index.html).
+const PIN2_UREN = 10, PIN2_MAX = 5, PIN2_WACHT = 15 * 60; // pogingen per link, wachttijd in seconden
+const pin2Naam = (pad) => 'PIN2_' + pad.replace(/\//g, '').toUpperCase().replace(/[^A-Z0-9]/g, '_');
+async function hmac(secret, tekst) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return b64u(await crypto.subtle.sign('HMAC', key, enc.encode(tekst)));
+}
+function gelijk(a, b) { if (a.length !== b.length) return false; let x = 0; for (let i = 0; i < a.length; i++) x |= a.charCodeAt(i) ^ b.charCodeAt(i); return x === 0; }
+async function pin2Cookie(env, p, pad, exp) { return exp + '.' + await hmac(env.LINK_SECRET, 'pin2|' + p.i + '|' + pad + '|' + exp); }
+async function pin2Geldig(request, env, p, pad) {
+  const c = cookie(request, 'be_pin2'); if (!c || !c.includes('.')) return false;
+  const exp = +c.split('.')[0]; if (!(exp > Math.floor(Date.now() / 1000))) return false;
+  return gelijk(c, await pin2Cookie(env, p, pad, exp));
+}
+async function pin2Inloggen(request, env, p, pad, waitUntil) {
+  const geheim = env[pin2Naam(pad)];
+  if (!geheim) return new Response('Pincode 2 is niet ingesteld', { status: 404, headers: { 'Cache-Control': 'no-store' } });
+  const sleutel = 'p2:' + p.i, nu = Math.floor(Date.now() / 1000);
+  let st = null; if (env.TOEGANG) { try { st = await env.TOEGANG.get(sleutel, 'json'); } catch {} }
+  st = st || { n: 0, tot: 0 };
+  if (st.tot > nu) return new Response('Te vaak onjuist', { status: 429, headers: { 'Retry-After': String(st.tot - nu), 'Cache-Control': 'no-store' } });
+  const pin = (await request.text()).trim().slice(0, 32);
+  const ok = gelijk(await hmac(env.LINK_SECRET, 'pin|' + pin), await hmac(env.LINK_SECRET, 'pin|' + String(geheim).trim()));
+  if (!ok) {
+    st.n = (st.n || 0) + 1; if (st.n >= PIN2_MAX) { st.tot = nu + PIN2_WACHT; st.n = 0; }
+    if (env.TOEGANG) waitUntil(env.TOEGANG.put(sleutel, JSON.stringify(st), { expirationTtl: 86400 }).catch(() => {}));
+    return new Response('Onjuiste pincode', { status: st.tot > nu ? 429 : 401, headers: st.tot > nu ? { 'Retry-After': String(PIN2_WACHT), 'Cache-Control': 'no-store' } : { 'Cache-Control': 'no-store' } });
+  }
+  if (env.TOEGANG && st.n) waitUntil(env.TOEGANG.delete(sleutel).catch(() => {}));
+  waitUntil(registreer(env, p, request, 'pin2').catch(() => {}));
+  const exp = Math.min(p.e, nu + PIN2_UREN * 3600);
+  const h = new Headers({ 'Cache-Control': 'no-store' });
+  h.append('Set-Cookie', `be_pin2=${await pin2Cookie(env, p, pad, exp)}; Path=${pad}; Max-Age=${exp - nu}; HttpOnly; Secure; SameSite=Strict`);
+  return new Response(null, { status: 204, headers: h });
 }
 
 function geweigerd(reden) {
@@ -87,6 +127,20 @@ export async function onRequest({ request, env, next, waitUntil }) {
   if (url.pathname === pad + '_pin' && request.method === 'POST') {
     waitUntil(registreer(env, p, request, 'pin').catch(() => {}));
     return new Response(null, { status: 204 });
+  }
+  // Pincode 2 (implementatieplan volledig invullen)
+  if (url.pathname === pad + '_pin2' && request.method === 'POST') return pin2Inloggen(request, env, p, pad, waitUntil);
+  if (url.pathname === pad + '_pin2uit' && request.method === 'POST') {
+    return new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store', 'Set-Cookie': `be_pin2=; Path=${pad}; Max-Age=0; HttpOnly; Secure; SameSite=Strict` } });
+  }
+  const impl = pad + 'implementatie/';
+  if (url.pathname.startsWith(impl + 'bewerken')) return geweigerd('Deze pagina is niet rechtstreeks te openen.');
+  if ((url.pathname === impl || url.pathname === impl + 'index.html') && await pin2Geldig(request, env, p, pad)) {
+    let res = await env.ASSETS.fetch(new Request(new URL(impl + 'bewerken', url), request));
+    if (res.status >= 300 && res.status < 400 && res.headers.get('Location')) res = await env.ASSETS.fetch(new Request(new URL(res.headers.get('Location'), url), request));
+    const out = new Response(res.body, res);
+    out.headers.set('X-Robots-Tag', 'noindex, nofollow'); out.headers.set('Cache-Control', 'private, no-store'); out.headers.set('Referrer-Policy', 'no-referrer');
+    return out;
   }
   const isPagina = url.pathname === pad || url.pathname === pad + 'index.html';
   if (isPagina) waitUntil(registreer(env, p, request, 'bezoek').catch(() => {}));
