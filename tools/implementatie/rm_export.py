@@ -13,8 +13,11 @@ old='window.RM={refresh(){'
 assert h.count(old)==1,'roadmap-module niet gevonden'
 api=MARK+r"""
 /* Levert de roadmap aan het implementatieplan. Alleen lezen: het plan verandert niets in het framework. */
+/* Rollen uit het tabblad Organisatie (het implementatieplan kent alleen deze rollen). */
+const rmRollen=()=>[['rolesFin','finance'],['rolesBus','business']].flatMap(([id,g])=>[...document.querySelectorAll('#'+id+'>div')].map(d=>({naam:((d.querySelector('h3')||{}).textContent||'').trim(),groep:g,omschr:((d.querySelector('.note')||{}).textContent||'').trim()}))).filter(r=>r.naam);
 function rmExport(){const crit=window.__scanCrit||[],its=items();
   return{versie:1,naam:C.naam,key:K,demo:!!D.demo,lagen:C.lagen.slice(),fases:C.fases.map(f=>f.slice()),
+   rollen:rmRollen(),
    open:its.filter(x=>!st(x.id)).length,beoordeeld:its.filter(x=>st(x.id)).length,
    niveaus:niveaus().map(n=>({laag:n.i+1,naam:C.lagen[n.i],eff:n.eff,afg:n.afg,man:n.man||null,b:n.b,crit:((crit[n.i]||[])[1]||[]).slice()})),
    acties:acties().map(a=>({id:a.id,tekst:a.tekst,laag:a.laag,fase:+a.fase||0,eig:a.eig||'',prio:+a.prio||0,stat:+a.stat||0,s:a.s,eigen:!!a.eigen,norm:a.it?a.it.norm:'',groep:a.it?a.it.groep:'',tab:a.tab||'',tabNaam:a.tab?tabNaam(a.tab):'',o:a.o||''})),

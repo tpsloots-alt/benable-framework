@@ -351,6 +351,7 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
     <!-- IMPL:NAV --><a href="#implementatie"><span>14</span>Implementatieplan</a><!-- /IMPL:NAV -->
     
     
+    
     <a href="#begrippen"><span>A</span>Begrippen</a>
   </div>
   <div class="sidenote" id="sideNote"></div>
@@ -1513,8 +1514,11 @@ function scan(){const host=$('#scan'),res=$('#scanRes');if(!host)return;const cr
 function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road();scan()}
 /* RM:EXPORT */
 /* Levert de roadmap aan het implementatieplan. Alleen lezen: het plan verandert niets in het framework. */
+/* Rollen uit het tabblad Organisatie (het implementatieplan kent alleen deze rollen). */
+const rmRollen=()=>[['rolesFin','finance'],['rolesBus','business']].flatMap(([id,g])=>[...document.querySelectorAll('#'+id+'>div')].map(d=>({naam:((d.querySelector('h3')||{}).textContent||'').trim(),groep:g,omschr:((d.querySelector('.note')||{}).textContent||'').trim()}))).filter(r=>r.naam);
 function rmExport(){const crit=window.__scanCrit||[],its=items();
   return{versie:1,naam:C.naam,key:K,demo:!!D.demo,lagen:C.lagen.slice(),fases:C.fases.map(f=>f.slice()),
+   rollen:rmRollen(),
    open:its.filter(x=>!st(x.id)).length,beoordeeld:its.filter(x=>st(x.id)).length,
    niveaus:niveaus().map(n=>({laag:n.i+1,naam:C.lagen[n.i],eff:n.eff,afg:n.afg,man:n.man||null,b:n.b,crit:((crit[n.i]||[])[1]||[]).slice()})),
    acties:acties().map(a=>({id:a.id,tekst:a.tekst,laag:a.laag,fase:+a.fase||0,eig:a.eig||'',prio:+a.prio||0,stat:+a.stat||0,s:a.s,eigen:!!a.eigen,norm:a.it?a.it.norm:'',groep:a.it?a.it.groep:'',tab:a.tab||'',tabNaam:a.tab?tabNaam(a.tab):'',o:a.o||''})),
