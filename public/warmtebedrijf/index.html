@@ -350,6 +350,7 @@ section.view.locked>.lockbox{display:block;position:sticky;top:28vh;z-index:5;ma
     
     
     
+    
     <a href="#begrippen"><span>A</span>Begrippen</a>
   </div>
   <div class="sidenote">Fictieve casus van een warmtebedrijf, bedoeld om het framework en de aanpak te toetsen. Alle namen en cijfers zijn verzonnen.</div>
@@ -1316,7 +1317,7 @@ function renderChallenges(){
 
 /* ---------- 02 FINANCIELE BASIS ---------- */
 const closeSteps=[['Facturatieruns per project-BV afgerond en aangesloten op het financieel pakket',2],['Match register ↔ contract ↔ factuur (omzetvolledigheid) en uitzonderingen verwerkt',3],['Cut-off opbrengsten en schatting nog niet gefactureerde levering (collectieve netten)',2],['Inkoop- en energiefacturen verwerkt',2],['Overlopende posten en accruals',3],['Reconciliatie energiebalans',3],['Debiteuren en voorschotten afgestemd',3],['Activering investeringen en afschrijvingen',4],['Mapping grootboek → management P&L gecontroleerd',4],['Review en vrijgave door financial control',5]];
-const recs=[['Facturatiesysteem ↔ omzet in het financieel pakket, per BV','Financial control'],['Intercompany levering-BV ↔ project-BV\'s','Financial control'],['Debiteuren subadministratie ↔ grootboek','Financial control'],['Voorschotten en eindafrekeningen','Operations / finance'],['Activaregister ↔ grootboek','Financial control'],['Tussenrekeningen en vraagposten','Financial control']];
+const recs=[['Facturatiesysteem ↔ omzet in het financieel pakket, per BV','Financial control'],['Intercompany levering-BV ↔ project-BV\'s','Financial control'],['Debiteuren subadministratie ↔ grootboek','Financial control'],['Voorschotten en eindafrekeningen','Operations / Financial control'],['Activaregister ↔ grootboek','Financial control'],['Tussenrekeningen en vraagposten','Financial control']];
 const icItems=['Mutaties in het aansluitingenregister (nieuw, verhuizing, leegstand) binnen de maand verwerkt in contract en facturatie','Functiescheiding tussen invoer, goedkeuring en betaling','Vier-ogenprincipe op tarief- en stamdatawijzigingen','Review van handmatige memoriaalboekingen boven drempel','Periodieke controle op toegangsrechten in financiële systemen','Vastgelegde werkinstructies voor kritieke Excel-bestanden'];
 function getBasis(){return Object.assign({wd:5,tol:1,steps:closeSteps.map(s=>({wd:s[1],st:0})),rec:recs.map(()=>0),ic:icItems.map((x,i)=>i>0&&i<3?1:0)},store.get('wbc_basis',{}))}
 function setBasis(b){store.set('wbc_basis',b)}
@@ -1372,11 +1373,11 @@ const KPIS=[
 ['FIN-04','Commerciële marge','Opbrengsten levering − toegerekende kostprijs (kostenbijdrage)','€','↑','Maand','Commercie'],
 ['FIN-05','Inkoopmarge','Toegerekende kostprijs − werkelijke inkoop-/opwekkosten','€','↑','Maand','Inkoop'],
 ['FIN-06','Opbrengsten nevendiensten','Aansluitbijdragen, huur afleversets, service en overig','€','↑','Maand','Commercie'],
-['FIN-07','OPEX','Totale operationele kosten (direct + indirect + IT)','€','↓','Maand','Finance'],
+['FIN-07','OPEX','Totale operationele kosten (direct + indirect + IT)','€','↓','Maand','Financial control'],
 ['FIN-08','EBITDA','Warmtemarge + nevendiensten − OPEX','€','↑','Maand','Directie'],
 ['FIN-09','EBITDA-marge','FIN-08 / totale opbrengsten','%','↑','Maand','Directie'],
-['FIN-10','CAPEX vs plan','Werkelijke investeringen / geplande investeringen','%','→','Maand','Finance'],
-['FIN-11','Kasstroom uit operatie','EBITDA ± mutatie werkkapitaal','€','↑','Maand','Finance'],
+['FIN-10','CAPEX vs plan','Werkelijke investeringen / geplande investeringen','%','→','Maand','Financial control'],
+['FIN-11','Kasstroom uit operatie','EBITDA ± mutatie werkkapitaal','€','↑','Maand','Financial control'],
 ['FIN-12','Rendement op geïnvesteerd vermogen','Bedrijfsresultaat / gemiddeld geïnvesteerd vermogen','%','↑','Kwartaal','Directie'],
 ['COM-01','Geleverd volume','Som geleverde warmte','GJ','→','Maand','Commercie'],
 ['COM-02','Volume per aansluiting (graaddag-gecorrigeerd)','COM-01 / aansluitingen, gecorrigeerd voor graaddagen','GJ/aansl.','→','Maand','Commercie'],
@@ -1396,19 +1397,19 @@ const KPIS=[
 ['OPS-02','Herfacturatiegraad','Gecorrigeerde of opnieuw verstuurde facturen / totaal','%','↓','Maand','Operations'],
 ['OPS-03','Facturen binnen termijn','Facturen verstuurd binnen afgesproken termijn / totaal','%','↑','Maand','Operations'],
 ['OPS-04','Geblokkeerde facturen','Waarde facturen die niet verstuurd kunnen worden','€','↓','Week','Operations'],
-['OPS-05','DSO','Openstaande debiteuren / opbrengsten × dagen in periode','dagen','↓','Maand','Finance'],
-['OPS-06','Achterstallige debiteuren','Debiteuren > 60 of > 90 dagen / totaal debiteuren','%','↓','Maand','Finance'],
-['OPS-07','Afboeking oninbaar','Afgeboekte vorderingen / opbrengsten','%','↓','Kwartaal','Finance'],
+['OPS-05','DSO','Openstaande debiteuren / opbrengsten × dagen in periode','dagen','↓','Maand','Financial control'],
+['OPS-06','Achterstallige debiteuren','Debiteuren > 60 of > 90 dagen / totaal debiteuren','%','↓','Maand','Financial control'],
+['OPS-07','Afboeking oninbaar','Afgeboekte vorderingen / opbrengsten','%','↓','Kwartaal','Financial control'],
 ['OPS-08','Klantcases','Aantal ingekomen klantvragen en -cases','aantal','↓','Week','Klantenservice'],
 ['OPS-09','Doorlooptijd klantcases','Gemiddelde tijd van melding tot afhandeling','dagen','↓','Week','Klantenservice'],
 ['OPS-10','Beschikbaarheid net','Leveringsminuten zonder storing / totaal leveringsminuten','%','↑','Maand','Operations'],
 ['OPS-11','Datakwaliteit meetdata','Aansluitingen met tijdige, valide meterstand / totaal','%','↑','Maand','Operations'],
-['KOS-01','Kosten per aansluiting','OPEX / gemiddeld aantal aansluitingen','€/aansl.','↓','Maand','Finance'],
-['KOS-02','Kosten per GJ','OPEX / geleverde GJ','€/GJ','↓','Maand','Finance'],
+['KOS-01','Kosten per aansluiting','OPEX / gemiddeld aantal aansluitingen','€/aansl.','↓','Maand','Business control'],
+['KOS-02','Kosten per GJ','OPEX / geleverde GJ','€/GJ','↓','Maand','Business control'],
 ['KOS-03','Acquisitiekosten per nieuwe aansluiting','Commerciële en aansluitkosten (niet geactiveerd) / nieuwe aansluitingen','€/aansl.','↓','Kwartaal','Commercie'],
-['KOS-04','Personeelskosten per FTE','Personeelskosten / gemiddeld aantal FTE, per afdeling','€/FTE','↓','Kwartaal','Finance / HR'],
-['KOS-05','Inhuurratio','Kosten inhuur / totale personeelskosten','%','↓','Kwartaal','Finance'],
-['KOS-06','IT-kosten per aansluiting','IT-kosten (beheer + verandering) / aansluitingen','€/aansl.','↓','Kwartaal','IT / Finance'],
+['KOS-04','Personeelskosten per FTE','Personeelskosten / gemiddeld aantal FTE, per afdeling','€/FTE','↓','Kwartaal','Financial control'],
+['KOS-05','Inhuurratio','Kosten inhuur / totale personeelskosten','%','↓','Kwartaal','Business control'],
+['KOS-06','IT-kosten per aansluiting','IT-kosten (beheer + verandering) / aansluitingen','€/aansl.','↓','Kwartaal','IT / Financial control'],
 ['KOS-07','Onderhoudskosten per km net','Onderhoudskosten net / km net','€/km','↓','Kwartaal','Operations'],
 ['KWA-01','Forecastnauwkeurigheid volume','1 − gewogen gemiddelde absolute procentuele afwijking (forecast vs werkelijk GJ)','%','↑','Maand','BC'],
 ['KWA-02','Forecastnauwkeurigheid EBITDA','1 − |Best Estimate − werkelijk| / werkelijk (jaareinde)','%','↑','Kwartaal','BC'],
@@ -1419,7 +1420,7 @@ const KPIS=[
 ['KWA-07','Omzetvolledigheid','Gefactureerde aansluitingen / aansluitingen in het technisch register (in exploitatie)','%','↑','Maand','Financial control'],
 ['KWA-08','Verschil facturatie ↔ grootboek','Niet-verklaard verschil tussen facturatieruns en omzet in het financieel pakket, alle BV\'s','€','↓','Maand','Financial control'],
 ['OPS-13','Storingen warmtepompen','Storingsmeldingen warmtepompen per 100 aansluitingen per jaar','aantal','↓','Maand','Operations'],
-['KWA-05','Onbalans energiebalans','Niet-verklaard verschil ingekocht vs geleverd vs gefactureerd','GJ / %','↓','Maand','Finance / Operations'],
+['KWA-05','Onbalans energiebalans','Niet-verklaard verschil ingekocht vs geleverd vs gefactureerd','GJ / %','↓','Maand','Financial control / Operations'],
 ['KWA-06','Tijdigheid afsluiting','Werkdag waarop de maand is afgesloten','werkdag','↓','Maand','Financial control'],
 ['PRJ-01','Inkoopmarge per project','Toegerekende kostprijs × geleverde GJ − opwekkosten, per project','€','↑','Maand','Inkoop / BC'],
 ['PRJ-02','SCOP warmtepompen','Opgewekte warmte uit warmtepompen / elektriciteitsverbruik (gewogen)','factor','↑','Maand','Operations'],
@@ -1494,7 +1495,7 @@ function renderKpis(){
 $('#kpiQ').oninput=renderKpis;
 
 /* ---------- 07 STURING ---------- */
-const steer=[['Commercie','Tariefvoorstellen, productaanbod, acquisitie nieuwe aansluitingen','Commercie / directie','FIN-04, COM-04, COM-07'],['Inkoop en bron','Inkoopstrategie, contractvernieuwing, inzet piekvoorziening, verduurzaming bron','Inkoop / directie','FIN-05, DUU-01, DUU-05, KWA-03'],['Operations','Procesverbeteringen, datakwaliteit, achterstanden wegwerken','Operations','OPS-01, OPS-05, OPS-11, DUU-06'],['Financieel','Kostenbeheersing, werkkapitaal, prioritering van investeringen en IT-projecten','Finance / directie','FIN-08, FIN-11, KOS-01, FIN-12']];
+const steer=[['Commercie','Tariefvoorstellen, productaanbod, acquisitie nieuwe aansluitingen','Commercie / directie','FIN-04, COM-04, COM-07'],['Inkoop en bron','Inkoopstrategie, contractvernieuwing, inzet piekvoorziening, verduurzaming bron','Inkoop / directie','FIN-05, DUU-01, DUU-05, KWA-03'],['Operations','Procesverbeteringen, datakwaliteit, achterstanden wegwerken','Operations','OPS-01, OPS-05, OPS-11, DUU-06'],['Financieel','Kostenbeheersing, werkkapitaal, prioritering van investeringen en IT-projecten','Financial control / Directie','FIN-08, FIN-11, KOS-01, FIN-12']];
 $('#steerTable').innerHTML='<thead><tr><th>Stuurgebied</th><th>Typische besluiten</th><th>Eigenaar</th><th>Gekoppelde KPI\'s</th></tr></thead><tbody>'+steer.map(s=>`<tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td><td class="note">${s[3]}</td></tr>`).join('')+'</tbody>';
 const addDays=d=>{const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10)};
 const demoActions=()=>[
@@ -1521,7 +1522,7 @@ $('#aCopy').onclick=()=>copyText('Besluit;Stuurgebied;Eigenaar;Deadline;Effect;S
 
 /* ---------- 08 ORGANISATIE ---------- */
 const rolesFin=[['Financial control','Laag 1: administratie, maandafsluiting, reconciliaties, activering, interne beheersing.'],['Business control','Laag 2 en 3: afwijkingsanalyse, forecast en Best Estimate, scenario\'s, beheer van de KPI-set; business partner van de lijn.'],['Management / directie','Laag 4: besluiten in de business review, eigenaar van begroting en meerjarenplan.']];
-const rolesBus=[['Commercie','Tarieven, productaanbod, acquisitie, klanttevredenheid; eigenaar commerciële marge.'],['Inkoop en opwek','Inkoop- en broncontracten, energie-inkoop, inzet installaties en piekvoorziening; eigenaar inkoopmarge.'],['Operations','Netbeheer, meten en factureren, debiteuren, datakwaliteit; eigenaar procesprestatie en netverlies.'],['IT','Beheer en verandering van systemen; scheiding beheer (OPEX) en geactiveerde ontwikkeling (CAPEX).']];
+const rolesBus=[['Projectmanagement','Realisatie van warmteprojecten en uitbreidingen; eigenaar projectbudget en planning.'],['Commercie','Tarieven, productaanbod, acquisitie, klanttevredenheid; eigenaar commerciële marge.'],['Inkoop en opwek','Inkoop- en broncontracten, energie-inkoop, inzet installaties en piekvoorziening; eigenaar inkoopmarge.'],['Operations','Netbeheer, meten en factureren, debiteuren, datakwaliteit; eigenaar procesprestatie en netverlies.'],['IT','Beheer en verandering van systemen; scheiding beheer (OPEX) en geactiveerde ontwikkeling (CAPEX).']];
 $('#rolesFin').innerHTML=rolesFin.map(r=>`<div><h3>${r[0]}</h3><p class="note" style="margin:0">${r[1]}</p></div>`).join('');
 $('#rolesBus').innerHTML=rolesBus.map(r=>`<div><h3>${r[0]}</h3><p class="note" style="margin:0">${r[1]}</p></div>`).join('');
 const doaTypes=['Operationele uitgave binnen begroting','Uitgave buiten begroting','Investering met businesscase','Inkoop- of broncontract (totale waarde)','Tariefvoorstel en afwijking margebeleid','Afboeking vorderingen','Deelname in entiteit met partner'];
@@ -1674,9 +1675,9 @@ window.__scanCrit=scanCrit;function renderScan(){const sc=getScan();
   $('#scanRes').innerHTML=`<h2>Advies</h2>${first<0?'<p>Alle lagen staan op niveau 3 of hoger. Richt je op doorontwikkeling (9–18 maanden) en verdere automatisering.</p>':`<p>Begin bij <b>${scanCrit[first][0]}</b> (score ${sc[first]}). Verbeteringen in hogere lagen leveren pas iets op als deze laag op orde is.</p><p class="note">Doelniveau per laag: 3. Volgende stap: ${scanCrit[first][1][Math.min(2,sc[first])]}.</p>`}<p class="note">Gemiddelde volwassenheid: ${nf1.format(sc.reduce((a,b)=>a+b,0)/4)} van 5.</p>`;
 }
 const road=[
- ['Snelle verbeteringen','0–3 maanden',[['Eenduidige definities voor de kern-KPI\'s vastleggen (KPI-kaarten)',3,'Business control'],['Vaste afsluitkalender met doelwerkdag invoeren',1,'Financial control'],['Vaste agenda en actielijst voor de business review',4,'Finance business partner'],['Kritieke handmatige Excel-processen documenteren',1,'Business control'],['Mapping grootboek → management P&L vastleggen in de mappingtabel',1,'Financial control']]],
- ['Basis op orde','3–9 maanden',[['Maandelijkse reconciliatie energiebalans met signaalgrenzen',1,'Finance / operations'],['Standaard afwijkingsanalyse: volume, prijs en kostenbijdrage',2,'Business control'],['Kosten en investeringen per project of net scheiden',2,'Financial control'],['KPI juistheid facturen inrichten',3,'Operations'],['Rolverdeling financial control en business control vastleggen (RACI)',4,'Finance'],['Kasstroom- en werkkapitaalrapportage ontwikkelen',2,'Business control']]],
- ['Doorontwikkeling','9–18 maanden',[['Dashboard automatisch vullen vanuit één datamodel',3,'IT / finance'],['Rolling forecast en scenario\'s per project en bron',2,'Business control'],['Rapportage aan toezichthouder conform kostengebaseerde regulering',1,'Financial control'],['Geautomatiseerde controle facturatie tegen contract',1,'IT / operations']]]];
+ ['Snelle verbeteringen','0–3 maanden',[['Eenduidige definities voor de kern-KPI\'s vastleggen (KPI-kaarten)',3,'Business control'],['Vaste afsluitkalender met doelwerkdag invoeren',1,'Financial control'],['Vaste agenda en actielijst voor de business review',4,'Business control'],['Kritieke handmatige Excel-processen documenteren',1,'Business control'],['Mapping grootboek → management P&L vastleggen in de mappingtabel',1,'Financial control']]],
+ ['Basis op orde','3–9 maanden',[['Maandelijkse reconciliatie energiebalans met signaalgrenzen',1,'Financial control / Operations'],['Standaard afwijkingsanalyse: volume, prijs en kostenbijdrage',2,'Business control'],['Kosten en investeringen per project of net scheiden',2,'Financial control'],['KPI juistheid facturen inrichten',3,'Operations'],['Rolverdeling financial control en business control vastleggen (RACI)',4,'Financial control'],['Kasstroom- en werkkapitaalrapportage ontwikkelen',2,'Business control']]],
+ ['Doorontwikkeling','9–18 maanden',[['Dashboard automatisch vullen vanuit één datamodel',3,'IT / Financial control'],['Rolling forecast en scenario\'s per project en bron',2,'Business control'],['Rapportage aan toezichthouder conform kostengebaseerde regulering',1,'Financial control'],['Geautomatiseerde controle facturatie tegen contract',1,'IT / operations']]]];
 const stOpts=['Niet gestart','Loopt','Gereed'];
 function renderRoad(){const st=store.get('wbc_road',{});let tot=0,done=0,run=0;
   $('#roadmapCols').innerHTML=road.map((p,pi)=>`<div class="phase"><div><h2 style="margin:0">${p[0]}</h2><span class="note">${p[1]}</span></div>${p[2].map((it,ii)=>{const id=pi+'_'+ii,s=st[id]||0;tot++;if(s===2)done++;if(s===1)run++;
@@ -1716,11 +1717,11 @@ const RM_CORE=[
  {id:'C-P3',tab:'pl',laag:2,groep:'Verklaren en vooruitkijken',norm:'De belangrijkste risico\'s zijn als scenario doorgerekend',actie:'Scenario\'s voor de grootste risico\'s uitwerken',eig:'Business control',fase:2},
  {id:'C-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Er is een vastgestelde kernset van 10–15 KPI\'s',actie:'Kernset van 10–15 KPI\'s vaststellen met directie',eig:'Business control',fase:0},
  {id:'C-K2',tab:'kpis',laag:3,groep:'KPI-set',norm:'Elke kern-KPI heeft een KPI-kaart met definitie, formule, eigenaar en norm',actie:'KPI-kaarten opstellen voor de kernset',eig:'Business control',fase:0},
- {id:'C-K3',tab:'kpis',laag:3,groep:'KPI-set',norm:'Het dashboard wordt automatisch gevuld uit één bron',actie:'Dashboard automatisch vullen vanuit één datamodel',eig:'IT / finance',fase:2},
- {id:'C-S1',tab:'sturing',laag:4,groep:'Business review',norm:'Business review met vaste agenda en actielijst (eigenaar, deadline, effect)',actie:'Vaste agenda en actielijst voor de business review invoeren',eig:'Finance business partner',fase:0},
+ {id:'C-K3',tab:'kpis',laag:3,groep:'KPI-set',norm:'Het dashboard wordt automatisch gevuld uit één bron',actie:'Dashboard automatisch vullen vanuit één datamodel',eig:'IT / Financial control',fase:2},
+ {id:'C-S1',tab:'sturing',laag:4,groep:'Business review',norm:'Business review met vaste agenda en actielijst (eigenaar, deadline, effect)',actie:'Vaste agenda en actielijst voor de business review invoeren',eig:'Business control',fase:0},
  {id:'C-S2',tab:'sturing',laag:4,groep:'Business review',norm:'Opvolging van acties is vast agendapunt; het effect wordt gemeten',actie:'Opvolging en effectmeting van acties borgen',eig:'Directie',fase:1},
  {id:'C-O1',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Bevoegdhedenmatrix met drempelbedragen is vastgesteld',actie:'Bevoegdhedenmatrix vaststellen',eig:'Directie',fase:1},
- {id:'C-O2',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Rollen van financial control, business control en lijn zijn vastgelegd (RACI)',actie:'RACI per kernproces vastleggen',eig:'Finance',fase:1},
+ {id:'C-O2',tab:'organisatie',laag:4,groep:'Rollen en bevoegdheden',norm:'Rollen van financial control, business control en lijn zijn vastgelegd (RACI)',actie:'RACI per kernproces vastleggen',eig:'Financial control',fase:1},
  {id:'C-Y1',tab:'cyclus',laag:4,groep:'Stuurcyclus',norm:'Stuurcyclus en rapportagekalender zijn vastgesteld en bekend',actie:'Stuurcyclus en rapportagekalender vaststellen en publiceren',eig:'Business control',fase:0},
  {id:'C-L1',tab:'sturing',laag:4,groep:'Besluiten',norm:'Besluiten uit de business review staan in een besluitenlijst met eigenaar en datum',actie:'Besluitenlijst met eigenaar en datum invoeren',eig:'Directie',fase:0},
  {id:'C-L2',tab:'sturing',laag:4,groep:'Besluiten',norm:'De forecast (Best Estimate) wordt maandelijks bijgewerkt en gebruikt in het MT-overleg',actie:'Maandelijkse forecast invoeren en agenderen in het MT',eig:'Business control',fase:1},
@@ -1733,7 +1734,7 @@ const RM_CORE=[
  {id:'C-L9',tab:'cyclus',laag:4,groep:'Rapportagepakket',norm:'Rapportages zonder gebruiker worden minstens jaarlijks geschrapt',actie:'Jaarlijkse opschoning van rapportages invoeren',eig:'Business control',fase:2},
  {id:'C-L10',tab:'cyclus',laag:4,groep:'Externe rapportage',norm:'Rapportages aan partners en financiers (bank, covenants, andere partners) volgen een vaste kalender',actie:'Kalender voor partner- en financiersrapportage opstellen, inclusief covenants',eig:'Financial control',fase:1},
  {id:'C-L11',tab:'cyclus',laag:4,groep:'Jaarcyclus',norm:'De jaarcyclus (begroting, kwartaalforecast, jaarrekening met accountant) staat in de kalender',actie:'Jaarcyclus in de kalender vastleggen',eig:'Business control',fase:1},
- {id:'C-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Eén bron per gegeven; bronsystemen en koppelingen zijn beschreven',actie:'Bronnen en koppelingen beschrijven; één bron per gegeven afspreken',eig:'IT / finance',fase:1},
+ {id:'C-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Eén bron per gegeven; bronsystemen en koppelingen zijn beschreven',actie:'Bronnen en koppelingen beschrijven; één bron per gegeven afspreken',eig:'IT / Financial control',fase:1},
  {id:'C-D2',tab:'datamodel',laag:1,groep:'Data',norm:'Standaarddimensies (project, entiteit, kostenplaats) zijn verplicht bij het boeken',actie:'Verplichte dimensies instellen in het financieel pakket',eig:'Financial control',fase:1}
 ];
 const RM_FASES=[['Snelle verbeteringen','0–3 maanden'],['Basis op orde','3–9 maanden'],['Doorontwikkeling','9–18 maanden']];
@@ -1745,12 +1746,12 @@ const RM_INW=[
  {id:'I-V2',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Facturatie ↔ omzet: facturatieruns worden via een koppeling geboekt; runtotalen sluiten maandelijks aan op de omzet per BV',actie:'Facturatierun ↔ omzet per BV maandelijks aansluiten',eig:'Financial control',fase:0},
  {id:'I-V3',tab:'basis',laag:1,groep:'Omzetketen en administratie',norm:'Projectdimensie is verplicht op elke omzet- en kostenboeking',actie:'Projectdimensie verplicht maken in het financieel pakket',eig:'Financial control',fase:0},
  {id:'I-V4',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Intercompany: rekening-courant tussen levering-BV en project-BV\'s wordt maandelijks afgestemd',actie:'Maandelijkse intercompany-afstemming invoeren',eig:'Financial control',fase:1},
- {id:'I-V5',tab:'basis',laag:1,groep:'Omzetketen en administratie',norm:'Register van aansluitingen wordt maandelijks gematcht met contracten en facturatie',actie:'Maandelijkse match register ↔ contract ↔ factuur met uitzonderingenlijst',eig:'Financial control / operations',fase:0},
+ {id:'I-V5',tab:'basis',laag:1,groep:'Omzetketen en administratie',norm:'Register van aansluitingen wordt maandelijks gematcht met contracten en facturatie',actie:'Maandelijkse match register ↔ contract ↔ factuur met uitzonderingenlijst',eig:'Financial control / Operations',fase:0},
  {id:'I-V9',tab:'basis',laag:1,groep:'Omzetketen en administratie',norm:'Mutaties (nieuw, verhuizing, leegstand) worden binnen de maand verwerkt in contract en facturatie',actie:'Mutatieproces aansluitingen met doorlooptijdnorm inrichten',eig:'Operations',fase:0},
  {id:'I-V6',tab:'basis',laag:1,groep:'Omzetketen en administratie',norm:'Bij een overname liggen klantbestand, tarieven en openingsbalans vast vóór de eerste eigen facturatierun',actie:'Overnamechecklist (dag 1) voor finance opstellen',eig:'Financial control',fase:1},
  {id:'I-V7',tab:'omzet',laag:1,groep:'Omzet projectrealisatie',norm:'Nog te factureren en vooruitgefactureerd worden per project berekend en geboekt',actie:'Berekening nog te factureren per project invoeren',eig:'Financial control',fase:1},
  {id:'I-V10',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Voorschotten en eindafrekeningen (collectieve netten) sluiten aan op het grootboek',actie:'Aansluiting voorschotten en eindafrekeningen invoeren',eig:'Financial control',fase:1},
- {id:'I-V11',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Energiebalans collectieve netten: ingevoed, geleverd, gefactureerd en geboekt sluiten maandelijks aan',actie:'Maandelijkse energiebalans voor de collectieve netten invoeren',eig:'Finance / operations',fase:1},
+ {id:'I-V11',tab:'basis',laag:1,groep:'Reconciliaties',norm:'Energiebalans collectieve netten: ingevoed, geleverd, gefactureerd en geboekt sluiten maandelijks aan',actie:'Maandelijkse energiebalans voor de collectieve netten invoeren',eig:'Financial control / Operations',fase:1},
  {id:'I-M1',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Tarieven (bron, koude, huur) liggen per project vast en worden volgens een vaste regel geïndexeerd',actie:'Tariefregister per project met indexatieregel opzetten',eig:'Commercie',fase:1},
  {id:'I-M2',tab:'marge',laag:2,groep:'Tarieven en marge',norm:'Bij collectieve netten wordt gevraagde tegenover gerealiseerde kostprijs maandelijks gevolgd',actie:'Kostenbijdrage-analyse collectieve netten invoeren',eig:'Business control',fase:1},
  {id:'I-P1',tab:'opwekking',laag:2,groep:'Projectportfolio',norm:'Resultaat en rendement per project worden periodiek berekend (na energie, onderhoud en afschrijving)',actie:'Projectresultaat en rendement per project per kwartaal rapporteren',eig:'Business control',fase:1},
@@ -1770,7 +1771,7 @@ const RM_INW=[
  {id:'I-O6',tab:'omzet',laag:3,groep:'Omzet per stroom',norm:'Terugkerende en eenmalige omzet worden onderscheiden in rapportage en prognose',actie:'Onderscheid terugkerend en eenmalig opnemen in de rapportage',eig:'Business control',fase:2},
  {id:'I-K1',tab:'kpis',laag:3,groep:'KPI-set',norm:'Omzetvolledigheid (KWA-07) wordt maandelijks gemeten',actie:'KPI omzetvolledigheid inrichten',eig:'Financial control',fase:1},
  {id:'I-S1',tab:'sturing',laag:4,groep:'Externe verantwoording',norm:'Rapportage per entiteit en aan partners (corporaties, VvE) heeft een vaste opzet',actie:'Standaard partnerrapportage per entiteit opzetten',eig:'Business control',fase:1},
- {id:'I-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Klantportaal en facturatie zijn per BV gekoppeld aan het financieel pakket',actie:'Koppeling facturatie ↔ het financieel pakket per BV realiseren',eig:'IT / finance',fase:2}
+ {id:'I-D1',tab:'datamodel',laag:1,groep:'Data',norm:'Klantportaal en facturatie zijn per BV gekoppeld aan het financieel pakket',actie:'Koppeling facturatie ↔ het financieel pakket per BV realiseren',eig:'IT / Financial control',fase:2}
 ];
 window.RM_CFG={naam:'warmtebedrijf',key:()=>'wbc_rm_v1',fases:RM_FASES,lagen:RM_LAGEN,items:()=>RM_CORE.concat(RM_INW),
  demo:()=>({'I-V1':'deels','I-V2':'niet','I-V3':'deels','I-V4':'niet','I-V5':'niet','I-V9':'niet','I-V6':'deels','I-V7':'niet','I-V10':'deels','I-V11':'niet',
@@ -1869,7 +1870,30 @@ function all(){[...new Set(items().map(i=>i.tab))].forEach(panel);road();scan()}
 /* RM:EXPORT */
 /* Levert de roadmap aan het implementatieplan. Alleen lezen: het plan verandert niets in het framework. */
 /* Rollen uit het tabblad Organisatie (het implementatieplan kent alleen deze rollen). */
-const rmRollen=()=>[['rolesFin','finance'],['rolesBus','business']].flatMap(([id,g])=>[...document.querySelectorAll('#'+id+'>div')].map(d=>({naam:((d.querySelector('h3')||{}).textContent||'').trim(),groep:g,omschr:((d.querySelector('.note')||{}).textContent||'').trim()}))).filter(r=>r.naam);
+const rmEigKey='be_rollen_'+K;
+const rmEigen=()=>{const v=LS.get(rmEigKey,[]);return Array.isArray(v)?v.filter(r=>r&&r.naam&&(r.groep==='finance'||r.groep==='business')):[]};
+const rmStd=()=>[['rolesFin','finance'],['rolesBus','business']].flatMap(([id,g])=>[...document.querySelectorAll('#'+id+'>div:not(.rolEigen)')].map(d=>({naam:((d.querySelector('h3')||{}).textContent||'').trim(),groep:g,omschr:((d.querySelector('.note')||{}).textContent||'').trim()}))).filter(r=>r.naam);
+const rmRollen=()=>rmStd().concat(rmEigen().map(r=>({naam:r.naam,groep:r.groep,omschr:r.omschr||'',eigen:true})));
+/* Eigen rollen toevoegen in tabblad Organisatie (alleen toevoegen; de standaardrollen blijven staan). */
+(function(){const e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ let bezig=false;
+ function teken(){if(bezig)return;bezig=true;try{
+  [['rolesFin','finance','finance'],['rolesBus','business','de business']].forEach(([id,g,lab])=>{const st=document.getElementById(id);if(!st)return;const card=st.parentElement;
+   st.querySelectorAll('.rolEigen').forEach(x=>x.remove());const f0=card.querySelector('.rolForm');if(f0)f0.remove();
+   rmEigen().filter(r=>r.groep===g).forEach(r=>{const d=document.createElement('div');d.className='rolEigen';
+    d.innerHTML='<h3>'+e(r.naam)+' <span class="note" style="font-weight:400">(eigen rol)</span></h3><p class="note" style="margin:0">'+e(r.omschr||'Eigen rol, toegevoegd door de adviseur.')+'</p><button class="btn rolDel" style="margin-top:6px" aria-label="Rol '+e(r.naam)+' verwijderen">Verwijderen</button>';
+    d.querySelector('.rolDel').onclick=()=>{LS.set(rmEigKey,rmEigen().filter(x=>!(x.naam===r.naam&&x.groep===g)));teken()};st.appendChild(d)});
+   const f=document.createElement('div');f.className='rolForm stack';f.style.cssText='gap:8px;margin-top:12px';
+   f.innerHTML='<h3>Eigen rol toevoegen</h3><input type="text" class="rolN" placeholder="Naam van de rol, bijvoorbeeld Projectmanagement" aria-label="Naam van de rol"><input type="text" class="rolO" placeholder="Korte omschrijving (optioneel)" aria-label="Omschrijving van de rol"><div class="row" style="gap:8px;align-items:center"><button class="btn pri rolAdd">Rol toevoegen</button><span class="note rolMsg" role="status"></span></div>';
+   card.appendChild(f);
+   f.querySelector('.rolAdd').onclick=()=>{const n=f.querySelector('.rolN').value.replace(/\s+/g,' ').trim(),o=f.querySelector('.rolO').value.trim(),m=f.querySelector('.rolMsg');
+    if(!n){m.textContent='Vul een naam in.';return}
+    if(rmRollen().some(r=>r.naam.toLowerCase()===n.toLowerCase())){m.textContent='Deze rol bestaat al.';return}
+    LS.set(rmEigKey,rmEigen().concat([{naam:n,groep:g,omschr:o}]));teken()}});
+ }finally{bezig=false}}
+ const start=()=>{teken();['rolesFin','rolesBus'].forEach(id=>{const st=document.getElementById(id);if(st)new MutationObserver(()=>{if(!bezig&&!st.querySelector('.rolEigen')&&rmEigen().length||!bezig&&!st.parentElement.querySelector('.rolForm'))teken()}).observe(st,{childList:true})})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ window.__rolTeken=teken;})();
 function rmExport(){const crit=window.__scanCrit||[],its=items();
   return{versie:1,naam:C.naam,key:K,demo:!!D.demo,lagen:C.lagen.slice(),fases:C.fases.map(f=>f.slice()),
    rollen:rmRollen(),

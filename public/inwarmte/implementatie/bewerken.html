@@ -787,7 +787,7 @@ function advies(){const L=loadOf(),out=[],xn=extList()[0],fr=(a,e)=>(shares(a).f
 function risicos(){const r=[],A=D.acties,noOwn=e=>!e||/^niet toegewezen$/i.test(e),none=A.filter(a=>noOwn(a.eig));
   if(none.length)r.push({t:'Geen eigenaar',kort:`${none.length} ${none.length===1?'actie':'acties'} zonder eigenaar`,txt:`${none.length} ${none.length===1?'actie heeft':'acties hebben'} geen eigenaar: ${none.slice(0,3).map(a=>'"'+a.tekst+'"').join(', ')}${none.length>3?' en '+(none.length-3)+' andere':''}. Zonder eigenaar voelt niemand zich verantwoordelijk; de capaciteit van "Niet toegewezen" in dit plan is fictief.`});
   eigList().filter(onbekendeRol).forEach(e=>{const n=rolActies(e).length,dg=rolActies(e).reduce((s,a)=>s+D.dag[a.maat]*(shares(a).find(x=>x[0]===e)||[0,0])[1],0);
-    r.push({t:'Rol ontbreekt',rol:e,kort:`${e} staat niet in de organisatiestructuur (${n} ${n===1?'actie':'acties'})`,txt:`${e} staat niet in het tabblad Organisatie, maar heeft ${n} ${n===1?'actie':'acties'} (${f1(dg)} dagen). Er is dus niet vastgelegd dat deze rol bestaat of hoeveel dagen hij beschikbaar is; de planning rekent voorlopig met de standaardcapaciteit. Leg de rol vast in het tabblad Organisatie, kies in de verbeterroadmap een bestaande rol, of huur de capaciteit in.`})});
+    r.push({t:'Rol ontbreekt',rol:e,kort:`${e} staat niet in de organisatiestructuur (${n} ${n===1?'actie':'acties'})`,txt:`${e} staat niet in het tabblad Organisatie, maar heeft ${n} ${n===1?'actie':'acties'} (${f1(dg)} dagen). Er is dus niet vastgelegd dat deze rol bestaat of hoeveel dagen hij beschikbaar is; de planning rekent voorlopig met de standaardcapaciteit. Leg de rol vast in het tabblad Organisatie (onderaan Eigen rol toevoegen), kies in de verbeterroadmap een bestaande rol, of huur de capaciteit in.`})});
   const dg={};A.forEach(a=>shares(a).forEach(([e,f])=>{if(!isExt(e)&&!noOwn(e))dg[e]=(dg[e]||0)+D.dag[a.maat]*f}));
   const tot=Object.values(dg).reduce((s,v)=>s+v,0)||1;
   if(Object.keys(dg).length>=3)Object.entries(dg).forEach(([e,v])=>{if(v/tot>0.35)r.push({t:'Concentratie',kort:`${e} draagt ${Math.round(v/tot*100)}% van de eigen inspanning`,txt:`${e} draagt ${Math.round(v/tot*100)}% van de eigen inspanning (${f1(v)} van ${f1(tot)} dagen). Dat maakt het plan kwetsbaar bij uitval of drukte; overweeg een uitvoerder of een back-up.`})});
@@ -1293,7 +1293,7 @@ function fwBalk(){const host=$('#impCard');if(!host||!FW)return;pinUI();
 if(FW){document.body.classList.add('fw');if(LEZEN)document.body.classList.add('lezen');$('#impSum').parentNode.querySelector('h2').textContent='Implementatieplan';
   if(!LEZEN&&!D.acties.length&&fwToepassen()){D.bestandOp=D.gewijzigd;D.fwHash=fwHash();LS.set(KEY,D)} /* automatisch opgebouwd: geen eigen wijzigingen die verloren kunnen gaan */
   const r0=render;render=function(){r0();fwBalk()};
-  window.addEventListener('storage',e=>{if(e.key===FWKEY||e.key==='be_klant')render()});}
+  window.addEventListener('storage',e=>{if(e.key===FWKEY||e.key==='be_klant'||/^be_rollen_/.test(e.key||''))render()});}
 render();if(D.acties.length)setImp(false);
 </script>
 </body>
