@@ -14,7 +14,7 @@ public/                 de site zelf
   inwarmte/index.html   framework InWarmte (alleen met link)
   projectorganisaties/index.html   framework Projectorganisaties (alleen met link)
   warmtebedrijf/index.html   geanonimiseerde warmtecasus voor feedback, zonder pincode (alleen met link)
-  implementatieplan/index.html   losse planner, tijdelijk openbaar tot 17-11-2026 (noindex); daarna weer verwijspagina. Het implementatieplan voor klanten staat per klant in <map>/implementatie/
+  implementatieplan/index.html   verwijspagina: het implementatieplan staat nu per klant in <map>/implementatie/ (tabblad Implementatieplan)
 functions/
   _middleware.js        controleert de links; hier staan ook de beschermde paden
   ingetrokken.js        id's van links die niet meer mogen werken

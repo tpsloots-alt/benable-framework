@@ -5,7 +5,7 @@
 import INGETROKKEN from './ingetrokken.js';
 
 // Paden die een persoonlijke link vereisen. Voeg hier later bijv. '/algemeen/' toe.
-const BESCHERMD = ['/inwarmte/', '/projectorganisaties/', '/warmtebedrijf/']; // /implementatieplan/: losse planner tijdelijk openbaar (op verzoek tot 17-11-2026), daarna weer verwijspagina; het plan staat per klant in <map>implementatie/
+const BESCHERMD = ['/inwarmte/', '/projectorganisaties/', '/warmtebedrijf/']; // /implementatieplan/ is alleen nog een verwijspagina; het plan staat per klant in <map>implementatie/
 
 const enc = new TextEncoder();
 const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
