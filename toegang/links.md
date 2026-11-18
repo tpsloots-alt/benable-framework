@@ -15,3 +15,4 @@ Wordt automatisch bijgewerkt door de knoppen onder *Actions*. De links zelf staa
 | 13-11-2026 | Jelle de Haan | /warmtebedrijf/ | 18-11-2026 | f9828acb | actief |
 | 13-11-2026 | Emile Eleveld | /inwarmte/ | 18-11-2026 | 6860c14e | actief |
 | 13-11-2026 | Erik Welleweerd | /projectorganisaties/ | 20-11-2026 | 9a899c0f | actief |
+| 18-11-2026 | Emile Eleveld | /inwarmte/ | 02-12-2026 | 9aa3d742 | actief |
